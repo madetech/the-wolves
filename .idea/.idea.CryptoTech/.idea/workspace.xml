@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c07c9f0d-5911-42f7-b2e2-feb0625af09a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/CryptoTech.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CryptoTechReminderSystem/UseCase/GetSlackUsers.cs" afterDir="false" />
-    </list>
+    <list default="true" id="c07c9f0d-5911-42f7-b2e2-feb0625af09a" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,11 +12,11 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/CryptoTechReminderSystem.AcceptanceTest/CryptoTechReminderSystemTests.cs">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="320">
-                  <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
+                <state relative-caret-position="298">
+                  <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
                   <folding>
                     <marker date="1553772503449" expanded="true" signature="6:86" ph="..." />
                     <marker date="1553772503449" expanded="true" signature="137:843" ph="{...}" />
@@ -32,11 +28,11 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/CryptoTechReminderSystem.Test/GetSlackUsersTests.cs">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="272">
-                  <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+                <state relative-caret-position="336">
+                  <caret line="21" column="8" lean-forward="true" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
                   <folding>
                     <marker date="1553773421967" expanded="true" signature="6:130" ph="..." />
                     <marker date="1553773421967" expanded="true" signature="171:525" ph="{...}" />
@@ -165,12 +161,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1553769859477</updated>
-      <workItem from="1553769862132" duration="3736000" />
+      <workItem from="1553769862132" duration="4114000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3736000" />
+    <option name="totallyTimeSpent" value="4114000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -188,7 +184,7 @@
       <window_info id="Favorites" side_tool="true" />
       <window_info id="Image Layers" />
       <window_info id="Capture Tool" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24964234" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13376252" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="NuGet" weight="0.32960895" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
@@ -229,20 +225,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CryptoTechReminderSystem.AcceptanceTest/CryptoTechReminderSystemTests.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
-          <folding>
-            <marker date="1553772503449" expanded="true" signature="6:86" ph="..." />
-            <marker date="1553772503449" expanded="true" signature="137:843" ph="{...}" />
-            <marker date="1553772503449" expanded="true" signature="186:841" ph="{...}" />
-            <marker date="1553772503449" expanded="true" signature="236:256" ph="{...}" />
-            <marker date="1553772503449" expanded="true" signature="319:826" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CryptoTechReminderSystem/UseCase/GetSlackUsers.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="128">
@@ -257,14 +239,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CryptoTechReminderSystem.Test/GetSlackUsersTests.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+        <state relative-caret-position="336">
+          <caret line="21" column="8" lean-forward="true" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
           <folding>
             <marker date="1553773421967" expanded="true" signature="6:130" ph="..." />
             <marker date="1553773421967" expanded="true" signature="171:525" ph="{...}" />
             <marker date="1553773421967" expanded="true" signature="209:523" ph="{...}" />
             <marker date="1553773421967" expanded="true" signature="259:279" ph="{...}" />
             <marker date="1553773421967" expanded="true" signature="339:508" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CryptoTechReminderSystem.AcceptanceTest/CryptoTechReminderSystemTests.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+          <folding>
+            <marker date="1553772503449" expanded="true" signature="6:86" ph="..." />
+            <marker date="1553772503449" expanded="true" signature="137:843" ph="{...}" />
+            <marker date="1553772503449" expanded="true" signature="186:841" ph="{...}" />
+            <marker date="1553772503449" expanded="true" signature="236:256" ph="{...}" />
+            <marker date="1553772503449" expanded="true" signature="319:826" ph="{...}" />
           </folding>
         </state>
       </provider>
