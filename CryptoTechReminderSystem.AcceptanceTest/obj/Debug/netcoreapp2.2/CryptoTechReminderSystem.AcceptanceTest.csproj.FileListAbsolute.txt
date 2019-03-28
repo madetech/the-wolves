@@ -1,0 +1,17 @@
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.csprojAssemblyReference.cache
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.csproj.CoreCompileInputs.cache
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.AssemblyInfoInputs.cache
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.AssemblyInfo.cs
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/NUnit3.TestAdapter.dll
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/NUnit3.TestAdapter.pdb
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/nunit.engine.netstandard.dll
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.deps.json
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.runtimeconfig.json
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.runtimeconfig.dev.json
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.dll
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.pdb
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.dll
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/bin/Debug/netcoreapp2.2/CryptoTechReminderSystem.pdb
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.csproj.CopyComplete
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.dll
+/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.AcceptanceTest/obj/Debug/netcoreapp2.2/CryptoTechReminderSystem.AcceptanceTest.pdb
