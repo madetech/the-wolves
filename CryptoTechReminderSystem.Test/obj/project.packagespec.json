@@ -1,10 +1,10 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.Test/CryptoTechReminderSystem.Test.csproj",
+    "projectUniqueName": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem.Test/CryptoTechReminderSystem.Test.csproj",
     "projectName": "CryptoTechReminderSystem.Test",
-    "projectPath": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.Test/CryptoTechReminderSystem.Test.csproj",
-    "outputPath": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem.Test/obj/",
+    "projectPath": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem.Test/CryptoTechReminderSystem.Test.csproj",
+    "outputPath": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem.Test/obj/",
     "projectStyle": "PackageReference",
     "fallbackFolders": [
       "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
@@ -15,8 +15,8 @@
     "frameworks": {
       "netcoreapp2.2": {
         "projectReferences": {
-          "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj": {
-            "projectPath": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj"
+          "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj": {
+            "projectPath": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj"
           }
         }
       }

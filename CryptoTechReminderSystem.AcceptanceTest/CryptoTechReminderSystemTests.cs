@@ -1,6 +1,12 @@
-using CryptoTechReminderSystem.UseCase;
 using NUnit.Framework;
 using FluentAssertions;
+using System.Collections.Generic;
+using System.Linq;
+using CryptoTechReminderSystem.Boundary;
+using CryptoTechReminderSystem.Gateway;
+using CryptoTechReminderSystem.UseCase;
+using FluentSim;
+using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.AcceptanceTest
 {
@@ -12,18 +18,33 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
 
         [Test]
-        public void TestCanSendDirectMessage()
+        public void CanRemindAUser()
         {
-            var getSlackUsers = new GetSlackUsers();
-            var getHarvestUsers = new GetHarvestUsers();
-            var findLateUsers = new findLateUsers(getSlackUsers, getHarvestUsers);
-            var lateUsers = findLateUsers.Execute();
-            var sendDirectMessage = new SendDirectMessage();
-            var remindsSlackUsers = new RemindsSlackUsers(sendDirectMessage);
-            var response = remindsSlackUsers.Execute(users);
+            var fluentSimulator = new FluentSimulator("http://localhost:8009/");
+            var slackGateway = new MessageSender("http://localhost:8009/");
+            var remindUser = new RemindUser(slackGateway);
+            var remindUserRequest = new RemindUserRequest
+            {
+                UserId = "U172L982"
+            };
+            var slackPostMessageResponse = new SlackPostMessageResponse
+            {
+                IsOk = true
+            };
 
-            response.Should().BeTrue();
+            fluentSimulator.Start();
+            fluentSimulator.Post("/api/chat.postMessage").Responds(slackPostMessageResponse);
+            
+            remindUser.Execute(remindUserRequest);
+
+            fluentSimulator.ReceivedRequests.First().Url.Should().Be("/api/chat.postMessage");
         }
         
+    }
+
+    public class SlackPostMessageResponse
+    {
+        [JsonProperty("ok")]
+        public bool IsOk;
     }
 }

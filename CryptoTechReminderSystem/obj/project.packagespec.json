@@ -1,10 +1,10 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj",
+    "projectUniqueName": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj",
     "projectName": "CryptoTechReminderSystem",
-    "projectPath": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj",
-    "outputPath": "/Users/csabagyorfi/other/CSProjects/CryptoTech/CryptoTechReminderSystem/obj/",
+    "projectPath": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem/CryptoTechReminderSystem.csproj",
+    "outputPath": "/Users/ting/Documents/crypto_tech/CryptoTechReminderSystem/obj/",
     "projectStyle": "PackageReference",
     "fallbackFolders": [
       "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
