@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using FluentAssertions;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             remindUser.Execute(remindUserRequest);
 
-            fluentSimulator.ReceivedRequests.First().Url.Should().Be("/api/chat.postMessage");
+            fluentSimulator.ReceivedRequests.First().Url.Should().Be("http://localhost:8009/api/chat.postMessage");
         }
         
     }
