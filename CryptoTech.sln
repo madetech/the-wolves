@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoTechReminderSystem.Ac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoTechReminderSystem.Test", "CryptoTechReminderSystem.Test\CryptoTechReminderSystem.Test.csproj", "{D28A831C-1E8F-45A0-BFFA-985157938716}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoTechReminderSystem.Main", "CryptoTechReminderSystem.Main\CryptoTechReminderSystem.Main.csproj", "{7640A76D-B928-462A-A325-278D81C00CE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{D28A831C-1E8F-45A0-BFFA-985157938716}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D28A831C-1E8F-45A0-BFFA-985157938716}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D28A831C-1E8F-45A0-BFFA-985157938716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7640A76D-B928-462A-A325-278D81C00CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7640A76D-B928-462A-A325-278D81C00CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7640A76D-B928-462A-A325-278D81C00CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7640A76D-B928-462A-A325-278D81C00CE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
