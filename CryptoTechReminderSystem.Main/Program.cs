@@ -9,7 +9,7 @@ namespace CryptoTechReminderSystem.Main
     {
         static void Main(string[] args)
         {
-            var remindUser = new RemindUser(new MessageSender("https://slack.com/", "xoxb-588882280116-591298073303-717LPMdHNK75oXmywBQQsw8l"));
+            var remindUser = new RemindUser(new MessageSender("https://slack.com/", "xoxb-588882280116-591298073303-AAirGS4weSAifFKyrT17CLvw"));
             
             remindUser.Execute(new RemindUserRequest
             {
