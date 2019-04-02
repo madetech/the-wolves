@@ -9,7 +9,7 @@ namespace CryptoTechReminderSystem.Test
 {
     public class RemindUserTests
     {
-        class SlackGatewaySpy : ISlackGateway
+        class SlackGatewaySpy : IMessageSender
         {
             public Message Message;
         

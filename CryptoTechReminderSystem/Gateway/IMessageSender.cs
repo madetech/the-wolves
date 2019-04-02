@@ -2,7 +2,7 @@ using CryptoTechReminderSystem.DomainObject;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public interface ISlackGateway
+    public interface IMessageSender
     {
         void Send(Message message);
     }

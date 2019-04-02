@@ -14,7 +14,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     public class CryptoTechReminderSystemTests
     {
         private FluentSimulator _fluentSimulator;
-        private SlackGateway _slackGateway;
+        private IMessageSender _slackGateway;
         private RemindUser _remindUser;
         
         public class SlackPostMessageResponse
