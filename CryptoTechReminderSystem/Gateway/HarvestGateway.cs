@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace CryptoTechReminderSystem.Gateway
@@ -17,6 +18,7 @@ namespace CryptoTechReminderSystem.Gateway
 
         public string Retrieve()
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             return GetUsers().Result;
         }
         
