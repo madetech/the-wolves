@@ -13,7 +13,7 @@ namespace CryptoTechReminderSystem.Main
         static void Main(string[] args)
         {    
             DotEnv.Config();
-            var remindUser = new RemindUser(new MessageSender("https://slack.com/", Environment.GetEnvironmentVariable("SLACK_TOKEN")));
+            var remindUser = new RemindUser(new SlackGateway("https://slack.com/", Environment.GetEnvironmentVariable("SLACK_TOKEN")));
             
             IList<string> idsList = new List<string>()
             {
@@ -29,7 +29,8 @@ namespace CryptoTechReminderSystem.Main
             {
                 remindUser.Execute(new RemindUserRequest
                 {
-                    UserId = id
+                    Channel = id,
+                    Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
                 });
             }
         }
