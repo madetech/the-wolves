@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
+using dotenv.net;
+
 
 namespace CryptoTechReminderSystem.Main
 {
     class Program
     {
         static void Main(string[] args)
-        {
-            var remindUser = new RemindUser(new MessageSender("https://slack.com/", "xoxb-588882280116-591298073303-hfZeBHsJ3bo45DczunWm07Sq"));
+        {    
+            DotEnv.Config();
+            var remindUser = new RemindUser(new MessageSender("https://slack.com/", Environment.GetEnvironmentVariable("SLACK_TOKEN")));
             
             IList<string> idsList = new List<string>()
             {

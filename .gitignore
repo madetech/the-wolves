@@ -30,3 +30,4 @@ msbuild.wrn
 # IDE
 .vs/
 .idea
+CryptoTechReminderSystem.Main/.env
