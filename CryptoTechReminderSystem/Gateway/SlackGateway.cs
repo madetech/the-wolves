@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class SlackGateway : ISlackGateway
+    public class SlackGateway : IMessageSender
     {
         private readonly HttpClient _client;
         private readonly string _token;

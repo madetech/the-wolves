@@ -6,9 +6,9 @@ namespace CryptoTechReminderSystem.UseCase
 {
     public class RemindUser
     {
-        private readonly ISlackGateway _slackGateway;
+        private readonly IMessageSender _slackGateway;
 
-        public RemindUser(ISlackGateway slackGateway)
+        public RemindUser(IMessageSender slackGateway)
         {
             _slackGateway = slackGateway;
         }
