@@ -60,7 +60,9 @@ namespace CryptoTechReminderSystem.Test
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
                 
-            receivedRequest.Url.Should().Be("http://localhost:8011/api/chat.postMessage");
+            receivedRequest.Headers["Authorization"].Should().Be(
+                "Bearer xxxx-xxxxxxxxx-xxxx"
+            );
         }
         
         [Test]
@@ -75,9 +77,8 @@ namespace CryptoTechReminderSystem.Test
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
             
-            receivedRequest.Headers["Authorization"].Should().Be(
-                "Bearer xxxx-xxxxxxxxx-xxxx"
-            );
+            DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody).Channel.Should().Be("U98DL811");
+
         }
         
         [Test]
