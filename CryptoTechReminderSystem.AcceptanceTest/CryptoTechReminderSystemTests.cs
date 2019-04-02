@@ -118,6 +118,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             receivedRequest.Headers["Authorization"].Should().Be(
                 "Bearer xxxx-xxxxxxxxx-xxxx"
             );
+
+            DeserializeObject<HarvestGetUsersResponse>(receivedRequest.RequestBody).Success.Should().Be(true);
         }
     }
 

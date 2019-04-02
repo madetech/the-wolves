@@ -47,12 +47,12 @@ namespace CryptoTechReminderSystem.Test
         {
             _fluentSimulator.Get("/api/v2/users").Responds("User1");
             
-            var harvestGateway = new HarvestGateway("http://localhost:8050/", "token");
+            var harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");
 
             var response = harvestGateway.Retrieve();
             response.Should().Be("User1");
             
-            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer token");
+            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
         }        
     }
 }
