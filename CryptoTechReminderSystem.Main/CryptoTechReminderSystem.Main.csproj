@@ -9,4 +9,8 @@
       <ProjectReference Include="..\CryptoTechReminderSystem\CryptoTechReminderSystem.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="dotenv.net" Version="1.0.4" />
+    </ItemGroup>
+
 </Project>
