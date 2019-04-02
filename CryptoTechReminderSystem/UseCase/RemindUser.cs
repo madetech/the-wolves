@@ -6,24 +6,20 @@ namespace CryptoTechReminderSystem.UseCase
 {
     public class RemindUser
     {
-        private readonly IMessageSender _messageSender;
+        private readonly ISlackGateway _slackGateway;
 
-        public RemindUser(IMessageSender messageSender)
+        public RemindUser(ISlackGateway slackGateway)
         {
-            _messageSender = messageSender;
+            _slackGateway = slackGateway;
         }
 
         public void Execute(RemindUserRequest remindUserRequest)
         {
-            _messageSender.Send(new Message
+            _slackGateway.Send(new Message
             {
-                UserId = remindUserRequest.UserId
+                Channel = remindUserRequest.Channel,
+                Text = remindUserRequest.Text
             });
         }
-    }
-
-    public interface IMessageSender
-    {
-        void Send(Message message);
     }
 }

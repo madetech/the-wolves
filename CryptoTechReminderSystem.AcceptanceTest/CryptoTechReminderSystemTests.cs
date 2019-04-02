@@ -6,7 +6,7 @@ using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
 using FluentSim;
 using Newtonsoft.Json;
-using static CryptoTechReminderSystem.Gateway.MessageSender;
+using static CryptoTechReminderSystem.Gateway.SlackGateway;
 using static Newtonsoft.Json.JsonConvert;
 
 namespace CryptoTechReminderSystem.AcceptanceTest
@@ -14,7 +14,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     public class CryptoTechReminderSystemTests
     {
         private FluentSimulator _fluentSimulator;
-        private MessageSender _messageSender;
+        private SlackGateway _slackGateway;
         private RemindUser _remindUser;
         
         public class SlackPostMessageResponse
@@ -37,11 +37,12 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _fluentSimulator.Post("/api/chat.postMessage").Responds(slackPostMessageResponse);
         }
 
-        private void WhenWeRemindUser(string userId)
+        private void WhenWeRemindUser(string channel, string text)
         {
             _remindUser.Execute(new RemindUserRequest
             {
-                UserId = userId
+                Channel = channel,
+                Text = text
             });
         }
 
@@ -55,8 +56,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             receivedRequest.Headers["Authorization"].Should().Be(
                 "Bearer xxxx-xxxxxxxxx-xxxx"
             );
-            GetRequest(receivedRequest).channel.Should().Be(userId);
-            GetRequest(receivedRequest).text.Should().Be(
+            GetRequest(receivedRequest).Channel.Should().Be(userId);
+            GetRequest(receivedRequest).Text.Should().Be(
                 "Please make sure your timesheet is submitted by 13:30 on Friday."
             );
         }
@@ -67,11 +68,11 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _fluentSimulator = new FluentSimulator(
                 "http://localhost:8009/"
             );
-            _messageSender = new MessageSender(
+            _slackGateway = new SlackGateway(
                 "http://localhost:8009/",
                 "xxxx-xxxxxxxxx-xxxx"
             );
-            _remindUser = new RemindUser(_messageSender);
+            _remindUser = new RemindUser(_slackGateway);
             _fluentSimulator.Start();
         }
 
@@ -86,7 +87,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         {
             GivenSlackRespondsWithOk();
 
-            WhenWeRemindUser("U172L982");
+            WhenWeRemindUser("U172L982", "Please make sure your timesheet is submitted by 13:30 on Friday.");
 
             ThenMessageHasBeenPostedToSlack("U172L982");
         }

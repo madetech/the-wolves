@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class SlackGateway : IMessageSender
+    public class SlackGateway : ISlackGateway
     {
         private readonly HttpClient _client;
         private readonly string _token;
@@ -26,22 +26,31 @@ namespace CryptoTechReminderSystem.Gateway
         public void Send(Message message)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            var request = JsonConvert.SerializeObject(new PostMessageRequest());
+            
+            var request = JsonConvert.SerializeObject(new PostMessageRequest
+            {
+                Channel = message.Channel,
+                Text = message.Text
+            });
             var content = new StringContent(request, Encoding.UTF8, "application/json");
             var result = PostChatMessage(content).Result;
+            Console.WriteLine(result);
         }
         
         private async Task<object> PostChatMessage(StringContent content)
         {
             var requestPath = "/api/chat.postMessage";
             var response = await _client.PostAsync(requestPath, content);
-            return await response.Content.ReadAsStringAsync();;
+            var result = await response.Content.ReadAsStringAsync();
+            return result;
         }
     }
 
     public class PostMessageRequest
     {
-        public string channel { get; set; }
-        public string text { get; set; }
+        [JsonProperty("channel")]
+        public string Channel { get; set; }
+        [JsonProperty("text")]
+        public string Text { get; set; }
     }
 }
