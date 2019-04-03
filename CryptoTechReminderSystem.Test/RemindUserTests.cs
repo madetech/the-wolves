@@ -9,7 +9,7 @@ namespace CryptoTechReminderSystem.Test
 {
     public class RemindUserTests
     {
-        class MessageSenderSpy : IMessageSender
+        class SlackGatewaySpy : IMessageSender
         {
             public Message Message;
         
@@ -22,29 +22,31 @@ namespace CryptoTechReminderSystem.Test
         [Test]
         public void CanRemindUser()
         {
-            var spy = new MessageSenderSpy();
+            var spy = new SlackGatewaySpy();
             var remindUser = new RemindUser(spy);
             
             remindUser.Execute(new RemindUserRequest
             {
-                UserId = "U120123D"
+                Channel = "U120123D",
+                Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
             });
             
-            spy.Message.UserId.Should().Be("U120123D");
+            spy.Message.Channel.Should().Be("U120123D");
         }
         
         [Test]
         public void CanRemindUser2()
         {
-            var spy = new MessageSenderSpy();
+            var spy = new SlackGatewaySpy();
             var remindUser = new RemindUser(spy);
             
             remindUser.Execute(new RemindUserRequest
             {
-                UserId = "U87219HAW"
+                Channel = "U87219HAW",
+                Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
             });
             
-            spy.Message.UserId.Should().Be("U87219HAW");
+            spy.Message.Channel.Should().Be("U87219HAW");
         }
     }
 }
