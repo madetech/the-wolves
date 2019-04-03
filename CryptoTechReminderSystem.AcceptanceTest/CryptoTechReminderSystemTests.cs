@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using FluentAssertions;
 using System.Linq;
 using System.Net.Sockets;
 using CryptoTechReminderSystem.Boundary;
+using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
 using FluentSim;
@@ -101,10 +104,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         [Test]
         public void CanGetUsersFromHarvest()
         {
-            var harvestGetUsersResponse = new HarvestGetUsersResponse
-            {
-                Success = true
-            };
+            var harvestGetUsersResponse = File.ReadAllText("/Users/csabagyorfi/Projects/crypto_tech/CryptoTechReminderSystem.AcceptanceTest/HarvestUsersExampleResponse.json");
 
             var getUsers = new GetDevelopers(new HarvestGateway(
                 "http://localhost:8009/",

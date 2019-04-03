@@ -24,7 +24,7 @@ namespace CryptoTechReminderSystem.Gateway
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             
             var developer = JsonConvert.DeserializeObject<Developer>(GetUsers().Result);
-
+        
             IList<Developer> response = new List<Developer>()
             {
                 developer
