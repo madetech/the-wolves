@@ -41,7 +41,7 @@ namespace CryptoTechReminderSystem.Test
             });
             var harvestGateway = new HarvestGateway("http://localhost:8050/", "token");
             var response = harvestGateway.Retrieve();
-            response.FirstName.Should().Be("User");
+            response.First().FirstName.Should().Be("User");
         }
         
         [Test]
@@ -54,7 +54,7 @@ namespace CryptoTechReminderSystem.Test
             var harvestGateway = new HarvestGateway("http://localhost:8050/", "token");
             
             var response = harvestGateway.Retrieve();
-            response.FirstName.Should().Be("User1");
+            response.First().FirstName.Should().Be("User1");
         }
         
         [Test]
@@ -68,7 +68,7 @@ namespace CryptoTechReminderSystem.Test
             var harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");
 
             var response = harvestGateway.Retrieve();
-            response.FirstName.Should().Be("User2");
+            response.First().FirstName.Should().Be("User2");
             
             _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
         }
