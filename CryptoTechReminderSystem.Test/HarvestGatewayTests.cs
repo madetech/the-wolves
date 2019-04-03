@@ -74,7 +74,7 @@ namespace CryptoTechReminderSystem.Test
         }
 
         [Test]
-        public void CanGetAJsonWithUsers()
+        public void CanGetDeveloperObject()
         { 
             var jsonResponse = SerializeObject(new Developer
             {
