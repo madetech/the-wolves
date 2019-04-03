@@ -119,7 +119,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "Bearer xxxx-xxxxxxxxx-xxxx"
             );
 
-            DeserializeObject<HarvestGetUsersResponse>(receivedRequest.RequestBody).Success.Should().Be(true);
+            DeserializeObject<HarvestGetUsersResponse>(response).Success.Should().Be(true);
         }
     }
 

@@ -1,8 +1,15 @@
+using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using CryptoTechReminderSystem.AcceptanceTest;
 using CryptoTechReminderSystem.Gateway;
 using FluentSim;
 using FluentAssertions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace CryptoTechReminderSystem.Test
 {
@@ -53,6 +60,23 @@ namespace CryptoTechReminderSystem.Test
             response.Should().Be("User1");
             
             _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
-        }        
+        }
+
+        [Test]
+        public void CanGetAJsonWithUsers()
+        { 
+            var jsonResponse = JsonConvert.SerializeObject(new HarvestGetUsersResponse()
+            {
+                Success = true
+            });
+            
+            _fluentSimulator.Get("/api/v2/users").Responds(jsonResponse);
+
+            var harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");
+
+            var response = DeserializeObject<HarvestGetUsersResponse>(harvestGateway.Retrieve());
+
+            response.Success.Should().Be(true);
+        }
     }
 }
