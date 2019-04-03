@@ -7,9 +7,6 @@ script:
     - dotnet restore
     - dotnet build
     - dotnet test
-after_script:
-    - dotnet test
-    - export PATH=$PATH:$HOME/.local/bin
 global:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
     - DOTNET_CLI_TELEMETRY_OPTOUT=1
