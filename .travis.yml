@@ -1,9 +1,11 @@
 language: csharp
 solution: CryptoTech.sln
 mono: none
-dotnet: 2.2.102
+dotnet: 2.2
 install:
  - nuget restore CryptoTech.sln
  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 script:
+ - dotnet restore
+ - dotnet build
  - dotnet test
