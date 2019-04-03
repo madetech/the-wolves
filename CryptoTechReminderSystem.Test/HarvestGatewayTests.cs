@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using static Newtonsoft.Json.JsonConvert;
-using HarvestGetUsersResponse = CryptoTechReminderSystem.AcceptanceTest.HarvestGetUsersResponse;
+using HarvestGetUsersResponse = CryptoTechReminderSystem.AcceptanceTest;
 
 namespace CryptoTechReminderSystem.Test
 {

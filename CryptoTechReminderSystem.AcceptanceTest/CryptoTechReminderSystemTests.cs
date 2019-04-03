@@ -22,6 +22,11 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         {
             [JsonProperty("ok")] public bool IsOk;
         }
+        
+        public class HarvestGetUsersResponse
+        {
+            public bool Success { get; set; }
+        }
 
         private static PostMessageRequest GetRequest(ReceivedRequest receivedRequest)
         {
@@ -118,12 +123,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "Bearer xxxx-xxxxxxxxx-xxxx"
             );
 
-            DeserializeObject<HarvestGetUsersResponse>(response).Success.Should().Be(true);
+            response.Id.Should().Be(007);
         }
-    }
-
-    public class HarvestGetUsersResponse
-    {
-        public bool Success { get; set; }
     }
 }

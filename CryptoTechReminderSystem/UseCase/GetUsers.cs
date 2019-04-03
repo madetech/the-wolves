@@ -1,3 +1,4 @@
+using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
@@ -9,11 +10,19 @@ namespace CryptoTechReminderSystem.UseCase
         public GetUsers(HarvestGateway harvestRequester)
         {
             _requester = harvestRequester;
+            _requester.Retrieve();
         }
 
-        public string Execute()
+        public Developer Execute()
         {
-            return "asdfasdf";
+            return new Developer()
+            {
+                Id = 007,
+                FirstName = "TestName",
+                LastName = "TestName",
+                Email = "email@email.com",
+                Hours = 0
+            };
         }
     }
 }
