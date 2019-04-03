@@ -106,7 +106,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 Success = true
             };
 
-            var getUsers = new GetUsers(new HarvestGateway(
+            var getUsers = new GetDevelopers(new HarvestGateway(
                 "http://localhost:8009/",
                 "xxxx-xxxxxxxxx-xxxx"
             ));
@@ -123,7 +123,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "Bearer xxxx-xxxxxxxxx-xxxx"
             );
 
-            response.Id.Should().Be(007);
+            response.First().Id.Should().Be(007);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -18,13 +19,18 @@ namespace CryptoTechReminderSystem.Gateway
             _token = token;
         }
 
-        public Developer Retrieve()
+        public IList<Developer> Retrieve()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             
             var developer = JsonConvert.DeserializeObject<Developer>(GetUsers().Result);
+
+            IList<Developer> response = new List<Developer>()
+            {
+                developer
+            };
             
-            return developer;
+            return response;
         }
         
         private async Task<string> GetUsers()
