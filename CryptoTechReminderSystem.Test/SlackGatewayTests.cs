@@ -11,24 +11,31 @@ namespace CryptoTechReminderSystem.Test
 {
     public class SlackGatewayTests
     {
+        private const string Address = "http://localhost:8011/";
+        private const string Token = "xxxx-xxxxxxxxx-xxxx";
+        private const string PostMessageApiPath = "api/chat.postMessage";
+        private const string PostMessageApiUrl = Address + PostMessageApiPath;
         private FluentSimulator _fluentSimulator;
-        
+        private SlackGateway _slackGateway;
+
         public class SlackPostMessageResponse
         {
-            [JsonProperty("ok")] public bool IsOk;
+            [JsonProperty("ok")]
+            public bool IsOk;
         }
 
         [SetUp]
         public void Setup()
         {
-            _fluentSimulator = new FluentSimulator("http://localhost:8011/");
+            _fluentSimulator = new FluentSimulator(Address);
+            _slackGateway = new SlackGateway(Address, Token);
             
             var slackPostMessageResponse = new SlackPostMessageResponse
             {
                 IsOk = true
             };
             
-            _fluentSimulator.Post("/api/chat.postMessage").Responds(slackPostMessageResponse);
+            _fluentSimulator.Post(PostMessageApiPath).Responds(slackPostMessageResponse);
 
             _fluentSimulator.Start();
         }
@@ -42,59 +49,57 @@ namespace CryptoTechReminderSystem.Test
         [Test]
         public void CanSendAPostMessageRequest()
         {
-            var messageSender = new SlackGateway("http://localhost:8011/", "xxxx-xxxxxxxxx-xxxx");
-            
-            messageSender.Send(new Message());
+            _slackGateway.Send(new Message());
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
                 
-            receivedRequest.Url.Should().Be("http://localhost:8011/api/chat.postMessage");
+            receivedRequest.Url.Should().Be(PostMessageApiUrl);
         }
         
         [Test]
         public void CanSendAPostMessageRequestWithAToken()
         {
-            var messageSender = new SlackGateway("http://localhost:8011/", "xxxx-xxxxxxxxx-xxxx");
-            
-            messageSender.Send(new Message());
+            _slackGateway.Send(new Message());
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
                 
             receivedRequest.Headers["Authorization"].Should().Be(
-                "Bearer xxxx-xxxxxxxxx-xxxx"
+                "Bearer " + Token
             );
         }
         
         [Test]
         public void CanSendAMessageToAUser()
         {
-            var messageSender = new SlackGateway("http://localhost:8011/", "xxxx-xxxxxxxxx-xxxx");
+            var channel = "U98DL811";
             var message = new Message()
             {
-                Channel = "U98DL811"
+                Channel = channel
             };
-            messageSender.Send(message);
+            
+            _slackGateway.Send(message);
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
             
-            DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody).Channel.Should().Be("U98DL811");
+            DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody).Channel.Should().Be(channel);
 
         }
         
         [Test]
         public void CanSendAMessageToAUserWithAText()
         {
-            var messageSender = new SlackGateway("http://localhost:8011/", "xxxx-xxxxxxxxx-xxxx");
+            var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
             var message = new Message()
             {
-                Channel = "U98DL811",
-                Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                Channel = "U0112WTW",
+                Text = text
             };
-            messageSender.Send(message);
+            
+            _slackGateway.Send(message);
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
                 
-            DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody).Text.Should().Be("Please make sure your timesheet is submitted by 13:30 on Friday.");
+            DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody).Text.Should().Be(text);
         }
     }
 }
