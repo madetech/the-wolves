@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using CryptoTechReminderSystem.AcceptanceTest;
+using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 using FluentSim;
 using FluentAssertions;
@@ -10,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using static Newtonsoft.Json.JsonConvert;
+using HarvestGetUsersResponse = CryptoTechReminderSystem.AcceptanceTest.HarvestGetUsersResponse;
 
 namespace CryptoTechReminderSystem.Test
 {
@@ -33,31 +35,40 @@ namespace CryptoTechReminderSystem.Test
         [Test]
         public void CanGetUser()
         {
-            _fluentSimulator.Get("/api/v2/users").Responds("User");
+            _fluentSimulator.Get("/api/v2/users").Responds(new Developer
+            {
+                FirstName = "User"
+            });
             var harvestGateway = new HarvestGateway("http://localhost:8050/", "token");
             var response = harvestGateway.Retrieve();
-            response.Should().Be("User");
+            response.FirstName.Should().Be("User");
         }
         
         [Test]
         public void CanGetUser2()
         {
-            _fluentSimulator.Get("/api/v2/users").Responds("User1");
+            _fluentSimulator.Get("/api/v2/users").Responds(new Developer
+            {
+                FirstName = "User1"
+            });
             var harvestGateway = new HarvestGateway("http://localhost:8050/", "token");
             
             var response = harvestGateway.Retrieve();
-            response.Should().Be("User1");
+            response.FirstName.Should().Be("User1");
         }
         
         [Test]
         public void CanGetUserWithAuthentication()
         {
-            _fluentSimulator.Get("/api/v2/users").Responds("User1");
+            _fluentSimulator.Get("/api/v2/users").Responds(new Developer
+            {
+                FirstName = "User2"
+            });
             
             var harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");
 
             var response = harvestGateway.Retrieve();
-            response.Should().Be("User1");
+            response.FirstName.Should().Be("User2");
             
             _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
         }
@@ -65,18 +76,29 @@ namespace CryptoTechReminderSystem.Test
         [Test]
         public void CanGetAJsonWithUsers()
         { 
-            var jsonResponse = JsonConvert.SerializeObject(new HarvestGetUsersResponse()
+            var jsonResponse = SerializeObject(new Developer
             {
-                Success = true
+                FirstName = "User3",
+                LastName = "Name3",
+                Email = "api@harvest.com",
+                Hours = 35,
+                Id = 1234567
             });
             
             _fluentSimulator.Get("/api/v2/users").Responds(jsonResponse);
 
-            var harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");
+            var harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");  
+            
+            var expected = new Developer
+            {
+                FirstName = "User3",
+                LastName = "Name3",
+                Email = "api@harvest.com",
+                Hours = 35,
+                Id = 1234567
+            };
 
-            var response = DeserializeObject<HarvestGetUsersResponse>(harvestGateway.Retrieve());
-
-            response.Success.Should().Be(true);
+            harvestGateway.Retrieve().Should().BeEquivalentTo(expected);
         }
     }
 }

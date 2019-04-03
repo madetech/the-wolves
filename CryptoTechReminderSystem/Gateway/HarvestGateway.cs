@@ -2,10 +2,12 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using CryptoTechReminderSystem.DomainObject;
+using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class HarvestGateway
+    public class HarvestGateway : IDeveloperRetriever
     {
         private readonly HttpClient _client;
         private string _token;
@@ -16,10 +18,13 @@ namespace CryptoTechReminderSystem.Gateway
             _token = token;
         }
 
-        public string Retrieve()
+        public Developer Retrieve()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            return GetUsers().Result;
+            
+            var developer = JsonConvert.DeserializeObject<Developer>(GetUsers().Result);
+            
+            return developer;
         }
         
         private async Task<string> GetUsers()
