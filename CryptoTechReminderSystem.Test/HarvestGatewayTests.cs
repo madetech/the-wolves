@@ -33,7 +33,7 @@ namespace CryptoTechReminderSystem.Test
         }
         
         [Test]
-        public void CanGetUser()
+        public void CanGetDeveloper()
         {
             _fluentSimulator.Get("/api/v2/users").Responds(new Developer
             {
@@ -45,7 +45,7 @@ namespace CryptoTechReminderSystem.Test
         }
         
         [Test]
-        public void CanGetUser2()
+        public void CanGetDeveloper2()
         {
             _fluentSimulator.Get("/api/v2/users").Responds(new Developer
             {
@@ -58,7 +58,7 @@ namespace CryptoTechReminderSystem.Test
         }
         
         [Test]
-        public void CanGetUserWithAuthentication()
+        public void CanGetDeveloperWithAuthentication()
         {
             _fluentSimulator.Get("/api/v2/users").Responds(new Developer
             {
