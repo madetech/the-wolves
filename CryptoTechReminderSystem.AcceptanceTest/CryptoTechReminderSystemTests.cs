@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using FluentAssertions;
 using System.Linq;
+using System.Net.Sockets;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
@@ -20,6 +21,11 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         public class SlackPostMessageResponse
         {
             [JsonProperty("ok")] public bool IsOk;
+        }
+        
+        public class HarvestGetUsersResponse
+        {
+            public bool Success { get; set; }
         }
 
         private static PostMessageRequest GetRequest(ReceivedRequest receivedRequest)
@@ -90,6 +96,34 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             WhenWeRemindUser("U172L982", "Please make sure your timesheet is submitted by 13:30 on Friday.");
 
             ThenMessageHasBeenPostedToSlack("U172L982");
+        }
+
+        [Test]
+        public void CanGetUsersFromHarvest()
+        {
+            var harvestGetUsersResponse = new HarvestGetUsersResponse
+            {
+                Success = true
+            };
+
+            var getUsers = new GetUsers(new HarvestGateway(
+                "http://localhost:8009/",
+                "xxxx-xxxxxxxxx-xxxx"
+            ));
+            var response = getUsers.Execute();
+            
+            _fluentSimulator.Get("/api/v2/users").Responds(harvestGetUsersResponse);
+            
+            var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+
+            receivedRequest.Url.Should().Be(
+                "http://localhost:8009/api/v2/users"
+            );
+            receivedRequest.Headers["Authorization"].Should().Be(
+                "Bearer xxxx-xxxxxxxxx-xxxx"
+            );
+
+            response.Id.Should().Be(007);
         }
     }
 }

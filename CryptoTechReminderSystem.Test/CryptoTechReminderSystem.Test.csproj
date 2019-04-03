@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CryptoTechReminderSystem.AcceptanceTest\CryptoTechReminderSystem.AcceptanceTest.csproj" />
       <ProjectReference Include="..\CryptoTechReminderSystem\CryptoTechReminderSystem.csproj" />
     </ItemGroup>
 
