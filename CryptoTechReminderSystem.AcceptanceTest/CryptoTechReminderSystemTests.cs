@@ -111,14 +111,15 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     "../../../HarvestUsersExampleResponse.json"
                 )
             );
-
+            
             var getUsers = new GetDevelopers(new HarvestGateway(
                 "http://localhost:8009/",
                 "xxxx-xxxxxxxxx-xxxx"
             ));
-            var response = getUsers.Execute();
             
             _fluentSimulator.Get("/api/v2/users").Responds(harvestGetUsersResponse);
+
+            var response = getUsers.Execute();
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
 
@@ -129,7 +130,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "Bearer xxxx-xxxxxxxxx-xxxx"
             );
 
-            response.First().Id.Should().Be(007);
+            response.First().Id.Should().Be(1782974);
+            response.First().FirstName.Should().Be("Robert");
+            response.First().LastName.Should().Be("Martin");
+            response.First().Email.Should().Be("robert.martin@cleancoders.com");
         }
     }
 }

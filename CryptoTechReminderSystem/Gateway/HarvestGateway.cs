@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
@@ -23,21 +24,29 @@ namespace CryptoTechReminderSystem.Gateway
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             
-            var developer = JsonConvert.DeserializeObject<Developer>(GetUsers().Result);
-        
-            IList<Developer> response = new List<Developer>()
-            {
-                developer
-            };
+            var apiResponse = GetUsers().Result;
+            var users = apiResponse["users"];
+            IList<Developer> developers = new List<Developer>();
             
-            return response;
+            foreach (var developer in users)
+            {
+                developers.Add(new Developer()
+                {
+                   Id = (int)developer["id"],
+                   FirstName = developer["first_name"].ToString(),
+                   LastName = developer["last_name"].ToString(),
+                   Email = developer["email"].ToString()
+                });
+            }
+            
+            return developers;
         }
         
-        private async Task<string> GetUsers()
+        private async Task<JObject> GetUsers()
         {
             var requestUrl = "/api/v2/users";
             var response = await _client.GetAsync(requestUrl);
-            var result = await response.Content.ReadAsStringAsync();
+            var result = JObject.Parse(await response.Content.ReadAsStringAsync());
             return result;
         }
     }
