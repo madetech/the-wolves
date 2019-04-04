@@ -105,7 +105,12 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         [Test]
         public void CanGetUsersFromHarvest()
         {
-            var harvestGetUsersResponse = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../HarvestUsersExampleResponse.json"));
+            var harvestGetUsersResponse = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../HarvestUsersExampleResponse.json"
+                )
+            );
 
             var getUsers = new GetDevelopers(new HarvestGateway(
                 "http://localhost:8009/",
