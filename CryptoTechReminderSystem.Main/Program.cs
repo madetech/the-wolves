@@ -5,7 +5,6 @@ using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
 using dotenv.net;
 
-
 namespace CryptoTechReminderSystem.Main
 {
     class Program
@@ -13,7 +12,13 @@ namespace CryptoTechReminderSystem.Main
         static void Main(string[] args)
         {    
             DotEnv.Config();
-            var remindUser = new RemindUser(new SlackGateway("https://slack.com/", Environment.GetEnvironmentVariable("SLACK_TOKEN")));
+            
+            var remindDeveloper = new RemindDeveloper(
+                new SlackGateway(
+                    "https://slack.com/",
+                    Environment.GetEnvironmentVariable("SLACK_TOKEN")
+                )
+            );
             
             IList<string> idsList = new List<string>()
             {
@@ -27,7 +32,7 @@ namespace CryptoTechReminderSystem.Main
 
             foreach (var id in idsList)
             {
-                remindUser.Execute(new RemindUserRequest
+                remindDeveloper.Execute(new RemindDeveloperRequest
                 {
                     Channel = id,
                     Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
