@@ -8,17 +8,17 @@ namespace CryptoTechReminderSystem.Test
 {
     public class HarvestGatewayTests
     {
+        private const string Address = "http://localhost:8050/";
+        private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private FluentSimulator _fluentSimulator;
         private HarvestGateway _harvestGateway;
-        private const string _address = "http://localhost:8050/";
-        private const string _token = "xxxx-xxxxxxxxx-xxxx";
 
         [SetUp]
         public void Setup()
         {
-            _fluentSimulator = new FluentSimulator(_address);
+            _fluentSimulator = new FluentSimulator(Address);
             _fluentSimulator.Start();
-            _harvestGateway = new HarvestGateway(_address, _token);
+            _harvestGateway = new HarvestGateway(Address, Token);
         }
         
         [TearDown]
@@ -76,25 +76,7 @@ namespace CryptoTechReminderSystem.Test
             
             var response = _harvestGateway.Retrieve();
 
-            response.First().FirstName.Should().Be("Tingky");
-            
-            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + _token);
-        }
-
-        [Test]
-        public void CanGetDeveloperObject()
-        { 
-            SetUpUsersApiEndpoint(
-                "101",
-                "Ting",
-                "Tings",
-                "tingtings@email.com"
-            );
-
-            var response = _harvestGateway.Retrieve();
-
-            response.First().FirstName.Should().Be("Ting");
-
+            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
         }
     }
 }
