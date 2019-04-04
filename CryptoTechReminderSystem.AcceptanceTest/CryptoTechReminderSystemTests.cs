@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using FluentAssertions;
 using System.Linq;
-using System.Net.Sockets;
 using CryptoTechReminderSystem.Boundary;
-using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
 using FluentSim;
 using Newtonsoft.Json;
-using static CryptoTechReminderSystem.Gateway.SlackGateway;
 using static Newtonsoft.Json.JsonConvert;
 
 namespace CryptoTechReminderSystem.AcceptanceTest
@@ -27,11 +23,6 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             [JsonProperty("ok")] public bool IsOk;
         }
         
-        public class HarvestGetUsersResponse
-        {
-            public bool Success { get; set; }
-        }
-
         private static PostMessageRequest GetRequest(ReceivedRequest receivedRequest)
         {
             return DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody);
