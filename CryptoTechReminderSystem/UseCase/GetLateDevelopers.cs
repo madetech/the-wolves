@@ -4,11 +4,11 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class GetDevelopers
+    public class GetLateDevelopers
     {
         private IDeveloperRetriever _requester;
 
-        public GetDevelopers(IDeveloperRetriever harvestRequester)
+        public GetLateDevelopers(IDeveloperRetriever harvestRequester)
         {
             _requester = harvestRequester;
         }

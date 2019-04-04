@@ -1,24 +1,23 @@
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.DomainObject;
-using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class RemindUser
+    public class RemindDeveloper
     {
         private readonly IMessageSender _slackGateway;
 
-        public RemindUser(IMessageSender slackGateway)
+        public RemindDeveloper(IMessageSender slackGateway)
         {
             _slackGateway = slackGateway;
         }
 
-        public void Execute(RemindUserRequest remindUserRequest)
+        public void Execute(RemindDeveloperRequest remindDeveloperRequest)
         {
             _slackGateway.Send(new Message
             {
-                Channel = remindUserRequest.Channel,
-                Text = remindUserRequest.Text
+                Channel = remindDeveloperRequest.Channel,
+                Text = remindDeveloperRequest.Text
             });
         }
     }

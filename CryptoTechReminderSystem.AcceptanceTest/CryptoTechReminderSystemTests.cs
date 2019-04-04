@@ -16,11 +16,12 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     {
         private FluentSimulator _fluentSimulator;
         private IMessageSender _slackGateway;
-        private RemindUser _remindUser;
+        private RemindDeveloper _remindDeveloper;
         
         public class SlackPostMessageResponse
         {
-            [JsonProperty("ok")] public bool IsOk;
+            [JsonProperty("ok")]
+            public bool IsOk;
         }
         
         private static PostMessageRequest GetRequest(ReceivedRequest receivedRequest)
@@ -40,7 +41,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
         private void WhenWeRemindUser(string channel, string text)
         {
-            _remindUser.Execute(new RemindUserRequest
+            _remindDeveloper.Execute(new RemindDeveloperRequest
             {
                 Channel = channel,
                 Text = text
@@ -73,7 +74,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "http://localhost:8009/",
                 "xxxx-xxxxxxxxx-xxxx"
             );
-            _remindUser = new RemindUser(_slackGateway);
+            _remindDeveloper = new RemindDeveloper(_slackGateway);
             _fluentSimulator.Start();
         }
 
@@ -94,7 +95,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
 
         [Test]
-        public void CanGetUsersFromHarvest()
+        public void CanGetDevelopersFromHarvest()
         {
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(
@@ -103,14 +104,14 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getUsers = new GetDevelopers(new HarvestGateway(
+            var getDevelopers = new GetLateDevelopers(new HarvestGateway(
                 "http://localhost:8009/",
                 "xxxx-xxxxxxxxx-xxxx"
             ));
             
             _fluentSimulator.Get("/api/v2/users").Responds(harvestGetUsersResponse);
 
-            var response = getUsers.Execute();
+            var response = getDevelopers.Execute();
             
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
 
