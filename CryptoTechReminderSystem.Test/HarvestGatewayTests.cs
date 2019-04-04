@@ -10,13 +10,15 @@ namespace CryptoTechReminderSystem.Test
     {
         private FluentSimulator _fluentSimulator;
         private HarvestGateway _harvestGateway;
+        private const string _address = "http://localhost:8050/";
+        private const string _token = "xxxx-xxxxxxxxx-xxxx";
 
         [SetUp]
         public void Setup()
         {
-            _fluentSimulator = new FluentSimulator("http://localhost:8050/");
+            _fluentSimulator = new FluentSimulator(_address);
             _fluentSimulator.Start();
-            _harvestGateway = new HarvestGateway("http://localhost:8050/", "xxxx-xxxxxxxxx-xxxx");
+            _harvestGateway = new HarvestGateway(_address, _token);
         }
         
         [TearDown]
@@ -24,18 +26,10 @@ namespace CryptoTechReminderSystem.Test
         {
             _fluentSimulator.Stop();
         }
-        
-        public class User
-        {
-            public int id { get; set; }
-            public string first_name { get; set; }
-            public string last_name { get; set; }
-            public string email { get; set; }
-        }
 
-        public void SetUpUsersApiEndpoint(string id, string first_name, string last_name, string email)
+        private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
         {
-            var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{first_name}\",      \"last_name\":\"{last_name}\",      \"email\":\"{email}\"    }}  ]}}";
+            var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
             _fluentSimulator.Get("/api/v2/users").Responds(json);
         }
        
@@ -45,21 +39,21 @@ namespace CryptoTechReminderSystem.Test
         {
             SetUpUsersApiEndpoint(
                 "123",
-                "Ting",
-                "Ting",
+                "Wen Ting",
+                "Wang",
                 "ting@email.com"
             );
             
             var response = _harvestGateway.Retrieve();
             
-            response.First().FirstName.Should().Be("Ting");
+            response.First().FirstName.Should().Be("Wen Ting");
         }
         
         [Test]
         public void CanGetDeveloper2()
         {
             SetUpUsersApiEndpoint(
-                "567",
+                "456",
                 "Tingker",
                 "Bell",
                 "tingkerbell@email.com"
@@ -84,22 +78,22 @@ namespace CryptoTechReminderSystem.Test
 
             response.First().FirstName.Should().Be("Tingky");
             
-            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
+            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + _token);
         }
 
         [Test]
         public void CanGetDeveloperObject()
         { 
             SetUpUsersApiEndpoint(
-                "902",
-                "Bob",
+                "101",
+                "Ting",
                 "Tings",
-                "bobtings@email.com"
+                "tingtings@email.com"
             );
 
             var response = _harvestGateway.Retrieve();
 
-            response.First().FirstName.Should().Be("Bob");
+            response.First().FirstName.Should().Be("Ting");
 
         }
     }
