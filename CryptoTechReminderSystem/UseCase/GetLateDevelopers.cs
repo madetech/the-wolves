@@ -8,7 +8,7 @@ namespace CryptoTechReminderSystem.UseCase
     {
         private IDeveloperRetriever _requester;
 
-        public GetLateDevelopers(IDeveloperRetriever harvestRequester)
+        public GetLateDevelopers(SlackGateway slackGateway, IDeveloperRetriever harvestRequester)
         {
             _requester = harvestRequester;
         }
