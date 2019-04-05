@@ -99,7 +99,7 @@ namespace CryptoTechReminderSystem.Test
             
             var response = _harvestGateway.RetrieveTimeSheets();
             
-            response.First().DeveloperName.Should().Be("Bob Incomplete");
+            response.First().user.name.Should().Be("Bob Incomplete");
         }
     }
 }

@@ -48,5 +48,18 @@ namespace CryptoTechReminderSystem.Gateway
             var result = JObject.Parse(await response.Content.ReadAsStringAsync());
             return result;
         }
+
+        public IEnumerable<TimeSheet> RetrieveTimeSheets()
+        {
+            var response = new List<TimeSheet>();
+            response.Add(new TimeSheet()
+            {
+                user = new User()
+                {
+                    name = "Bob Incomplete"
+                }
+            });
+            return response;
+        }
     }
 }
