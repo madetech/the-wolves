@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Linq;
 using CryptoTechReminderSystem.Gateway;
 using FluentSim;
@@ -31,6 +33,17 @@ namespace CryptoTechReminderSystem.Test
         {
             var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
             _fluentSimulator.Get("/api/v2/users").Responds(json);
+        }
+        
+        private void SetUpUsersTimeSheetApiEndpoint(string jsonFilePath)
+        {
+             var json = File.ReadAllText(
+                 Path.Combine(
+                     AppDomain.CurrentDomain.BaseDirectory,
+                     jsonFilePath
+                 )
+             );
+            _fluentSimulator.Get("/api/v2/time_entries").Responds(json);
         }
        
         
@@ -77,6 +90,16 @@ namespace CryptoTechReminderSystem.Test
             var response = _harvestGateway.Retrieve();
 
             _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
+        }
+        
+        [Test]
+        public void CanGetATimeSheet()
+        {
+            SetUpUsersTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
+            
+            var response = _harvestGateway.RetrieveTimeSheets();
+            
+            response.First().DeveloperName.Should().Be("Bob Incomplete");
         }
     }
 }
