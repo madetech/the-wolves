@@ -15,7 +15,7 @@ namespace CryptoTechReminderSystem.UseCase
 
         public IList<Developer> Execute()
         {
-            var request = _requester.Retrieve();
+            var request = _requester.RetrieveDevelopers();
 
             return request;
         }

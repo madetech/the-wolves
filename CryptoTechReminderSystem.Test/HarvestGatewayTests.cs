@@ -57,7 +57,7 @@ namespace CryptoTechReminderSystem.Test
                 "ting@email.com"
             );
             
-            var response = _harvestGateway.Retrieve();
+            var response = _harvestGateway.RetrieveDevelopers();
             
             response.First().FirstName.Should().Be("Wen Ting");
         }
@@ -72,7 +72,7 @@ namespace CryptoTechReminderSystem.Test
                 "tingkerbell@email.com"
             );
             
-            var response = _harvestGateway.Retrieve();
+            var response = _harvestGateway.RetrieveDevelopers();
 
             response.First().FirstName.Should().Be("Tingker");
         }
@@ -87,7 +87,7 @@ namespace CryptoTechReminderSystem.Test
                 "tingkywinky@email.com"
             );
             
-            var response = _harvestGateway.Retrieve();
+            var response = _harvestGateway.RetrieveDevelopers();
 
             _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
         }
@@ -100,6 +100,16 @@ namespace CryptoTechReminderSystem.Test
             var response = _harvestGateway.RetrieveTimeSheets();
             
             response.First().user.name.Should().Be("Bob Incomplete");
+        }
+        
+        [Test]
+        public void CanGetAnotherTimeSheet()
+        {
+            SetUpUsersTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
+            
+            var response = _harvestGateway.RetrieveTimeSheets();
+
+            response.Any(entry => entry.user.name == "Bruce Wayne").Should().Be(true);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace CryptoTechReminderSystem.Gateway
 {
     public interface IDeveloperRetriever
     {
-        IList<Developer> Retrieve();
+        IList<Developer> RetrieveDevelopers();
     }
 }

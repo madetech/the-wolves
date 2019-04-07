@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -18,48 +19,49 @@ namespace CryptoTechReminderSystem.Gateway
             _client = new HttpClient { BaseAddress = new Uri(address) };
             _token = token;
         }
+        
+        private async Task<JObject> GetApiResponse(string address)
+        {
+            var response = await _client.GetAsync(address);
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
+        }
 
-        public IList<Developer> Retrieve()
+        public IList<Developer> RetrieveDevelopers()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            
-            var apiResponse = GetUsers().Result;
+ 
+            var apiResponse = GetApiResponse("/api/v2/users").Result;
             var users = apiResponse["users"];
-            IList<Developer> developers = new List<Developer>();
-            
-            foreach (var developer in users)
-            {
-                developers.Add(new Developer()
+            return users.Select(developer => new Developer
                 {
-                   Id = (int)developer["id"],
-                   FirstName = developer["first_name"].ToString(),
-                   LastName = developer["last_name"].ToString(),
-                   Email = developer["email"].ToString()
-                });
-            }
-            
-            return developers;
-        }
-        
-        private async Task<JObject> GetUsers()
-        {
-            var requestUrl = "/api/v2/users";
-            var response = await _client.GetAsync(requestUrl);
-            var result = JObject.Parse(await response.Content.ReadAsStringAsync());
-            return result;
+                    Id = (int) developer["id"],
+                    FirstName = developer["first_name"].ToString(),
+                    LastName = developer["last_name"].ToString(),
+                    Email = developer["email"].ToString()
+                }
+            ).ToList(); 
         }
 
         public IEnumerable<TimeSheet> RetrieveTimeSheets()
         {
-            var response = new List<TimeSheet>();
-            response.Add(new TimeSheet()
-            {
-                user = new User()
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+ 
+            var apiResponse = GetApiResponse("/api/v2/time_entries").Result;
+            var users = apiResponse["time_entries"];
+            return users.Select(timeEntry => new TimeSheet
                 {
-                    name = "Bob Incomplete"
+                    id = (int)timeEntry["id"],
+                    spent_date = timeEntry["spent_date"].ToString(),
+                    user = new User
+                    {
+                        id = (int)timeEntry["user"]["id"],
+                        name = timeEntry["user"]["name"].ToString()
+                    },
+                    hours = (float)timeEntry["hours"],
+                    created_at = DateTime.Parse(timeEntry["created_at"].ToString()),
+                    updated_at = DateTime.Parse(timeEntry["updated_at"].ToString())
                 }
-            });
-            return response;
+            ).ToList(); 
         }
     }
 }

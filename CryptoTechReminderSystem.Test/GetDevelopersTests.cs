@@ -13,7 +13,7 @@ namespace CryptoTechReminderSystem.Test
         private class HarvestGatewayStub : IDeveloperRetriever
         {
             public string FirstName { private get; set; }
-            public IList<Developer> Retrieve()
+            public IList<Developer> RetrieveDevelopers()
             {
             
                 IList<Developer> result = new List<Developer>()
@@ -31,7 +31,7 @@ namespace CryptoTechReminderSystem.Test
         private class HarvestGatewaySpy : IDeveloperRetriever
         {
             public bool IsCalled = false;
-            public IList<Developer> Retrieve()
+            public IList<Developer> RetrieveDevelopers()
             {
                 IsCalled = true;
                 IList<Developer> result = new List<Developer>()
