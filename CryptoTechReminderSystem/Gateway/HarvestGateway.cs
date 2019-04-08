@@ -32,14 +32,14 @@ namespace CryptoTechReminderSystem.Gateway
  
             var apiResponse = GetApiResponse("/api/v2/users").Result;
             var users = apiResponse["users"];
-            return users.Select(developer => new Developer
+            return users.Select(developer => new HarvestDeveloper
                 {
                     Id = (int) developer["id"],
                     FirstName = developer["first_name"].ToString(),
                     LastName = developer["last_name"].ToString(),
                     Email = developer["email"].ToString()
                 }
-            ).ToList(); 
+            ).Cast<Developer>().ToList(); 
         }
 
         public IEnumerable<TimeSheet> RetrieveTimeSheets()
@@ -63,5 +63,10 @@ namespace CryptoTechReminderSystem.Gateway
                 }
             ).ToList(); 
         }
+    }
+
+    public class HarvestDeveloper : Developer
+    {
+        public int Id { get; set; }
     }
 }

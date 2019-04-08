@@ -8,20 +8,27 @@ using NUnit.Framework;
 
 namespace CryptoTechReminderSystem.Test
 {
-    public class GetDevelopersTests
+    public class GetLateDevelopersTests
     {
         private class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
         {
             public string FirstName { private get; set; }
+            public string LastName { get; set; }
+            public int Id { private get; set; }
+            public int Hours { get; set; }
+            public string Email { get; set; }
             
             public IList<Developer> RetrieveDevelopers()
             {
             
-                IList<Developer> result = new List<Developer>()
+                IList<Developer> result = new List<Developer>
                 {
-                    new Developer()
+                    new Developer
                     {
-                        FirstName = FirstName
+                        FirstName = FirstName,
+                        LastName = LastName,
+                        Email = Email,
+                        Hours = Hours
                     }
                 };
 
@@ -41,7 +48,7 @@ namespace CryptoTechReminderSystem.Test
             public IList<Developer> RetrieveDevelopers()
             {
                 IsCalled = true;
-                IList<Developer> result = new List<Developer>()
+                IList<Developer> result = new List<Developer>
                 {
                     new Developer()
                 };
@@ -58,11 +65,24 @@ namespace CryptoTechReminderSystem.Test
         
         public class SlackGatewayStub : IMessageSenderAndRetriever
         {
-            public string FirstName { get; set; }
+            public string Name { get; set; }
+            public int Id { private get; set; }
+            public string Email { get; set; }
+            public string DisplayName { get; set; }
+            public bool isBot { get; set; }
             public IList<Developer> RetrieveDevelopers()
             {
-                return new List<Developer>();
-
+                return new List<Developer>
+                {
+                    new SlackDeveloper
+                    {
+                        Name = Name,
+                        Id = Id,
+                        Email = Email,
+                        DisplayName = DisplayName,
+                        isBot = isBot
+                    }
+                };
             }
 
             public void Send(Message message)
@@ -73,7 +93,7 @@ namespace CryptoTechReminderSystem.Test
 
         public class SlackGatewaySpy : IMessageSenderAndRetriever
         {
-            public bool hasBeenCalled;
+            public bool DevelopersHasBeenCalled;
             public void Send(Message message)
             {
                 throw new System.NotImplementedException();
@@ -81,7 +101,7 @@ namespace CryptoTechReminderSystem.Test
 
             public IList<Developer> RetrieveDevelopers()
             {
-                hasBeenCalled = true;
+                DevelopersHasBeenCalled = true;
                 return new List<Developer>();
             }
         }
@@ -110,9 +130,9 @@ namespace CryptoTechReminderSystem.Test
             
             var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewayStub);
             
-            var response = getDevelopers.Execute();
+            getDevelopers.Execute();
 
-            slackGatewaySpy.hasBeenCalled.Should().BeTrue();
+            slackGatewaySpy.DevelopersHasBeenCalled.Should().BeTrue();
         }
         
         [Test]
@@ -123,11 +143,30 @@ namespace CryptoTechReminderSystem.Test
             
             var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewaySpy);
             
-            var response = getDevelopers.Execute();
+            getDevelopers.Execute();
 
             harvestGatewaySpy.TimeSheetHasBeenCalled.Should().BeTrue();
         }
         
+        [Test]
+        public void CanGetLateDevelopers()
+        {
+            var harvestGatewayStub = new HarvestGatewayStub();
+            var slackGatewayStub = new SlackGatewayStub();
+            
+            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewayStub);
+            
+            var response = getDevelopers.Execute();
+            
+        }
+        
     }
 
+    public class SlackDeveloper : Developer
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public bool isBot { get; set; }
+    }
 }
