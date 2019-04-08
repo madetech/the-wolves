@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class HarvestGateway : IDeveloperRetriever
+    public class HarvestGateway : IDeveloperRetriever, ITimeSheetRetriever
     {
         private readonly HttpClient _client;
         private string _token;
