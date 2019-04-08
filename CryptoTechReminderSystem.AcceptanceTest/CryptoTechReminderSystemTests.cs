@@ -20,7 +20,22 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         private IDeveloperRetriever _harvestGateway;
         private RemindDeveloper _remindDeveloper;
 
-        public class SlackPostMessageResponse
+        private class ClockStub : IClock
+        {
+            private DateTimeOffset _currentDateTime;
+
+            public ClockStub(DateTimeOffset dateTime)
+            {
+                _currentDateTime = dateTime;
+            }
+
+            public DateTimeOffset Now()
+            {
+                return _currentDateTime;
+            }
+        }
+
+        private class SlackPostMessageResponse
         {
             [JsonProperty("ok")]
             public bool IsOk;
@@ -69,20 +84,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         [SetUp]
         public void Setup()
         {
-            _slackApi = new FluentSimulator(
-                "http://localhost:8009/"
-            );
-            _slackGateway = new SlackGateway(
-                "http://localhost:8009/",
-                "xxxx-xxxxxxxxx-xxxx"
-            );
-            _harvestApi = new FluentSimulator(
-                "http://localhost:8010/"
-            );
-            _harvestGateway = new HarvestGateway(
-                "http://localhost:8010/",
-                "xxxx-xxxxxxxxx-xxxx"
-            );
+            _slackApi = new FluentSimulator("http://localhost:8009/");
+            _slackGateway = new SlackGateway("http://localhost:8009/","xxxx-xxxxxxxxx-xxxx");
+            _harvestApi = new FluentSimulator("http://localhost:8010/");
+            _harvestGateway = new HarvestGateway("http://localhost:8010/", "xxxx-xxxxxxxxx-xxxx");
             _remindDeveloper = new RemindDeveloper(_slackGateway);
             _slackApi.Start();
             _harvestApi.Start();
@@ -115,9 +120,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getDevelopers = new GetLateDevelopers(
-                _slackGateway, _harvestGateway
-            );
+            var getDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway);
             
             _harvestApi.Get("/api/v2/users").Responds(harvestGetUsersResponse);
 
@@ -125,13 +128,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             var receivedRequest = _harvestApi.ReceivedRequests.First();
 
-            receivedRequest.Url.Should().Be(
-                "http://localhost:8010/api/v2/users"
-            );
-            receivedRequest.Headers["Authorization"].Should().Be(
-                "Bearer xxxx-xxxxxxxxx-xxxx"
-            );
-
+            receivedRequest.Url.Should().Be("http://localhost:8010/api/v2/users");
+            receivedRequest.Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
             response.First().Id.Should().Be(1782974);
             response.First().FirstName.Should().Be("Bruce");
             response.First().LastName.Should().Be("Wayne");
@@ -140,12 +138,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
         [Test]
         public void CanRemindLateDevelopersAtTenThirtyOnFriday()
-        {
-            
-            var slackPostMessageResponse = "{ \"ok\": true }";
-
-            _slackApi.Post("/api/chat.postMessage").Responds(slackPostMessageResponse);
-            
+        {            
             var slackGetUsersResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
@@ -154,10 +147,6 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             );
             
             _slackApi.Get("/api/users.list").Responds(slackGetUsersResponse);
-            
-            var harvestApi = new FluentSimulator(
-                "http://localhost:8010/"
-            );
             
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(
@@ -178,10 +167,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _harvestApi.Get("/api/v2/time_entries").Responds(harvestGetTimeEntriesResponse);
             
             var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway);
-            var remindDeveloper = new RemindDeveloper(_slackGateway);
-            var clock = new ClockStub(new DateTimeOffset(new DateTime(2019, 03, 01, 10, 30, 0)));
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
             
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, remindDeveloper, clock);
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
 
             remindLateDevelopers.Execute(new RemindLateDevelopersRequest
                 {
@@ -191,43 +183,5 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             _slackApi.ReceivedRequests.Count.Should().Be(3);
         }
-    }
-
-    public class RemindLateDevelopersRequest
-    {
-        public string Message { get; set; }
-    }
-
-    public class RemindLateDevelopers
-    {
-        public RemindLateDevelopers(GetLateDevelopers getLateDevelopers, RemindDeveloper remindDeveloper, ClockStub clock)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(RemindLateDevelopersRequest remindLateDevelopersRequest)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ClockStub : IClock
-    {
-        private DateTimeOffset _currentDateTime;
-
-        public ClockStub(DateTimeOffset dateTime)
-        {
-            _currentDateTime = dateTime;
-        }
-
-        public DateTimeOffset Now()
-        {
-            return _currentDateTime;
-        }
-    }
-
-    public interface IClock
-    {
-        DateTimeOffset Now();
     }
 }
