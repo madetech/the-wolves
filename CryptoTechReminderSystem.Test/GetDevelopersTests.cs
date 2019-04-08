@@ -10,9 +10,10 @@ namespace CryptoTechReminderSystem.Test
 {
     public class GetDevelopersTests
     {
-        private class HarvestGatewayStub : IDeveloperRetriever
+        private class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
         {
             public string FirstName { private get; set; }
+            
             public IList<Developer> RetrieveDevelopers()
             {
             
@@ -26,11 +27,17 @@ namespace CryptoTechReminderSystem.Test
 
                 return result;
             }
+
+            public IEnumerable<TimeSheet> RetrieveTimeSheets()
+            {
+                return null;
+            }
         }
 
-        private class HarvestGatewaySpy : IDeveloperRetriever
+        private class HarvestGatewaySpy : ITimesheetAndDeveloperRetriever
         {
-            public bool IsCalled = false;
+            public bool IsCalled;
+            public bool TimeSheetHasBeenCalled;
             public IList<Developer> RetrieveDevelopers()
             {
                 IsCalled = true;
@@ -41,59 +48,86 @@ namespace CryptoTechReminderSystem.Test
 
                 return result;
             }
+
+            public IEnumerable<TimeSheet> RetrieveTimeSheets()
+            {
+                TimeSheetHasBeenCalled = true;
+                return new List<TimeSheet>();
+            }
+        }
+        
+        public class SlackGatewayStub : IMessageSenderAndRetriever
+        {
+            public string FirstName { get; set; }
+            public IList<Developer> RetrieveDevelopers()
+            {
+                return new List<Developer>();
+
+            }
+
+            public void Send(Message message)
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        public class SlackGatewaySpy : IMessageSenderAndRetriever
+        {
+            public bool hasBeenCalled;
+            public void Send(Message message)
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public IList<Developer> RetrieveDevelopers()
+            {
+                hasBeenCalled = true;
+                return new List<Developer>();
+            }
         }
         
         [Test]
-        public void CanRequestFromGateway()
+        public void CanGetHarvestDevelopers()
         {
             var harvestGatewaySpy = new HarvestGatewaySpy();
-            var getDevelopers = new GetLateDevelopers(null, harvestGatewaySpy);
+            var slackGatewaySpy = new SlackGatewaySpy();
+            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy);
             
             getDevelopers.Execute();
             
             harvestGatewaySpy.IsCalled.Should().BeTrue();
         }
         
+        
         [Test]
-        public void CanGetOneDeveloper()
+        public void CanGetSlackDevelopers()
         {
             var harvestGatewayStub = new HarvestGatewayStub
             {
-                FirstName = "John"
+                FirstName = "Bob"
             };
-            var getDevelopers = new GetLateDevelopers(null, harvestGatewayStub);
+            var slackGatewaySpy = new SlackGatewaySpy();
+            
+            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewayStub);
             
             var response = getDevelopers.Execute();
-            
-            response.First().FirstName.Should().Be("John");
+
+            slackGatewaySpy.hasBeenCalled.Should().BeTrue();
         }
         
         [Test]
-        public void CanGetAnotherDeveloper()
+        public void CanGetTimesheets()
         {
-            var harvestGatewayStub = new HarvestGatewayStub
-            {
-                FirstName = "Jim"
-            };
-            var getDevelopers = new GetLateDevelopers(null, harvestGatewayStub);
+            var harvestGatewaySpy = new HarvestGatewaySpy();
+            var slackGatewayStub = new SlackGatewayStub();
+            
+            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewaySpy);
             
             var response = getDevelopers.Execute();
-            
-            response.First().FirstName.Should().Be("Jim");
+
+            harvestGatewaySpy.TimeSheetHasBeenCalled.Should().BeTrue();
         }
         
-        [Test]
-        public void CanGetAListOfDevelopers()
-        {
-            var harvestGatewayStub = new HarvestGatewayStub
-            {
-                FirstName = "Jim"
-            };
-            var getDevelopers = new GetLateDevelopers(null, harvestGatewayStub);
-            
-            var response = getDevelopers.Execute();
-            
-            response.First().FirstName.Should().Be("Jim");
-        }
     }
+
 }

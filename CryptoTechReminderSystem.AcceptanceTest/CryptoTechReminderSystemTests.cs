@@ -16,8 +16,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     {
         private FluentSimulator _slackApi;
         private FluentSimulator _harvestApi;
-        private IMessageSender _slackGateway;
-        private IDeveloperRetriever _harvestGateway;
+        private IMessageSenderAndRetriever _slackGateway;
+        private ITimesheetAndDeveloperRetriever _harvestGateway;
         private RemindDeveloper _remindDeveloper;
 
         private class ClockStub : IClock
@@ -130,10 +130,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             receivedRequest.Url.Should().Be("http://localhost:8010/api/v2/users");
             receivedRequest.Headers["Authorization"].Should().Be("Bearer xxxx-xxxxxxxxx-xxxx");
-            response.First().Id.Should().Be(1782974);
-            response.First().FirstName.Should().Be("Bruce");
-            response.First().LastName.Should().Be("Wayne");
-            response.First().Email.Should().Be("batman@gotham.com");
+            response.Developers.First().Id.Should().Be(1782974);
+            response.Developers.First().FirstName.Should().Be("Bruce");
+            response.Developers.First().LastName.Should().Be("Wayne");
+            response.Developers.First().Email.Should().Be("batman@gotham.com");
         }
 
         [Ignore("WIP")]

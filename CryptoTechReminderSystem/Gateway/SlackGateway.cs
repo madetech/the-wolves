@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class SlackGateway : IMessageSender
+    public class SlackGateway : IMessageSenderAndRetriever
     {
         private readonly HttpClient _client;
         private readonly string _token;
@@ -42,6 +43,11 @@ namespace CryptoTechReminderSystem.Gateway
             var response = await _client.PostAsync(requestPath, content);
             var result = await response.Content.ReadAsStringAsync();
             return result;
+        }
+
+        public IList<Developer> RetrieveDevelopers()
+        {
+            return new List<Developer>();
         }
     }
 
