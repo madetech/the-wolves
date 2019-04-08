@@ -12,7 +12,7 @@ using static Newtonsoft.Json.JsonConvert;
 
 namespace CryptoTechReminderSystem.AcceptanceTest
 {
-    public class  CryptoTechReminderSystemTests
+    public class CryptoTechReminderSystemTests
     {
         private FluentSimulator _slackApi;
         private FluentSimulator _harvestApi;
@@ -22,7 +22,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
         private class ClockStub : IClock
         {
-            private DateTimeOffset _currentDateTime;
+            private readonly DateTimeOffset _currentDateTime;
 
             public ClockStub(DateTimeOffset dateTime)
             {
@@ -147,6 +147,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             );
             
             _slackApi.Get("/api/users.list").Responds(slackGetUsersResponse);
+            
+            var slackPostMessageResponse = new SlackPostMessageResponse
+            {
+                IsOk = true
+            };
+
+            _slackApi.Post("/api/chat.postMessage").Responds(slackPostMessageResponse);
             
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(
