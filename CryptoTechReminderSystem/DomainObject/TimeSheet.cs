@@ -8,7 +8,7 @@ namespace CryptoTechReminderSystem.DomainObject
         [JsonProperty("id")] 
         public int Id { get; set; }
         [JsonProperty("spent_date")] 
-        public string SpentDate { get; set; }
+        public string TimeSheetDate { get; set; }
         [JsonProperty("user")] 
         public User User { get; set; }
         [JsonProperty("hours")] 

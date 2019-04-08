@@ -124,7 +124,7 @@ namespace CryptoTechReminderSystem.Test
             response.User.Name.Should().Be("Bob Incomplete");
             response.User.Id.Should().Be(1782975);
             response.Hours.Should().Be(8.0);
-            response.SpentDate.Should().Be("2019-02-25");
+            response.TimeSheetDate.Should().Be("2019-02-25");
             response.CreatedAt.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
             response.UpdatedAt.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
         }

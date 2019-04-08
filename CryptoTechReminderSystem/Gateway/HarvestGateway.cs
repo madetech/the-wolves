@@ -51,7 +51,7 @@ namespace CryptoTechReminderSystem.Gateway
             return users.Select(timeEntry => new TimeSheet
                 {
                     Id = (int)timeEntry["id"],
-                    SpentDate = timeEntry["spent_date"].ToString(),
+                    TimeSheetDate = timeEntry["spent_date"].ToString(),
                     User = new User
                     {
                         Id = (int)timeEntry["user"]["id"],
