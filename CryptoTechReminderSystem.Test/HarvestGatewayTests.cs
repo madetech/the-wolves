@@ -32,7 +32,8 @@ namespace CryptoTechReminderSystem.Test
 
         private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
         {
-            var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
+            var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
+                       $",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
             _fluentSimulator.Get("/api/v2/users").Responds(json);
         }
         
