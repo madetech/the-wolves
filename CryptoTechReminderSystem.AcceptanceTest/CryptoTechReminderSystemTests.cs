@@ -136,7 +136,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             response.First().Email.Should().Be("batman@gotham.com");
         }
 
-        [Test]
+        [Ignore("WIP")]
         public void CanRemindLateDevelopersAtTenThirtyOnFriday()
         {            
             var slackGetUsersResponse = File.ReadAllText(
