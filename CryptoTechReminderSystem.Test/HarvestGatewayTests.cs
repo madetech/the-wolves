@@ -100,7 +100,7 @@ namespace CryptoTechReminderSystem.Test
             
             var response = _harvestGateway.RetrieveTimeSheets();
             
-            response.First().user.name.Should().Be("Bob Incomplete");
+            response.First().User.Name.Should().Be("Bob Incomplete");
         }
         
         [Test]
@@ -110,7 +110,7 @@ namespace CryptoTechReminderSystem.Test
             
             var response = _harvestGateway.RetrieveTimeSheets();
 
-            response.Any(entry => entry.user.name == "Bruce Wayne").Should().Be(true);
+            response.Any(entry => entry.User.Name == "Bruce Wayne").Should().Be(true);
         }
         
         [Test]
@@ -119,13 +119,13 @@ namespace CryptoTechReminderSystem.Test
             SetUpUsersTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
             
             var response = _harvestGateway.RetrieveTimeSheets().First();
-            response.id.Should().Be(456709345);
-            response.user.name.Should().Be("Bob Incomplete");
-            response.user.id.Should().Be(1782975);
-            response.hours.Should().Be(8.0);
-            response.spent_date.Should().Be("2019-02-25");
-            response.created_at.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
-            response.updated_at.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
+            response.Id.Should().Be(456709345);
+            response.User.Name.Should().Be("Bob Incomplete");
+            response.User.Id.Should().Be(1782975);
+            response.Hours.Should().Be(8.0);
+            response.SpentDate.Should().Be("2019-02-25");
+            response.CreatedAt.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
+            response.UpdatedAt.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
         }
     }
 }

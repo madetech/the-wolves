@@ -50,16 +50,16 @@ namespace CryptoTechReminderSystem.Gateway
             var users = apiResponse["time_entries"];
             return users.Select(timeEntry => new TimeSheet
                 {
-                    id = (int)timeEntry["id"],
-                    spent_date = timeEntry["spent_date"].ToString(),
-                    user = new User
+                    Id = (int)timeEntry["id"],
+                    SpentDate = timeEntry["spent_date"].ToString(),
+                    User = new User
                     {
-                        id = (int)timeEntry["user"]["id"],
-                        name = timeEntry["user"]["name"].ToString()
+                        Id = (int)timeEntry["user"]["id"],
+                        Name = timeEntry["user"]["name"].ToString()
                     },
-                    hours = (float)timeEntry["hours"],
-                    created_at = DateTime.Parse(timeEntry["created_at"].ToString()),
-                    updated_at = DateTime.Parse(timeEntry["updated_at"].ToString())
+                    Hours = (float)timeEntry["hours"],
+                    CreatedAt = DateTime.Parse(timeEntry["created_at"].ToString()),
+                    UpdatedAt = DateTime.Parse(timeEntry["updated_at"].ToString())
                 }
             ).ToList(); 
         }

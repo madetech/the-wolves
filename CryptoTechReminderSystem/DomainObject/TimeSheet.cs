@@ -1,20 +1,29 @@
 using System;
+using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.DomainObject
 {
     public class TimeSheet
     {
-        public int id { get; set; }
-        public string spent_date { get; set; }
-        public User user { get; set; }
-        public double hours { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
+        [JsonProperty("id")] 
+        public int Id { get; set; }
+        [JsonProperty("spent_date")] 
+        public string SpentDate { get; set; }
+        [JsonProperty("user")] 
+        public User User { get; set; }
+        [JsonProperty("hours")] 
+        public double Hours { get; set; }
+        [JsonProperty("created_at")] 
+        public DateTime CreatedAt { get; set; }
+        [JsonProperty("updated_at")] 
+        public DateTime UpdatedAt { get; set; }
     }
     
     public class User
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        [JsonProperty("id")] 
+        public int Id { get; set; }
+        [JsonProperty("name")] 
+        public string Name { get; set; }
     }
 }
