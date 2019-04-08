@@ -3,8 +3,8 @@ using CryptoTechReminderSystem.DomainObject;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public interface IDeveloperRetriever
+    public interface ITimeSheetRetriever
     {
-        IList<Developer> RetrieveDevelopers();
+        IEnumerable<TimeSheet> RetrieveTimeSheets();
     }
 }

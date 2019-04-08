@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class HarvestGateway : IDeveloperRetriever
+    public class HarvestGateway : IDeveloperRetriever, ITimeSheetRetriever
     {
         private readonly HttpClient _client;
         private string _token;
@@ -18,35 +19,49 @@ namespace CryptoTechReminderSystem.Gateway
             _client = new HttpClient { BaseAddress = new Uri(address) };
             _token = token;
         }
+        
+        private async Task<JObject> GetApiResponse(string address)
+        {
+            var response = await _client.GetAsync(address);
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
+        }
 
-        public IList<Developer> Retrieve()
+        public IList<Developer> RetrieveDevelopers()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            
-            var apiResponse = GetUsers().Result;
+ 
+            var apiResponse = GetApiResponse("/api/v2/users").Result;
             var users = apiResponse["users"];
-            IList<Developer> developers = new List<Developer>();
-            
-            foreach (var developer in users)
-            {
-                developers.Add(new Developer()
+            return users.Select(developer => new Developer
                 {
-                   Id = (int)developer["id"],
-                   FirstName = developer["first_name"].ToString(),
-                   LastName = developer["last_name"].ToString(),
-                   Email = developer["email"].ToString()
-                });
-            }
-            
-            return developers;
+                    Id = (int) developer["id"],
+                    FirstName = developer["first_name"].ToString(),
+                    LastName = developer["last_name"].ToString(),
+                    Email = developer["email"].ToString()
+                }
+            ).ToList(); 
         }
-        
-        private async Task<JObject> GetUsers()
+
+        public IEnumerable<TimeSheet> RetrieveTimeSheets()
         {
-            var requestUrl = "/api/v2/users";
-            var response = await _client.GetAsync(requestUrl);
-            var result = JObject.Parse(await response.Content.ReadAsStringAsync());
-            return result;
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+ 
+            var apiResponse = GetApiResponse("/api/v2/time_entries").Result;
+            var timeSheets = apiResponse["time_entries"];
+            return timeSheets.Select(timeSheet => new TimeSheet
+                {
+                    Id = (int)timeSheet["id"],
+                    TimeSheetDate = timeSheet["spent_date"].ToString(),
+                    User = new User
+                    {
+                        Id = (int)timeSheet["user"]["id"],
+                        Name = timeSheet["user"]["name"].ToString()
+                    },
+                    Hours = (float)timeSheet["hours"],
+                    CreatedAt = DateTime.Parse(timeSheet["created_at"].ToString()),
+                    UpdatedAt = DateTime.Parse(timeSheet["updated_at"].ToString())
+                }
+            ).ToList(); 
         }
     }
 }
