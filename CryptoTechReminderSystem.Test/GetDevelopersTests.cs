@@ -47,7 +47,7 @@ namespace CryptoTechReminderSystem.Test
         public void CanRequestFromGateway()
         {
             var harvestGatewaySpy = new HarvestGatewaySpy();
-            var getDevelopers = new GetLateDevelopers(harvestGatewaySpy);
+            var getDevelopers = new GetLateDevelopers(null, harvestGatewaySpy);
             
             getDevelopers.Execute();
             
@@ -61,7 +61,7 @@ namespace CryptoTechReminderSystem.Test
             {
                 FirstName = "John"
             };
-            var getDevelopers = new GetLateDevelopers(harvestGatewayStub);
+            var getDevelopers = new GetLateDevelopers(null, harvestGatewayStub);
             
             var response = getDevelopers.Execute();
             
@@ -75,7 +75,7 @@ namespace CryptoTechReminderSystem.Test
             {
                 FirstName = "Jim"
             };
-            var getDevelopers = new GetLateDevelopers(harvestGatewayStub);
+            var getDevelopers = new GetLateDevelopers(null, harvestGatewayStub);
             
             var response = getDevelopers.Execute();
             
@@ -89,7 +89,7 @@ namespace CryptoTechReminderSystem.Test
             {
                 FirstName = "Jim"
             };
-            var getDevelopers = new GetLateDevelopers(harvestGatewayStub);
+            var getDevelopers = new GetLateDevelopers(null, harvestGatewayStub);
             
             var response = getDevelopers.Execute();
             
