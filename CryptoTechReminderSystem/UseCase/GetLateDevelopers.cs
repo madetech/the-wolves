@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
-using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
@@ -29,9 +27,8 @@ namespace CryptoTechReminderSystem.UseCase
             };
             foreach (var harvestDeveloper in harvestGetDevelopersResponse)
             {
-                
-                var timesheetForDeveloper = harvestGetTimesheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
-                var sumOfHours = timesheetForDeveloper.Sum(timesheet => timesheet.Hours);
+                var timeSheetForDeveloper = harvestGetTimesheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
+                var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 if (sumOfHours < 35)
                 {
                     var slackLateDeveloper = slackGetDevelopersResponse.Single(developer => developer.Email == harvestDeveloper.Email);
