@@ -11,7 +11,7 @@ namespace CryptoTechReminderSystem.Test
 {
     public class GetLateDevelopersTests
     {
-        private class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
+        private class HarvestGatewayStub : IHarvestDeveloperRetriever, ITimeSheetRetriever
         {
             public HarvestDeveloper[] Developers { get; set; }
             
@@ -30,10 +30,11 @@ namespace CryptoTechReminderSystem.Test
             }
         }
 
-        private class HarvestGatewaySpy : ITimesheetAndDeveloperRetriever
+        private class HarvestGatewaySpy : IHarvestDeveloperRetriever, ITimeSheetRetriever
         {
             public bool IsRetrieveDevelopersCalled;
             public bool IsRetrieveTimeSheetsCalled;
+            
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
                 IsRetrieveDevelopersCalled = true;
@@ -76,7 +77,7 @@ namespace CryptoTechReminderSystem.Test
         {
             var harvestGatewaySpy = new HarvestGatewaySpy();
             var slackGatewaySpy = new SlackGatewaySpy();
-            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy);
+            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy, harvestGatewaySpy);
             
             getDevelopers.Execute();
             
@@ -89,7 +90,7 @@ namespace CryptoTechReminderSystem.Test
         {
             var harvestGatewaySpy = new HarvestGatewaySpy();
             var slackGatewaySpy = new SlackGatewaySpy();            
-            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy);
+            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy, harvestGatewaySpy);
             
             getDevelopers.Execute();
 
@@ -102,7 +103,7 @@ namespace CryptoTechReminderSystem.Test
             var harvestGatewaySpy = new HarvestGatewaySpy();
             var slackGatewayStub = new SlackGatewayStub();
             
-            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewaySpy);
+            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewaySpy, harvestGatewaySpy);
             
             getDevelopers.Execute();
 
@@ -165,7 +166,7 @@ namespace CryptoTechReminderSystem.Test
                     new TimeSheet { Hours = 7, UserId = 1337 }, 5
                 ).ToArray();
                 
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub);
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub);
                 
                 var response = getDevelopers.Execute();
          
@@ -179,7 +180,7 @@ namespace CryptoTechReminderSystem.Test
                     new TimeSheet { Hours = 7, UserId = 123 }, 5
                 ).ToArray();
 
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub);
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub);
                 
                 var response = getDevelopers.Execute();
               

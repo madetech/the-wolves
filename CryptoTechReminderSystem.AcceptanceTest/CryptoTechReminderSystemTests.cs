@@ -14,8 +14,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     {
         private FluentSimulator _slackApi;
         private FluentSimulator _harvestApi;
+        private HarvestGateway _harvestGateway;
         private SlackGateway _slackGateway;
-        private ITimesheetAndDeveloperRetriever _harvestGateway;
         private RemindDeveloper _remindDeveloper;
 
         private class ClockStub : IClock
@@ -54,7 +54,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
         [Ignore("WIP")]
         public void CanRemindLateDevelopersAtTenThirtyOnFriday()
-        {
+        {            
             var slackGetUsersResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
@@ -84,7 +84,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             _harvestApi.Get("/api/v2/time_entries").Responds(harvestGetTimeEntriesResponse);
             
-            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway);
+            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
             var clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, 01, 10, 30, 0)
