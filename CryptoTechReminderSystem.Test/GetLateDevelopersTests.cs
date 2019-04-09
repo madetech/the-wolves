@@ -11,7 +11,7 @@ namespace CryptoTechReminderSystem.Test
 {
     public class GetLateDevelopersTests
     {
-        public class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
+        private class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
         {
             public HarvestDeveloper[] Developers { get; set; }
             
@@ -48,8 +48,8 @@ namespace CryptoTechReminderSystem.Test
                 return new List<TimeSheet>();
             }
         }
-        
-        public class SlackGatewayStub : IMessageSenderAndRetriever
+
+        private class SlackGatewayStub : IMessageSenderAndRetriever
         {
             public SlackDeveloper[] Developers;
 
