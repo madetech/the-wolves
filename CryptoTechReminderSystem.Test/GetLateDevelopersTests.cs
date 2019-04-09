@@ -11,7 +11,7 @@ namespace CryptoTechReminderSystem.Test
 {
     public class GetLateDevelopersTests
     {
-        private class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
+        public class HarvestGatewayStub : ITimesheetAndDeveloperRetriever
         {
             public HarvestDeveloper[] Developers { get; set; }
             
@@ -19,7 +19,6 @@ namespace CryptoTechReminderSystem.Test
             
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
-
                 IList<HarvestDeveloper> result = Developers;
                 return result;
             }
@@ -33,11 +32,11 @@ namespace CryptoTechReminderSystem.Test
 
         private class HarvestGatewaySpy : ITimesheetAndDeveloperRetriever
         {
-            public bool IsCalled;
-            public bool TimeSheetHasBeenCalled;
+            public bool IsRetrieveDevelopersCalled;
+            public bool IsRetrieveTimeSheetsCalled;
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
-                IsCalled = true;
+                IsRetrieveDevelopersCalled = true;
                 IList<HarvestDeveloper> result = new List<HarvestDeveloper>();
               
                 return result;
@@ -45,7 +44,7 @@ namespace CryptoTechReminderSystem.Test
 
             public IEnumerable<TimeSheet> RetrieveTimeSheets()
             {
-                TimeSheetHasBeenCalled = true;
+                IsRetrieveTimeSheetsCalled = true;
                 return new List<TimeSheet>();
             }
         }
@@ -53,11 +52,7 @@ namespace CryptoTechReminderSystem.Test
         public class SlackGatewayStub : IMessageSenderAndRetriever
         {
             public SlackDeveloper[] Developers;
-            public string Name { get; set; }
-            public int Id { private get; set; }
-            public string Email { get; set; }
-            public string DisplayName { get; set; }
-            public bool isBot { get; set; }
+
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
                 IList<SlackDeveloper> result = Developers;
@@ -70,9 +65,9 @@ namespace CryptoTechReminderSystem.Test
             }
         }
 
-        public class SlackGatewaySpy : IMessageSenderAndRetriever
+        private class SlackGatewaySpy : IMessageSenderAndRetriever
         {
-            public bool DevelopersHasBeenCalled;
+            public bool IsRetrieveDevelopersCalled;
             public void Send(Message message)
             {
                 throw new System.NotImplementedException();
@@ -80,7 +75,7 @@ namespace CryptoTechReminderSystem.Test
 
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
-                DevelopersHasBeenCalled = true;
+                IsRetrieveDevelopersCalled = true;
                 return new List<SlackDeveloper>();
             }
         }
@@ -94,7 +89,7 @@ namespace CryptoTechReminderSystem.Test
             
             getDevelopers.Execute();
             
-            harvestGatewaySpy.IsCalled.Should().BeTrue();
+            harvestGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
         }
         
         
@@ -102,14 +97,12 @@ namespace CryptoTechReminderSystem.Test
         public void CanGetSlackDevelopers()
         {
             var harvestGatewaySpy = new HarvestGatewaySpy();
-        
-            var slackGatewaySpy = new SlackGatewaySpy();
-            
+            var slackGatewaySpy = new SlackGatewaySpy();            
             var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy);
             
             getDevelopers.Execute();
 
-            slackGatewaySpy.DevelopersHasBeenCalled.Should().BeTrue();
+            slackGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
         }
         
         [Test]
@@ -122,163 +115,135 @@ namespace CryptoTechReminderSystem.Test
             
             getDevelopers.Execute();
 
-            harvestGatewaySpy.TimeSheetHasBeenCalled.Should().BeTrue();
+            harvestGatewaySpy.IsRetrieveTimeSheetsCalled.Should().BeTrue();
         }
         
-        [Test]
-        public void CanGetLateDevelopers()
-        {
-            var harvestGatewayStub = new HarvestGatewayStub();
-            var slackGatewayStub = new SlackGatewayStub();
-            
-            harvestGatewayStub.Developers = new HarvestDeveloper[]
-            {
-                new HarvestDeveloper()
-                {   
-                    Id = 1337,
-                    FirstName = "Fred",
-                    LastName = "Flintstone",
-                    Email = "fred@fred.com",
-                },
-                new HarvestDeveloper()
-                {
-                    Id = 123,
-                    FirstName = "Joe",
-                    LastName = "Bloggs",
-                    Email = "Joe@Bloggs.com"
-                },
-            };
-            
-            harvestGatewayStub.TimeSheets = new TimeSheet[]
-            {
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 1337
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 1337
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 1337
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 1337
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 1337
-                }, 
-            };
-            
-            slackGatewayStub.Developers = new SlackDeveloper[]
-            {
-                new SlackDeveloper
-                {
-                    Email = "fred@fred.com",
-                    Id = "U8723",
-                }, 
-                new SlackDeveloper
-                {
-                    Email = "Joe@Bloggs.com",
-                    Id = "U9999",
-                }
-            };
-            
-            
-            
-            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewayStub);
-            
-            var response = getDevelopers.Execute();
-     
-          
-            response.Developers.First().Should().Be("U9999");
 
-        }
-        
-        [Test]
-        public void CanGetAnotherLateDeveloper()
+        [TestFixture()]
+        public class TestGetLateUserResponse
         {
-            var harvestGatewayStub = new HarvestGatewayStub();
-            var slackGatewayStub = new SlackGatewayStub();
+            private HarvestGatewayStub _harvestGatewayStub;
+            private SlackGatewayStub _slackGatewayStub;
             
-            harvestGatewayStub.Developers = new HarvestDeveloper[]
+            [SetUp]
+            public void SetUp()
             {
-                new HarvestDeveloper()
-                {   
-                    Id = 1337,
-                    FirstName = "Fred",
-                    LastName = "Flintstone",
-                    Email = "fred@fred.com",
-                },
-                new HarvestDeveloper()
+                _harvestGatewayStub = new HarvestGatewayStub()
                 {
-                    Id = 123,
-                    FirstName = "Joe",
-                    LastName = "Bloggs",
-                    Email = "Joe@Bloggs.com"
-                },
-            };
+                    Developers = new[]
+                    {
+                        new HarvestDeveloper()
+                        {   
+                            Id = 1337,
+                            FirstName = "Fred",
+                            LastName = "Flintstone",
+                            Email = "fred@fred.com",
+                        },
+                        new HarvestDeveloper()
+                        {
+                            Id = 123,
+                            FirstName = "Joe",
+                            LastName = "Bloggs",
+                            Email = "Joe@Bloggs.com"
+                        },
+                    }
+                };
+                
+                _slackGatewayStub = new SlackGatewayStub()
+                {
+                    Developers = new[]
+                    {
+                        new SlackDeveloper
+                        {
+                            Email = "fred@fred.com",
+                            Id = "U8723",
+                        }, 
+                        new SlackDeveloper
+                        {
+                            Email = "Joe@Bloggs.com",
+                            Id = "U9999",
+                        }
+                    }
+                };
+            }
             
-            harvestGatewayStub.TimeSheets = new TimeSheet[]
+            [Test]
+            public void CanGetLateDevelopers()
             {
-                new TimeSheet()
+                _harvestGatewayStub.TimeSheets = new[]
                 {
-                    Hours = 7,
-                    UserId = 123
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 123
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 123
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 123
-                }, 
-                new TimeSheet()
-                {
-                    Hours = 7,
-                    UserId = 123
-                }, 
-            };
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 1337
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 1337
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 1337
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 1337
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 1337
+                    }, 
+                };
+                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub);
+                
+                var response = getDevelopers.Execute();
+         
+                response.Developers.First().Should().Be("U9999");
+            }
             
-            slackGatewayStub.Developers = new SlackDeveloper[]
-            {
-                new SlackDeveloper
+            [Test]
+            public void CanGetAnotherLateDeveloper()
+            {                
+                _harvestGatewayStub.TimeSheets = new TimeSheet[]
                 {
-                    Email = "fred@fred.com",
-                    Id = "U8723",
-                }, 
-                new SlackDeveloper
-                {
-                    Email = "Joe@Bloggs.com",
-                    Id = "U9999",
-                }
-            };
-            
-            
-            
-            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewayStub);
-            
-            var response = getDevelopers.Execute();
-          
-            response.Developers.First().Should().Be("U8723");
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 123
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 123
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 123
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 123
+                    }, 
+                    new TimeSheet()
+                    {
+                        Hours = 7,
+                        UserId = 123
+                    }, 
+                };
 
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub);
+                
+                var response = getDevelopers.Execute();
+              
+                response.Developers.First().Should().Be("U8723");
+            }
         }
-        
     }
 }
