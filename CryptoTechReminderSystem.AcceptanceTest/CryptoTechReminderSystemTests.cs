@@ -14,8 +14,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     {
         private FluentSimulator _slackApi;
         private FluentSimulator _harvestApi;
-        private IMessageSenderAndRetriever _slackGateway;
         private HarvestGateway _harvestGateway;
+        private SlackGateway _slackGateway;
         private RemindDeveloper _remindDeveloper;
 
         private class ClockStub : IClock
@@ -39,7 +39,6 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi = new FluentSimulator("http://localhost:8009/");
             _slackGateway = new SlackGateway("http://localhost:8009/","xxxx-xxxxxxxxx-xxxx");
             _harvestApi = new FluentSimulator("http://localhost:8010/");
-            
             _harvestGateway = new HarvestGateway("http://localhost:8010/", "xxxx-xxxxxxxxx-xxxx");
             _remindDeveloper = new RemindDeveloper(_slackGateway);
             _slackApi.Start();
