@@ -170,34 +170,9 @@ namespace CryptoTechReminderSystem.Test
             [Test]
             public void CanGetLateDevelopers()
             {
-                _harvestGatewayStub.TimeSheets = new[]
-                {
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 1337
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 1337
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 1337
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 1337
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 1337
-                    }, 
-                };
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 7, UserId = 1337 }, 5
+                ).ToArray();
                 
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub);
                 
@@ -209,34 +184,9 @@ namespace CryptoTechReminderSystem.Test
             [Test]
             public void CanGetAnotherLateDeveloper()
             {                
-                _harvestGatewayStub.TimeSheets = new TimeSheet[]
-                {
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 123
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 123
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 123
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 123
-                    }, 
-                    new TimeSheet()
-                    {
-                        Hours = 7,
-                        UserId = 123
-                    }, 
-                };
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 7, UserId = 123 }, 5
+                ).ToArray();
 
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub);
                 
