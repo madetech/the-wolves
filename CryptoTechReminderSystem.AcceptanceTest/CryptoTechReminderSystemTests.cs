@@ -53,7 +53,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _harvestApi.Stop();
         }
 
-        [Test]
+        [Ignore("WIP")]
         public void CanRemindLateDevelopersAtTenThirtyOnFriday()
         {            
             var slackGetUsersResponse = File.ReadAllText(
