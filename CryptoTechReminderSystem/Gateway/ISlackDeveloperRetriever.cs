@@ -3,8 +3,8 @@ using CryptoTechReminderSystem.DomainObject;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public interface IDeveloperRetriever
+    public interface ISlackDeveloperRetriever
     {
-        IList<Developer> RetrieveDevelopers();
+        IList<SlackDeveloper> RetrieveDevelopers();
     }
 }

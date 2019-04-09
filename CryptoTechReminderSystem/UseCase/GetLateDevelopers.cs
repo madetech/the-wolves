@@ -1,23 +1,41 @@
 using System.Collections.Generic;
-using CryptoTechReminderSystem.DomainObject;
+using System.Linq;
+using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {
     public class GetLateDevelopers
     {
-        private readonly IDeveloperRetriever _requester;
+        private readonly IMessageSenderAndRetriever _slackGateway;
+        private readonly ITimesheetAndDeveloperRetriever _harvestGateway;
 
-        public GetLateDevelopers(IMessageSender slackGateway, IDeveloperRetriever harvestRequester)
+        public GetLateDevelopers(IMessageSenderAndRetriever slackGateway, ITimesheetAndDeveloperRetriever harvestGateway)
         {
-            _requester = harvestRequester;
+            _slackGateway = slackGateway;
+            _harvestGateway = harvestGateway;
         }
 
-        public IList<Developer> Execute()
+        public GetLateDevelopersResponse Execute()
         {
-            var request = _requester.RetrieveDevelopers();
-
-            return request;
+            var harvestGetDevelopersResponse = _harvestGateway.RetrieveDevelopers();
+            var slackGetDevelopersResponse = _slackGateway.RetrieveDevelopers();
+            var harvestGetTimesheetsResponse = _harvestGateway.RetrieveTimeSheets();
+            var getLateDevelopersResponse = new GetLateDevelopersResponse
+            {
+                Developers = new List<string>()
+            };
+            foreach (var harvestDeveloper in harvestGetDevelopersResponse)
+            {
+                var timeSheetForDeveloper = harvestGetTimesheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
+                var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
+                if (sumOfHours < 35)
+                {
+                    var slackLateDeveloper = slackGetDevelopersResponse.Single(developer => developer.Email == harvestDeveloper.Email);
+                    getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
+                }
+            }
+            return getLateDevelopersResponse;
         }
     }
 }
