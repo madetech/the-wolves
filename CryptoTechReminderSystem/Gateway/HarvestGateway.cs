@@ -60,9 +60,4 @@ namespace CryptoTechReminderSystem.Gateway
             ).ToList(); 
         }
     }
-
-    public class HarvestDeveloper : Developer
-    {
-        public int Id { get; set; }
-    }
 }
