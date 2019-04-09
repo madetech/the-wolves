@@ -14,7 +14,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
     {
         private FluentSimulator _slackApi;
         private FluentSimulator _harvestApi;
-        private IMessageSenderAndRetriever _slackGateway;
+        private SlackGateway _slackGateway;
         private ITimesheetAndDeveloperRetriever _harvestGateway;
         private RemindDeveloper _remindDeveloper;
 
@@ -54,7 +54,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
         [Ignore("WIP")]
         public void CanRemindLateDevelopersAtTenThirtyOnFriday()
-        {            
+        {
             var slackGetUsersResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,

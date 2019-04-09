@@ -7,19 +7,19 @@ namespace CryptoTechReminderSystem.UseCase
 {
     public class GetLateDevelopers
     {
-        private readonly IMessageSenderAndRetriever _slackGateway;
+        private readonly ISlackDeveloperRetriever _slackDeveloperRetriever;
         private readonly ITimesheetAndDeveloperRetriever _harvestGateway;
 
-        public GetLateDevelopers(IMessageSenderAndRetriever slackGateway, ITimesheetAndDeveloperRetriever harvestGateway)
+        public GetLateDevelopers(ISlackDeveloperRetriever slackDeveloperRetriever, ITimesheetAndDeveloperRetriever harvestGateway)
         {
-            _slackGateway = slackGateway;
+            _slackDeveloperRetriever = slackDeveloperRetriever;
             _harvestGateway = harvestGateway;
         }
 
         public GetLateDevelopersResponse Execute()
         {
             var harvestGetDevelopersResponse = _harvestGateway.RetrieveDevelopers();
-            var slackGetDevelopersResponse = _slackGateway.RetrieveDevelopers();
+            var slackGetDevelopersResponse = _slackDeveloperRetriever.RetrieveDevelopers();
             var harvestGetTimesheetsResponse = _harvestGateway.RetrieveTimeSheets();
             var getLateDevelopersResponse = new GetLateDevelopersResponse
             {

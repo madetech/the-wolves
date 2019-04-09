@@ -49,7 +49,7 @@ namespace CryptoTechReminderSystem.Test
             }
         }
 
-        private class SlackGatewayStub : IMessageSenderAndRetriever
+        private class SlackGatewayStub : ISlackDeveloperRetriever
         {
             public SlackDeveloper[] Developers;
 
@@ -58,20 +58,11 @@ namespace CryptoTechReminderSystem.Test
                 IList<SlackDeveloper> result = Developers;
                 return result;
             }
-
-            public void Send(Message message)
-            {
-                throw new System.NotImplementedException();
-            }
         }
 
-        private class SlackGatewaySpy : IMessageSenderAndRetriever
+        private class SlackGatewaySpy : ISlackDeveloperRetriever
         {
             public bool IsRetrieveDevelopersCalled;
-            public void Send(Message message)
-            {
-                throw new System.NotImplementedException();
-            }
 
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
