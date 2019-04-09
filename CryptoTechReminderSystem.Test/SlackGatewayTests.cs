@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Linq;
 using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
@@ -100,6 +102,24 @@ namespace CryptoTechReminderSystem.Test
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
                 
             DeserializeObject<PostMessageRequest>(receivedRequest.RequestBody).Text.Should().Be(text);
+        }
+        
+        [Test]
+        public void CanSendRequestToSlackApi()
+        {
+            var json = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../SlackUsersExampleResponse.json"
+                )
+            );
+            _fluentSimulator.Get("/api/users.list").Responds(json);
+            
+            _slackGateway.RetrieveDevelopers();
+            
+            var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                
+            receivedRequest.Url.Should().Be(Address + "api/users.list");
         }
     }
 }

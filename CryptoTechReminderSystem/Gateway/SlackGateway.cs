@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.UseCase;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
@@ -48,7 +49,14 @@ namespace CryptoTechReminderSystem.Gateway
 
         public IList<SlackDeveloper> RetrieveDevelopers()
         {
+            var result = GetUsers().Result;
             return new List<SlackDeveloper>();
+        }
+        
+        private async Task<object> GetUsers(){
+            const string requestPath = "/api/users.list";
+            var response = await _client.GetAsync(requestPath);
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
     }
 
