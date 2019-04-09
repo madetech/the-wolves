@@ -45,9 +45,9 @@ namespace CryptoTechReminderSystem.Gateway
             return result;
         }
 
-        public IList<Developer> RetrieveDevelopers()
+        public IList<SlackDeveloper> RetrieveDevelopers()
         {
-            return new List<Developer>();
+            return new List<SlackDeveloper>();
         }
     }
 

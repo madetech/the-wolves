@@ -26,7 +26,7 @@ namespace CryptoTechReminderSystem.Gateway
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
 
-        public IList<Developer> RetrieveDevelopers()
+        public IList<HarvestDeveloper> RetrieveDevelopers()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
  
@@ -39,7 +39,7 @@ namespace CryptoTechReminderSystem.Gateway
                     LastName = developer["last_name"].ToString(),
                     Email = developer["email"].ToString()
                 }
-            ).Cast<Developer>().ToList(); 
+            ).ToList(); 
         }
 
         public IEnumerable<TimeSheet> RetrieveTimeSheets()
@@ -52,11 +52,7 @@ namespace CryptoTechReminderSystem.Gateway
                 {
                     Id = (int)timeSheet["id"],
                     TimeSheetDate = timeSheet["spent_date"].ToString(),
-                    User = new User
-                    {
-                        Id = (int)timeSheet["user"]["id"],
-                        Name = timeSheet["user"]["name"].ToString()
-                    },
+                    UserId = (int)timeSheet["user"]["id"],
                     Hours = (float)timeSheet["hours"],
                     CreatedAt = DateTime.Parse(timeSheet["created_at"].ToString()),
                     UpdatedAt = DateTime.Parse(timeSheet["updated_at"].ToString())
