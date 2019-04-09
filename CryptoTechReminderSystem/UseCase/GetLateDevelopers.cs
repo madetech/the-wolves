@@ -20,7 +20,6 @@ namespace CryptoTechReminderSystem.UseCase
 
         public GetLateDevelopersResponse Execute()
         {
-            var harvestLateDevelopersEmails = new List<string>();
             var harvestGetDevelopersResponse = _harvestGateway.RetrieveDevelopers();
             var slackGetDevelopersResponse = _slackGateway.RetrieveDevelopers();
             var harvestGetTimesheetsResponse = _harvestGateway.RetrieveTimeSheets();
