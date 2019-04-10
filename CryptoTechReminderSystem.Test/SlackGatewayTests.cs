@@ -62,7 +62,7 @@ namespace CryptoTechReminderSystem.Test
             }
         
             [Test]
-            public void CanSendAMessageToAUser()
+            public void CanSendAPostMessageRequestWithAChannel()
             {
                 var channel = "U98DL811";
                 var message = new Message()
@@ -78,12 +78,11 @@ namespace CryptoTechReminderSystem.Test
             }
         
             [Test]
-            public void CanSendAMessageToAUserWithAText()
+            public void CanSendAPostMessageRequestWithText()
             {
                 var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
                 var message = new Message()
                 {
-                    Channel = "U0112WTW",
                     Text = text
                 };
             
@@ -91,6 +90,25 @@ namespace CryptoTechReminderSystem.Test
             
                 var receivedRequest = _slackApi.ReceivedRequests.First();
                 
+                JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(text);
+            }
+            
+            [Test]
+            public void CanSendAPostMessageRequestWithAChannelAndText()
+            {
+                var channel = "U98ZL999";
+                var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
+                var message = new Message()
+                {
+                    Channel = channel,
+                    Text = text
+                };
+            
+                _slackGateway.Send(message);
+            
+                var receivedRequest = _slackApi.ReceivedRequests.First();
+                
+                JObject.Parse(receivedRequest.RequestBody)["channel"].ToString().Should().Be(channel);
                 JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(text);
             }
         }
