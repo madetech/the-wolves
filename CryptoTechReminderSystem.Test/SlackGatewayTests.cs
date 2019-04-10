@@ -21,24 +21,24 @@ namespace CryptoTechReminderSystem.Test
         [TestFixture]
         public class CanSendMessage
         {
-            private FluentSimulator _fluentSimulator;
+            private FluentSimulator _slackApi;
             private SlackGateway _slackGateway;
             
             [SetUp]
             public void Setup()
             {
-                _fluentSimulator = new FluentSimulator(Address);
+                _slackApi = new FluentSimulator(Address);
                 _slackGateway = new SlackGateway(Address, Token);
 
-                _fluentSimulator.Post(PostMessageApiPath).Responds("{{\"ok\": true}}");
+                _slackApi.Post(PostMessageApiPath).Responds("{{\"ok\": true}}");
 
-                _fluentSimulator.Start();
+                _slackApi.Start();
             }
             
             [TearDown]
             public void TearDown()
             {
-                _fluentSimulator.Stop();
+                _slackApi.Stop();
             }
             
             [Test]
@@ -46,7 +46,7 @@ namespace CryptoTechReminderSystem.Test
             {
                 _slackGateway.Send(new Message());
             
-                var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                var receivedRequest = _slackApi.ReceivedRequests.First();
                 
                 receivedRequest.Url.Should().Be(PostMessageApiUrl);
             }
@@ -56,7 +56,7 @@ namespace CryptoTechReminderSystem.Test
             {
                 _slackGateway.Send(new Message());
             
-                var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                var receivedRequest = _slackApi.ReceivedRequests.First();
                 
                 receivedRequest.Headers["Authorization"].Should().Be("Bearer " + Token);
             }
@@ -72,7 +72,7 @@ namespace CryptoTechReminderSystem.Test
             
                 _slackGateway.Send(message);
             
-                var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                var receivedRequest = _slackApi.ReceivedRequests.First();
             
                 JObject.Parse(receivedRequest.RequestBody)["channel"].ToString().Should().Be(channel);
             }
@@ -89,7 +89,7 @@ namespace CryptoTechReminderSystem.Test
             
                 _slackGateway.Send(message);
             
-                var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                var receivedRequest = _slackApi.ReceivedRequests.First();
                 
                 JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(text);
             }
