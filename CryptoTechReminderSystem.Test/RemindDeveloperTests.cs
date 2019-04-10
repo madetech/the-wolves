@@ -38,14 +38,16 @@ namespace CryptoTechReminderSystem.Test
         {
             var spy = new SlackGatewaySpy();
             var remindDeveloper = new RemindDeveloper(spy);
+            var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
             
             remindDeveloper.Execute(new RemindDeveloperRequest
             {
                 Channel = "U87219AW",
-                Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                Text = text
             });
             
             spy.Message.Channel.Should().Be("U87219AW");
+            spy.Message.Text.Should().Be(text);
         }
     }
 }
