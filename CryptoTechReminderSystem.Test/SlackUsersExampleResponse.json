@@ -1,0 +1,89 @@
+{
+  "ok": true,
+  "members": [
+    {
+      "id": "W0123CHAN",
+      "team_id": "T012AB3C4",
+      "name": "Chandler",
+      "real_name": "Chandler Bing",
+      "tz": "America/Los_Angeles",
+      "tz_label": "Pacific Daylight Time",
+      "tz_offset": -25200,
+      "profile": {
+        "display_name": "Chandler",
+        "email": "chandler@friends.com"
+      },
+      "is_bot": false
+    },
+    {
+      "id": "W123AMON",
+      "team_id": "T012AB3C4",
+      "name": "Monica",
+      "real_name": "Monica Geller-Bing",
+      "tz": "America/Los_Angeles",
+      "tz_label": "Pacific Daylight Time",
+      "tz_offset": -25200,
+      "profile": {
+        "display_name": "Monica",
+        "email": "monica@friends.com"
+      },
+      "is_bot": false
+    },
+    {
+      "id": "W789ROSS",
+      "team_id": "T012AB3C4",
+      "name": "Ross",
+      "real_name": "Ross Geller",
+      "tz": "America/Los_Angeles",
+      "tz_label": "Pacific Daylight Time",
+      "tz_offset": -25200,
+      "profile": {
+        "display_name": "Ross",
+        "email": "ross@friends.com"
+      },
+      "is_bot": false
+    },
+    {
+      "id": "W345RACH",
+      "team_id": "T012AB3C4",
+      "name": "Rachel",
+      "real_name": "Rachel Green",
+      "tz": "America/Los_Angeles",
+      "tz_label": "Pacific Daylight Time",
+      "tz_offset": -25200,
+      "profile": {
+        "display_name": "Rachel",
+        "email": "rachel@friends.com"
+      },
+      "is_bot": false
+    },
+    {
+      "id": "W345JOEY",
+      "team_id": "T012AB3C4",
+      "name": "Joey",
+      "real_name": "Joey Tribbani",
+      "tz": "America/Los_Angeles",
+      "tz_label": "Pacific Daylight Time",
+      "tz_offset": -25200,
+      "profile": {
+        "display_name": "Joey",
+        "email": "joey@friends.com"
+      },
+      "is_bot": false
+    },
+    {
+      "id": "W5673PHO",
+      "team_id": "T012AB3C4",
+      "name": "Phoebe",
+      "real_name": "Phoebe Buffay-Hannigan",
+      "tz": "America/Los_Angeles",
+      "tz_label": "Pacific Daylight Time",
+      "tz_offset": -25200,
+      "profile": {
+        "display_name": "Phoebe",
+        "email": "phoebe@friends.com"
+      },
+      "is_bot": false
+    }
+  ]
+}

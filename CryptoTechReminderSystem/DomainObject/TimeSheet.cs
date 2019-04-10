@@ -11,10 +11,6 @@ namespace CryptoTechReminderSystem.DomainObject
         public string TimeSheetDate { get; set; }
         [JsonProperty("hours")] 
         public double Hours { get; set; }
-        [JsonProperty("created_at")] 
-        public DateTime CreatedAt { get; set; }
-        [JsonProperty("updated_at")] 
-        public DateTime UpdatedAt { get; set; }
         public int UserId { get; set; }
     }
 }
