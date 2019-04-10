@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CryptoTechReminderSystem.DomainObject;
@@ -140,6 +141,39 @@ namespace CryptoTechReminderSystem.Test
             receivedRequest.Headers["Authorization"].Should().Be(
                 "Bearer " + Token
             );
+        }
+        
+        [Test]
+        public void CanGetAListOfSlackDevelopers()
+        {
+            var json = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../SlackUsersExampleResponse.json"
+                )
+            );
+            _fluentSimulator.Get("/api/users.list").Responds(json);
+            
+            var response = _slackGateway.RetrieveDevelopers();
+    
+            response.Should().BeOfType<List<SlackDeveloper>>();
+            response.Should().HaveCount(6);
+        }
+        
+        [Test]
+        public void CanGetIdOfSlackDeveloper()
+        {
+            var json = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../SlackUsersExampleResponse.json"
+                )
+            );
+            _fluentSimulator.Get("/api/users.list").Responds(json);
+            
+            var response = _slackGateway.RetrieveDevelopers();
+    
+            response.First().Id.Should().Be("W0123CHAN");
         }
     }
 }

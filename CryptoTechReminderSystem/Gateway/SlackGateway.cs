@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -52,10 +53,16 @@ namespace CryptoTechReminderSystem.Gateway
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
             var result = GetUsers().Result;
-            return new List<SlackDeveloper>();
+            var users = result["members"];
+
+            return users.Select(developer => new SlackDeveloper
+                {
+                    Id = developer["id"].ToString()
+                }
+            ).ToList();
         }
         
-        private async Task<object> GetUsers(){
+        private async Task<JObject> GetUsers(){
             const string requestPath = "/api/users.list";
             var response = await _client.GetAsync(requestPath);
             return JObject.Parse(await response.Content.ReadAsStringAsync());
