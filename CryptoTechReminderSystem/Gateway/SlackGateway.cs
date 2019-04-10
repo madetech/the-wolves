@@ -67,13 +67,13 @@ namespace CryptoTechReminderSystem.Gateway
             var response = await _client.GetAsync(requestPath);
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
-    }
-
-    public class PostMessageRequest
-    {
-        [JsonProperty("channel")]
-        public string Channel { get; set; }
-        [JsonProperty("text")]
-        public string Text { get; set; }
+        
+        private class PostMessageRequest
+        {
+            [JsonProperty("channel")]
+            public string Channel { get; set; }
+            [JsonProperty("text")]
+            public string Text { get; set; }
+        }
     }
 }
