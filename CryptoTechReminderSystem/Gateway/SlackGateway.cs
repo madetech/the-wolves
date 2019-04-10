@@ -49,6 +49,8 @@ namespace CryptoTechReminderSystem.Gateway
 
         public IList<SlackDeveloper> RetrieveDevelopers()
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
             var result = GetUsers().Result;
             return new List<SlackDeveloper>();
         }

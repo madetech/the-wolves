@@ -105,7 +105,7 @@ namespace CryptoTechReminderSystem.Test
         }
         
         [Test]
-        public void CanSendRequestToSlackApi()
+        public void CanSendAGetUsersRequest()
         {
             var json = File.ReadAllText(
                 Path.Combine(
@@ -120,6 +120,26 @@ namespace CryptoTechReminderSystem.Test
             var receivedRequest = _fluentSimulator.ReceivedRequests.First();
                 
             receivedRequest.Url.Should().Be(Address + "api/users.list");
+        }
+        
+        [Test]
+        public void CanSendAGetUsersRequestWithAToken()
+        {
+            var json = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../SlackUsersExampleResponse.json"
+                )
+            );
+            _fluentSimulator.Get("/api/users.list").Responds(json);
+            
+            _slackGateway.RetrieveDevelopers();
+            
+            var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                
+            receivedRequest.Headers["Authorization"].Should().Be(
+                "Bearer " + Token
+            );
         }
     }
 }
