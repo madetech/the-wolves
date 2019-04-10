@@ -156,6 +156,12 @@ namespace CryptoTechReminderSystem.Test
             {
                 _response.First().Id.Should().Be("W0123CHAN");
             }
+            
+            [Test]
+            public void CanGetEmailOfSlackDeveloper()
+            {
+                _response.First().Email.Should().Be("chandler@friends.com");
+            }
         }
     }
 }

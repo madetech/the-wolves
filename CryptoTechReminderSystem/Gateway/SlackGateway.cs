@@ -57,7 +57,8 @@ namespace CryptoTechReminderSystem.Gateway
 
             return users.Select(developer => new SlackDeveloper
                 {
-                    Id = developer["id"].ToString()
+                    Id = developer["id"].ToString(),
+                    Email = developer["profile"]["email"].ToString()
                 }
             ).ToList();
         }
