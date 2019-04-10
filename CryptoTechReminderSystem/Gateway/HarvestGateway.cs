@@ -54,8 +54,6 @@ namespace CryptoTechReminderSystem.Gateway
                     TimeSheetDate = timeSheet["spent_date"].ToString(),
                     UserId = (int)timeSheet["user"]["id"],
                     Hours = (float)timeSheet["hours"],
-                    CreatedAt = DateTime.Parse(timeSheet["created_at"].ToString()),
-                    UpdatedAt = DateTime.Parse(timeSheet["updated_at"].ToString())
                 }
             ).ToList(); 
         }
