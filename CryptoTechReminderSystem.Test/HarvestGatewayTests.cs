@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 using FluentSim;
 using FluentAssertions;
@@ -13,119 +12,136 @@ namespace CryptoTechReminderSystem.Test
     {
         private const string Address = "http://localhost:8050/";
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
-        private FluentSimulator _fluentSimulator;
-        private HarvestGateway _harvestGateway;
 
-        [SetUp]
-        public void Setup()
+        [TestFixture]
+        public class CanRequestDevelopers
         {
-            _fluentSimulator = new FluentSimulator(Address);
-            _fluentSimulator.Start();
-            _harvestGateway = new HarvestGateway(Address, Token);
-        }
-        
-        [TearDown]
-        public void TearDown()
-        {
-            _fluentSimulator.Stop();
+            private FluentSimulator _fluentSimulator;
+            private HarvestGateway _harvestGateway;
+            
+            [SetUp]
+            public void Setup()
+            {
+                _fluentSimulator = new FluentSimulator(Address);
+                _fluentSimulator.Start();
+                _harvestGateway = new HarvestGateway(Address, Token);
+            }
+
+            [TearDown]
+            public void TearDown()
+            {
+                _fluentSimulator.Stop();
+            }
+
+            private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
+            {
+                var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
+                           $",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
+                _fluentSimulator.Get("/api/v2/users").Responds(json);
+            }
+
+            [Test]
+            public void CanGetDeveloper()
+            {
+                SetUpUsersApiEndpoint(
+                    "123",
+                    "Wen Ting",
+                    "Wang",
+                    "ting@email.com"
+                );
+
+                var response = _harvestGateway.RetrieveDevelopers();
+
+                response.First().FirstName.Should().Be("Wen Ting");
+            }
+
+            [Test]
+            public void CanGetDeveloper2()
+            {
+                SetUpUsersApiEndpoint(
+                    "456",
+                    "Tingker",
+                    "Bell",
+                    "tingkerbell@email.com"
+                );
+
+                var response = _harvestGateway.RetrieveDevelopers();
+
+                response.First().FirstName.Should().Be("Tingker");
+            }
+
+            [Test]
+            public void CanGetDeveloperWithAuthentication()
+            {
+                SetUpUsersApiEndpoint(
+                    "789",
+                    "Tingky",
+                    "Winky",
+                    "tingkywinky@email.com"
+                );
+
+                _harvestGateway.RetrieveDevelopers();
+                
+                _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
+            }
         }
 
-        private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
+        [TestFixture]
+        public class CanRequestTimeSheets
         {
-            var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
-                       $",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
-            _fluentSimulator.Get("/api/v2/users").Responds(json);
-        }
-        
-        private void SetUpUsersTimeSheetApiEndpoint(string jsonFilePath)
-        {
-             var json = File.ReadAllText(
-                 Path.Combine(
-                     AppDomain.CurrentDomain.BaseDirectory,
-                     jsonFilePath
-                 )
-             );
-            _fluentSimulator.Get("/api/v2/time_entries").Responds(json);
-        }
-       
-        
-        [Test]
-        public void CanGetDeveloper()
-        {
-            SetUpUsersApiEndpoint(
-                "123",
-                "Wen Ting",
-                "Wang",
-                "ting@email.com"
-            );
+            private FluentSimulator _fluentSimulator;
+            private HarvestGateway _harvestGateway;
             
-            var response = _harvestGateway.RetrieveDevelopers();
-            
-            response.First().FirstName.Should().Be("Wen Ting");
-        }
-        
-        [Test]
-        public void CanGetDeveloper2()
-        {
-            SetUpUsersApiEndpoint(
-                "456",
-                "Tingker",
-                "Bell",
-                "tingkerbell@email.com"
-            );
-            
-            var response = _harvestGateway.RetrieveDevelopers();
+            [SetUp]
+            public void Setup()
+            {
+                _fluentSimulator = new FluentSimulator(Address);
+                _fluentSimulator.Start();
+                _harvestGateway = new HarvestGateway(Address, Token);
+                SetUpTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
+            }
 
-            response.First().FirstName.Should().Be("Tingker");
-        }
-        
-        [Test]
-        public void CanGetDeveloperWithAuthentication()
-        {
-            SetUpUsersApiEndpoint(
-                "789",
-                "Tingky",
-                "Winky",
-                "tingkywinky@email.com"
-            );
+            [TearDown]
+            public void TearDown()
+            {
+                _fluentSimulator.Stop();
+            }
             
-            var response = _harvestGateway.RetrieveDevelopers();
+            private void SetUpTimeSheetApiEndpoint(string jsonFilePath)
+            {
+                var json = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        jsonFilePath
+                    )
+                );
+                _fluentSimulator.Get("/api/v2/time_entries").Responds(json);
+            }
 
-            _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
-        }
-        
-        [Test]
-        public void CanGetATimeSheet()
-        {
-            SetUpUsersTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
-            
-            var response = _harvestGateway.RetrieveTimeSheets();
-            
-            response.First().UserId.Should().Be(1782975);
-        }
-        
-        [Test]
-        public void CanGetAnotherTimeSheet()
-        {
-            SetUpUsersTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
-            
-            var response = _harvestGateway.RetrieveTimeSheets();
+            [Test]
+            public void CanGetATimeSheet()
+            {
+                var response = _harvestGateway.RetrieveTimeSheets();
 
-            response.Any(entry => entry.UserId == 1782974).Should().Be(true);
-        }
-        
-        [Test]
-        public void CanGetAllTimeSheetProperties()
-        {
-            SetUpUsersTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
-            
-            var response = _harvestGateway.RetrieveTimeSheets().First();
-            response.Id.Should().Be(456709345);
-            response.UserId.Should().Be(1782975);
-            response.Hours.Should().Be(8.0);
-            response.TimeSheetDate.Should().Be("2019-02-25");
-            response.CreatedAt.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
-            response.UpdatedAt.Should().BeSameDateAs(new DateTime(2019, 03,01, 10, 10, 00));
+                response.First().UserId.Should().Be(1782975);
+            }
+
+            [Test]
+            public void CanGetAnotherTimeSheet()
+            {
+                var response = _harvestGateway.RetrieveTimeSheets();
+
+                response.Any(entry => entry.UserId == 1782974).Should().Be(true);
+            }
+
+            [Test]
+            public void CanGetAllTimeSheetProperties()
+            {
+                var response = _harvestGateway.RetrieveTimeSheets().First();
+                response.Id.Should().Be(456709345);
+                response.UserId.Should().Be(1782975);
+                response.Hours.Should().Be(8.0);
+            }
         }
     }
 }
