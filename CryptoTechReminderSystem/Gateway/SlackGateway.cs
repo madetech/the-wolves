@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.UseCase;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
@@ -48,15 +50,31 @@ namespace CryptoTechReminderSystem.Gateway
 
         public IList<SlackDeveloper> RetrieveDevelopers()
         {
-            return new List<SlackDeveloper>();
-        }
-    }
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
-    public class PostMessageRequest
-    {
-        [JsonProperty("channel")]
-        public string Channel { get; set; }
-        [JsonProperty("text")]
-        public string Text { get; set; }
+            var result = GetUsers().Result;
+            var users = result["members"];
+
+            return users.Select(developer => new SlackDeveloper
+                {
+                    Id = developer["id"].ToString(),
+                    Email = developer["profile"]["email"].ToString()
+                }
+            ).ToList();
+        }
+        
+        private async Task<JObject> GetUsers(){
+            const string requestPath = "/api/users.list";
+            var response = await _client.GetAsync(requestPath);
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
+        }
+        
+        private class PostMessageRequest
+        {
+            [JsonProperty("channel")]
+            public string Channel { get; set; }
+            [JsonProperty("text")]
+            public string Text { get; set; }
+        }
     }
 }
