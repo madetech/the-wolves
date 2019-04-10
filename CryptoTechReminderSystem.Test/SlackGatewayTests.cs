@@ -98,14 +98,14 @@ namespace CryptoTechReminderSystem.Test
         [TestFixture]
         public class CanRetrieveDevelopers
         {
-            private FluentSimulator _fluentSimulator;
+            private FluentSimulator _slackApi;
             private SlackGateway _slackGateway;
             private IList<SlackDeveloper> _response;
 
             [SetUp]
             public void SetUp()
             {
-                _fluentSimulator = new FluentSimulator(Address);
+                _slackApi = new FluentSimulator(Address);
                 _slackGateway = new SlackGateway(Address, Token);
             
                 var json = File.ReadAllText(
@@ -115,9 +115,9 @@ namespace CryptoTechReminderSystem.Test
                     )
                 );
                 
-                _fluentSimulator.Get("/api/users.list").Responds(json);
+                _slackApi.Get("/api/users.list").Responds(json);
             
-                _fluentSimulator.Start();
+                _slackApi.Start();
 
                 _response = _slackGateway.RetrieveDevelopers();
             }
@@ -125,13 +125,13 @@ namespace CryptoTechReminderSystem.Test
             [TearDown]
             public void TearDown()
             {
-                _fluentSimulator.Stop();
+                _slackApi.Stop();
             }
             
             [Test]
             public void CanSendAGetUsersRequest()
             {
-                var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                var receivedRequest = _slackApi.ReceivedRequests.First();
                 
                 receivedRequest.Url.Should().Be(Address + "api/users.list");
             }
@@ -139,7 +139,7 @@ namespace CryptoTechReminderSystem.Test
             [Test]
             public void CanSendAGetUsersRequestWithAToken()
             {
-                var receivedRequest = _fluentSimulator.ReceivedRequests.First();
+                var receivedRequest = _slackApi.ReceivedRequests.First();
                 
                 receivedRequest.Headers["Authorization"].Should().Be("Bearer " + Token);
             }
