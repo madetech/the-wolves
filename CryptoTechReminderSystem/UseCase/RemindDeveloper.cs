@@ -3,7 +3,7 @@ using CryptoTechReminderSystem.DomainObject;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class RemindDeveloper
+    public class RemindDeveloper : IRemindDeveloper
     {
         private readonly IMessageSender _slackGateway;
 

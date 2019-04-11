@@ -41,20 +41,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _harvestApi = new FluentSimulator("http://localhost:8010/");
             _harvestGateway = new HarvestGateway("http://localhost:8010/", "xxxx-xxxxxxxxx-xxxx");
             _remindDeveloper = new RemindDeveloper(_slackGateway);
-            _slackApi.Start();
-            _harvestApi.Start();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            _slackApi.Stop();
-            _harvestApi.Stop();
-        }
-
-        [Ignore("WIP")]
-        public void CanRemindLateDevelopersAtTenThirtyOnFriday()
-        {            
+            
             var slackGetUsersResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
@@ -84,13 +71,27 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             _harvestApi.Get("/api/v2/time_entries").Responds(harvestGetTimeEntriesResponse);
             
+            _slackApi.Start();
+            _harvestApi.Start();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _harvestApi.Stop();
+            _slackApi.Stop();
+        }
+
+        [Test]
+        public void CanRemindLateDevelopersAtTenThirtyOnFriday()
+        {                      
             var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
             var clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, 01, 10, 30, 0)
                 )
             );
-            
+
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
 
             remindLateDevelopers.Execute(new RemindLateDevelopersRequest
@@ -98,8 +99,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
                 }
             );
-
-            _slackApi.ReceivedRequests.Count.Should().Be(3);
+            _slackApi.ReceivedRequests.Count.Should().Be(4);
         }
     }
 }
