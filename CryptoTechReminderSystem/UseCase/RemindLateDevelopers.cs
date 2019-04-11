@@ -19,11 +19,10 @@ namespace CryptoTechReminderSystem.UseCase
             var lateDevelopers = _getLateDevelopers.Execute();
             foreach (var lateDeveloper in lateDevelopers.Developers)
             {
-                _remindDeveloper.Execute(new RemindDeveloperRequest()
+                _remindDeveloper.Execute(new RemindDeveloperRequest
                 {
-                    Channel = "lad",
-                    Text = "lad"
-                
+                    Channel = lateDeveloper,
+                    Text = remindLateDevelopersRequest.Message
                 });
             }
             

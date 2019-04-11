@@ -37,7 +37,6 @@ namespace CryptoTechReminderSystem.Gateway
             });
             var content = new StringContent(request, Encoding.UTF8, "application/json");
             PostChatMessage(content).Wait();
-            var result = PostChatMessage(content).Result;
         }
         
         private async Task<object> PostChatMessage(StringContent content)
