@@ -16,28 +16,28 @@ namespace CryptoTechReminderSystem.Test
         [TestFixture]
         public class CanRequestDevelopers
         {
-            private FluentSimulator _fluentSimulator;
+            private FluentSimulator _harvestApi;
             private HarvestGateway _harvestGateway;
             
             [SetUp]
             public void Setup()
             {
-                _fluentSimulator = new FluentSimulator(Address);
-                _fluentSimulator.Start();
+                _harvestApi = new FluentSimulator(Address);
+                _harvestApi.Start();
                 _harvestGateway = new HarvestGateway(Address, Token);
             }
 
             [TearDown]
             public void TearDown()
             {
-                _fluentSimulator.Stop();
+                _harvestApi.Stop();
             }
 
             private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
             {
                 var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
                            $",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
-                _fluentSimulator.Get("/api/v2/users").Responds(json);
+                _harvestApi.Get("/api/v2/users").Responds(json);
             }
 
             [Test]
@@ -82,21 +82,21 @@ namespace CryptoTechReminderSystem.Test
 
                 _harvestGateway.RetrieveDevelopers();
                 
-                _fluentSimulator.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
+                _harvestApi.ReceivedRequests.First().Headers["Authorization"].Should().Be("Bearer " + Token);
             }
         }
 
         [TestFixture]
         public class CanRequestTimeSheets
         {
-            private FluentSimulator _fluentSimulator;
+            private FluentSimulator _harvestApi;
             private HarvestGateway _harvestGateway;
             
             [SetUp]
             public void Setup()
             {
-                _fluentSimulator = new FluentSimulator(Address);
-                _fluentSimulator.Start();
+                _harvestApi = new FluentSimulator(Address);
+                _harvestApi.Start();
                 _harvestGateway = new HarvestGateway(Address, Token);
                 SetUpTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
             }
@@ -104,7 +104,7 @@ namespace CryptoTechReminderSystem.Test
             [TearDown]
             public void TearDown()
             {
-                _fluentSimulator.Stop();
+                _harvestApi.Stop();
             }
             
             private void SetUpTimeSheetApiEndpoint(string jsonFilePath)
@@ -115,7 +115,7 @@ namespace CryptoTechReminderSystem.Test
                         jsonFilePath
                     )
                 );
-                _fluentSimulator.Get("/api/v2/time_entries").Responds(json);
+                _harvestApi.Get("/api/v2/time_entries").Responds(json);
             }
 
             [Test]
