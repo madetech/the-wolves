@@ -36,14 +36,12 @@ namespace CryptoTechReminderSystem.Gateway
                 Text = message.Text
             });
             var content = new StringContent(request, Encoding.UTF8, "application/json");
-            PostChatMessage(content).Wait();
-            var result = PostChatMessage(content).Result;
+            PostChatMessageAsync(content).Wait();
         }
         
-        private async Task<object> PostChatMessage(StringContent content)
+        private async Task<string> PostChatMessageAsync(HttpContent content)
         {
-            var requestPath = "/api/chat.postMessage";
-            var response = await _client.PostAsync(requestPath, content);
+            var response = await _client.PostAsync("/api/chat.postMessage", content);
             var result = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -52,7 +50,7 @@ namespace CryptoTechReminderSystem.Gateway
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
-            var result = GetUsers().Result;
+            var result = GetUsersAsync().Result;
             var users = result["members"];
 
             return users.Select(developer => new SlackDeveloper
@@ -63,9 +61,8 @@ namespace CryptoTechReminderSystem.Gateway
             ).ToList();
         }
         
-        private async Task<JObject> GetUsers(){
-            const string requestPath = "/api/users.list";
-            var response = await _client.GetAsync(requestPath);
+        private async Task<JObject> GetUsersAsync(){
+            var response = await _client.GetAsync("/api/users.list");
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
         

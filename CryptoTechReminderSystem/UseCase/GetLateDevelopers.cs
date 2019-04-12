@@ -5,7 +5,7 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class GetLateDevelopers
+    public class GetLateDevelopers : IGetLateDevelopers
     {
         private readonly IHarvestDeveloperRetriever _harvestDeveloperRetriever;
         private readonly ITimeSheetRetriever _harvestTimeSheetRetriever;
