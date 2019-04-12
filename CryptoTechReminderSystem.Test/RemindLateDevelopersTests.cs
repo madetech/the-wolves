@@ -9,12 +9,27 @@ namespace CryptoTechReminderSystem.Test
 {
     public class RemindLateDevelopersTests
     {
-        private class Clock : IClock
+        
+        private class ClockStub : IClock
         {
+            private DateTimeOffset _currentDateTime;
+
+            public ClockStub(DateTimeOffset dateTime)
+            {
+                _currentDateTime = dateTime;
+            }
+
             public DateTimeOffset Now()
             {
-                throw new NotImplementedException();
+                return _currentDateTime;
             }
+
+            public void AddSpecifiedMinutes(int minutes)
+            {
+                _currentDateTime = _currentDateTime.AddMinutes(minutes);
+            }
+            
+            
         }
 
         private class GetLateDevelopersSpy : IGetLateDevelopers
@@ -78,7 +93,11 @@ namespace CryptoTechReminderSystem.Test
         {
             var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new Clock();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
             
             remindLateDevelopers.Execute(
@@ -96,7 +115,11 @@ namespace CryptoTechReminderSystem.Test
         {
             var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new Clock();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
             
             remindLateDevelopers.Execute(
@@ -114,7 +137,11 @@ namespace CryptoTechReminderSystem.Test
         {
             var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersStub = new GetLateDevelopersStub();
-            var clock = new Clock();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
             
             remindLateDevelopers.Execute(
@@ -132,7 +159,11 @@ namespace CryptoTechReminderSystem.Test
         {
             var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersStub = new GetLateDevelopersStub();
-            var clock = new Clock();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
             
             remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
@@ -152,7 +183,11 @@ namespace CryptoTechReminderSystem.Test
         {
             var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersStub = new GetLateDevelopersStub();
-            var clock = new Clock();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
             
             remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
@@ -161,6 +196,46 @@ namespace CryptoTechReminderSystem.Test
             });
 
             remindDeveloperSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
+        }
+        
+        [Test]
+        public void CanAvoidRemindingLateDevelopersAtTenFifteen()
+        {
+            var remindDeveloperSpy = new RemindDeveloperSpy();
+            var getLateDevelopersStub = new GetLateDevelopersStub();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 15, 0)
+                )
+            );
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
+            
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
+            {
+                Message = "TIMESHEETS ARE GOOD YO!"
+            });
+
+            remindDeveloperSpy.CountCalled.Should().Be(0);
+        }
+        
+        [Test]
+        public void CanAvoidRemindingLateDevelopersAfterOneThirty()
+        {
+            var remindDeveloperSpy = new RemindDeveloperSpy();
+            var getLateDevelopersStub = new GetLateDevelopersStub();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 14, 30, 0)
+                )
+            );
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
+            
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
+            {
+                Message = "TIMESHEETS ARE GOOD YO!"
+            });
+
+            remindDeveloperSpy.CountCalled.Should().Be(0);
         }
     }    
 }

@@ -7,25 +7,29 @@ namespace CryptoTechReminderSystem.UseCase
     {
         private IGetLateDevelopers _getLateDevelopers;
         private IRemindDeveloper _remindDeveloper;
+        private IClock _clock;
 
         public RemindLateDevelopers(IGetLateDevelopers getLateDevelopers, IRemindDeveloper remindDeveloper, IClock clock)
         {
             _getLateDevelopers = getLateDevelopers;
             _remindDeveloper = remindDeveloper;
+            _clock = clock;
         }
 
         public void Execute(RemindLateDevelopersRequest remindLateDevelopersRequest)
         {
-            var lateDevelopers = _getLateDevelopers.Execute();
-            foreach (var lateDeveloper in lateDevelopers.Developers)
+            if ((_clock.Now().ToUnixTimeSeconds() % 1800 == 0) && (_clock.Now().Hour < 14))
             {
-                _remindDeveloper.Execute(new RemindDeveloperRequest
+                var lateDevelopers = _getLateDevelopers.Execute();
+                foreach (var lateDeveloper in lateDevelopers.Developers)
                 {
-                    Channel = lateDeveloper,
-                    Text = remindLateDevelopersRequest.Message
-                });
+                    _remindDeveloper.Execute(new RemindDeveloperRequest
+                    {
+                        Channel = lateDeveloper,
+                        Text = remindLateDevelopersRequest.Message
+                    });
+                }
             }
-            
         }
     }
 }
