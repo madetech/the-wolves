@@ -39,7 +39,7 @@ namespace CryptoTechReminderSystem.Gateway
             PostChatMessage(content).Wait();
         }
         
-        private async Task<object> PostChatMessage(StringContent content)
+        private async Task<object> PostChatMessage(HttpContent content)
         {
             var requestPath = "/api/chat.postMessage";
             var response = await _client.PostAsync(requestPath, content);
