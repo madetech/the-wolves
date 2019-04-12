@@ -12,12 +12,17 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 {
     public class CryptoTechReminderSystemTests
     {
+        private const string SlackApiAddress = "http://localhost:8009/";
+        private const string HarvestApiAddress = "http://localhost:8010/";
+        private const string SlackApiUsersPath = "api/users.list";
+        private const string SlackApiPostMessagePath = "api/chat.postMessage";
+        private const string HarvestApiUsersPath = "/api/v2/users";
         private FluentSimulator _slackApi;
         private FluentSimulator _harvestApi;
         private HarvestGateway _harvestGateway;
         private SlackGateway _slackGateway;
         private RemindDeveloper _remindDeveloper;
-
+        
         private class ClockStub : IClock
         {
             private readonly DateTimeOffset _currentDateTime;
@@ -36,10 +41,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         [SetUp]
         public void Setup()
         {
-            _slackApi = new FluentSimulator("http://localhost:8009/");
-            _slackGateway = new SlackGateway("http://localhost:8009/","xxxx-xxxxxxxxx-xxxx");
-            _harvestApi = new FluentSimulator("http://localhost:8010/");
-            _harvestGateway = new HarvestGateway("http://localhost:8010/", "xxxx-xxxxxxxxx-xxxx");
+            _slackApi = new FluentSimulator(SlackApiAddress);
+            _slackGateway = new SlackGateway(SlackApiAddress,"xxxx-xxxxxxxxx-xxxx");
+            _harvestApi = new FluentSimulator(HarvestApiAddress);
+            _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx");
             _remindDeveloper = new RemindDeveloper(_slackGateway);
             
             var slackGetUsersResponse = File.ReadAllText(
@@ -48,10 +53,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     "../../../SlackUsersExampleResponse.json"
                 )
             );
-            
-            _slackApi.Get("/api/users.list").Responds(slackGetUsersResponse);
 
-            _slackApi.Post("/api/chat.postMessage").Responds("{{\"ok\": true}}");
+            _slackApi.Get("/" + SlackApiUsersPath).Responds(slackGetUsersResponse);
+
+            _slackApi.Post("/" + SlackApiPostMessagePath).Responds("{{\"ok\": true}}");
             
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(
@@ -60,7 +65,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            _harvestApi.Get("/api/v2/users").Responds(harvestGetUsersResponse);
+            _harvestApi.Get(HarvestApiUsersPath).Responds(harvestGetUsersResponse);
             
             var harvestGetTimeEntriesResponse = File.ReadAllText(
                 Path.Combine(
@@ -100,6 +105,11 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 }
             );
             _slackApi.ReceivedRequests.Count.Should().Be(4);
+            
+            for (var i = 1; i < 4; i++)
+            {
+                _slackApi.ReceivedRequests[i].Url.Should().Be(SlackApiAddress + SlackApiPostMessagePath);
+            }
         }
     }
 }
