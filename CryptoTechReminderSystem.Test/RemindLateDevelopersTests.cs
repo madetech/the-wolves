@@ -9,8 +9,7 @@ namespace CryptoTechReminderSystem.Test
 {
     public class RemindLateDevelopersTests
     {
-        
-        public class Clock : IClock
+        private class Clock : IClock
         {
             public DateTimeOffset Now()
             {
@@ -18,13 +17,14 @@ namespace CryptoTechReminderSystem.Test
             }
         }
 
-        public class GetLateDevelopersSpy : IGetLateDevelopers
+        private class GetLateDevelopersSpy : IGetLateDevelopers
         {
-            public bool _called { private set; get; }
+            public bool Called { private set; get; }
 
             public GetLateDevelopersResponse Execute()
             {
-                _called = true;
+                Called = true;
+                
                 return new GetLateDevelopersResponse()
                 {
                     Developers = new List<string>()
@@ -35,11 +35,26 @@ namespace CryptoTechReminderSystem.Test
             }
         }
 
-        public class RemindDeveloperSpy : IRemindDeveloper
+        private class GetLateDevelopersStub : IGetLateDevelopers
+        {
+            public GetLateDevelopersResponse Execute()
+            {
+                return new GetLateDevelopersResponse
+                {
+                    Developers = new List<string>
+                    {
+                        "W0123CHAN",
+                        "W123AMON",
+                        "W789ROSS"
+                    }
+                };
+            }
+        }
+
+        private class RemindDeveloperSpy : IRemindDeveloper
         {
             public bool Called { private set; get; }
             public int CountCalled{ private set; get; }
-
             public List<string> Channels{ private set; get; }
             public string Text{ private set; get; }
 
@@ -47,6 +62,7 @@ namespace CryptoTechReminderSystem.Test
             {
                 Channels = new List<string>();
             }
+            
             public void Execute(RemindDeveloperRequest remindDeveloperRequest)
             {
                 Called = true;
@@ -65,13 +81,14 @@ namespace CryptoTechReminderSystem.Test
             var clock = new Clock();
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
             
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
-            {
-                Message = "TIMESHEETS ARE GOOD YO!"
-            });
+            remindLateDevelopers.Execute(
+                new RemindLateDevelopersRequest()
+                {
+                    Message = "TIMESHEETS ARE GOOD YO!"
+                }
+            );
 
-            getLateDevelopersSpy._called.Should().BeTrue(); 
-            
+            getLateDevelopersSpy.Called.Should().BeTrue(); 
         }
         
         [Test]
@@ -82,13 +99,14 @@ namespace CryptoTechReminderSystem.Test
             var clock = new Clock();
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
             
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
-            {
-                Message = "TIMESHEETS ARE GOOD YO!"
-            });
+            remindLateDevelopers.Execute(
+                new RemindLateDevelopersRequest
+                {
+                    Message = "TIMESHEETS ARE GOOD YO!"
+                }
+            );
 
             remindDeveloperSpy.Called.Should().BeTrue(); 
-            
         }
         
         [Test]
@@ -99,10 +117,12 @@ namespace CryptoTechReminderSystem.Test
             var clock = new Clock();
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
             
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
-            {
-                Message = "TIMESHEETS ARE GOOD YO!"
-            });
+            remindLateDevelopers.Execute(
+                new RemindLateDevelopersRequest
+                {
+                    Message = "TIMESHEETS ARE GOOD YO!"
+                }
+            );
 
             remindDeveloperSpy.CountCalled.Should().Be(3);
         }
@@ -142,23 +162,5 @@ namespace CryptoTechReminderSystem.Test
 
             remindDeveloperSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
         }
-    }
-
-    public class GetLateDevelopersStub : IGetLateDevelopers
-    {
-        public GetLateDevelopersResponse Execute()
-        {
-            return new GetLateDevelopersResponse
-            {
-                Developers = new List<string>
-                {
-                    "W0123CHAN",
-                    "W123AMON",
-                    "W789ROSS"
-                }
-            };
-        }
-    }
-
-    
+    }    
 }
