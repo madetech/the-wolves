@@ -25,7 +25,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         
         private class ClockStub : IClock
         {
-            private readonly DateTimeOffset _currentDateTime;
+            private DateTimeOffset _currentDateTime;
 
             public ClockStub(DateTimeOffset dateTime)
             {
@@ -36,6 +36,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             {
                 return _currentDateTime;
             }
+
+            public void AddSpecifiedMinutes(int minutes)
+            {
+                _currentDateTime = _currentDateTime.AddMinutes(minutes);
+            }
+            
+            
         }
 
         [SetUp]
@@ -110,6 +117,149 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             {
                 _slackApi.ReceivedRequests[i].Url.Should().Be(SlackApiAddress + SlackApiPostMessagePath);
             }
+        }
+        
+        [Test]
+        public void CanRemindLateDevelopersEveryHalfHourUntilOneThirty()
+        {                      
+            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 11, 0, 0)
+                )
+            );
+
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+               
+            _slackApi.ReceivedRequests.Count.Should().Be(4);
+
+            // 11:15
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(4);
+            
+            // 11:30
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(8);
+            
+            // 11:45 
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(8);
+
+            // 12:00
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(12);
+
+            // 12:15 
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(12);
+            
+            // 12:30 
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(16);
+
+            // 12:45
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(16);
+
+            // 13:00
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(20);
+            
+            
+            // 13:15
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(20);
+            
+            
+            // 13:30
+            clock.AddSpecifiedMinutes(15);
+            
+            remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(24);
         }
     }
 }
