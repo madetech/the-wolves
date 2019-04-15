@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace CryptoTechReminderSystem.Test
 {
-    public partial class RemindLateDevelopersTests
+    public class RemindLateDevelopersTests
     {
         [Test]
         public void CanGetLateDevelopers()
