@@ -76,7 +76,7 @@ namespace CryptoTechReminderSystem.Test
 
             foreach (var user in userId)
             {
-                expectedMessage += $"/n• <@{user}>";
+                expectedMessage += $"\n• <@{user}>";
             }
             
             remindDeveloperSpy.Text.Should().Be(expectedMessage);
