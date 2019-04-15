@@ -16,10 +16,5 @@ namespace CryptoTechReminderSystem.Test.TestDouble
         {
             return _currentDateTime;
         }
-
-        public void AddSpecifiedMinutes(int minutes)
-        {
-            _currentDateTime = _currentDateTime.AddMinutes(minutes);
-        }
     }
 }
