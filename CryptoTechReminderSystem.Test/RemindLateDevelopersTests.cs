@@ -28,8 +28,6 @@ namespace CryptoTechReminderSystem.Test
             {
                 _currentDateTime = _currentDateTime.AddMinutes(minutes);
             }
-            
-            
         }
 
         private class GetLateDevelopersSpy : IGetLateDevelopers
