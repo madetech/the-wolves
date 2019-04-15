@@ -173,18 +173,21 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             );
 
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+
+            const string message = "These are the people yet to submit time sheets:";
+            const string channel = "CHBUZLJT1";
             
             shameLateDevelopers.Execute(new ShameLateDevelopersRequest
                 {
-                    Message = ":bell: give me the sheets yo :bell:",
-                    Channel = "CHBUZLJT1"
+                    Message = message,
+                    Channel = channel
                 }
             );
 
             JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody)["channel"]
-                .ToString().Should().Be("CHBUZLJT1");
+                .ToString().Should().Be(channel);
             JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody)["text"]
-                .ToString().Should().Be(":bell: give me the sheets yo :bell:\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>"); 
+                .ToString().Should().Be($"{message}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>"); 
         }
     }
 }
