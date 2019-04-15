@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using FluentAssertions;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
 using FluentSim;
+using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.AcceptanceTest
 {
@@ -24,7 +26,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         
         private class ClockStub : IClock
         {
-            private DateTimeOffset _currentDateTime;
+            private readonly DateTimeOffset _currentDateTime;
 
             public ClockStub(DateTimeOffset dateTime)
             {
@@ -157,6 +159,32 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                
                 _slackApi.ReceivedRequests.Count.Should().Be(expectedCount);
             }  
+        }
+
+        [Test]
+        public void CanRemindLearnTechChannelAtOneThirty()
+        {
+            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
+            
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 13, 30, 0)
+                )
+            );
+
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            
+            shameLateDevelopers.Execute(new ShameLateDevelopersRequest
+                {
+                    Message = ":bell: give me the sheets yo :bell:",
+                    Channel = "CHBUZLJT1"
+                }
+            );
+
+            JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody)["channel"]
+                .ToString().Should().Be("CHBUZLJT1");
+            JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody)["text"]
+                .ToString().Should().Be(":bell: give me the sheets yo :bell:\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>"); 
         }
     }
 }
