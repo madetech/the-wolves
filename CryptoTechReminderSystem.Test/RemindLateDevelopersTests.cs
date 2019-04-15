@@ -10,90 +10,65 @@ namespace CryptoTechReminderSystem.Test
 {
     public class RemindLateDevelopersTests
     {
-        [Test]
-        public void CanGetLateDevelopers()
+        RemindDeveloperSpy _remindDeveloperSpy;
+        GetLateDevelopersSpy _getLateDevelopersSpy;
+        GetLateDevelopersStub _getLateDevelopersStub;
+
+        [SetUp]
+        public void SetUp()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
+            _remindDeveloperSpy = new RemindDeveloperSpy();
+            _getLateDevelopersSpy = new GetLateDevelopersSpy();
+            _getLateDevelopersStub = new GetLateDevelopersStub();  
+        }
+        
+        private void GivenSetUpForTenThirty(IGetLateDevelopers getLateDevelopers)
+        {
             var clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, 01, 10, 30, 0)
                 )
             );
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers,_remindDeveloperSpy, clock);
             
             remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest()
+                new RemindLateDevelopersRequest
                 {
                     Message = "TIMESHEETS ARE GOOD YO!"
                 }
             );
-
-            getLateDevelopersSpy.Called.Should().BeTrue(); 
+        }
+        
+        [Test]
+        public void CanGetLateDevelopers()
+        {
+            GivenSetUpForTenThirty(_getLateDevelopersSpy);
+               
+            _getLateDevelopersSpy.Called.Should().BeTrue(); 
         }
         
         [Test]
         public void CanRemindDevelopers()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
-                )
-            );
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
-            
-            remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest
-                {
-                    Message = "TIMESHEETS ARE GOOD YO!"
-                }
-            );
+            GivenSetUpForTenThirty(_getLateDevelopersSpy);
 
-            remindDeveloperSpy.Called.Should().BeTrue(); 
+            _remindDeveloperSpy.Called.Should().BeTrue(); 
         }
         
         [Test]
         public void CanRemindAllLateDevelopers()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersStub = new GetLateDevelopersStub();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
-                )
-            );
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
-            
-            remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest
-                {
-                    Message = "TIMESHEETS ARE GOOD YO!"
-                }
-            );
+           GivenSetUpForTenThirty(_getLateDevelopersStub);
 
-            remindDeveloperSpy.CountCalled.Should().Be(3);
+            _remindDeveloperSpy.CountCalled.Should().Be(3);
         }
         
         [Test]
         public void CanRemindDevelopersDirectly()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersStub = new GetLateDevelopersStub();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
-                )
-            );
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
+            GivenSetUpForTenThirty(_getLateDevelopersStub);
             
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
-            {
-                Message = "TIMESHEETS ARE GOOD YO!"
-            });
-
-            remindDeveloperSpy.Channels.Should().BeEquivalentTo(new List<string> {
+            _remindDeveloperSpy.Channels.Should().BeEquivalentTo(new List<string> {
                 "W0123CHAN",
                 "W123AMON",
                 "W789ROSS" 
@@ -103,21 +78,9 @@ namespace CryptoTechReminderSystem.Test
         [Test]
         public void CanRemindDevelopersDirectlyWithAMessage()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersStub = new GetLateDevelopersStub();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
-                )
-            );
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
-            
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
-            {
-                Message = "TIMESHEETS ARE GOOD YO!"
-            });
+            GivenSetUpForTenThirty(_getLateDevelopersStub);
 
-            remindDeveloperSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
+            _remindDeveloperSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
         }
         
         [Test]
