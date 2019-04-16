@@ -10,14 +10,14 @@ namespace CryptoTechReminderSystem.Test.UseCase
 {
     public class RemindLateDevelopersTests
     {
-        RemindDeveloperSpy _remindDeveloperSpy;
+        SendReminderSpy _sendReminderSpy;
         GetLateDevelopersSpy _getLateDevelopersSpy;
         GetLateDevelopersStub _getLateDevelopersStub;
 
         [SetUp]
         public void SetUp()
         {
-            _remindDeveloperSpy = new RemindDeveloperSpy();
+            _sendReminderSpy = new SendReminderSpy();
             _getLateDevelopersSpy = new GetLateDevelopersSpy();
             _getLateDevelopersStub = new GetLateDevelopersStub();  
         }
@@ -29,7 +29,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new DateTime(2019, 03, 01, 10, 30, 0)
                 )
             );
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers,_remindDeveloperSpy, clock);
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers,_sendReminderSpy, clock);
             
             remindLateDevelopers.Execute(
                 new RemindLateDevelopersRequest
@@ -52,7 +52,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             GivenSetUpForTenThirty(_getLateDevelopersSpy);
 
-            _remindDeveloperSpy.Called.Should().BeTrue(); 
+            _sendReminderSpy.Called.Should().BeTrue(); 
         }
         
         [Test]
@@ -60,7 +60,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
            GivenSetUpForTenThirty(_getLateDevelopersStub);
 
-            _remindDeveloperSpy.CountCalled.Should().Be(3);
+            _sendReminderSpy.CountCalled.Should().Be(3);
         }
         
         [Test]
@@ -68,7 +68,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             GivenSetUpForTenThirty(_getLateDevelopersStub);
             
-            _remindDeveloperSpy.Channels.Should().BeEquivalentTo(new List<string> {
+            _sendReminderSpy.Channels.Should().BeEquivalentTo(new List<string> {
                 "W0123CHAN",
                 "W123AMON",
                 "W789ROSS" 
@@ -80,7 +80,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             GivenSetUpForTenThirty(_getLateDevelopersStub);
 
-            _remindDeveloperSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
+            _sendReminderSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
         }
         
         [Test]
@@ -89,7 +89,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
 
         public void CanAvoidRemindingLateDevelopersAtTime(int hour, int minute)
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
+            var remindDeveloperSpy = new SendReminderSpy();
             var getLateDevelopersStub = new GetLateDevelopersStub();
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -118,14 +118,14 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new DateTime(2019, 03, day, hour, minute, 0)
                 )
             );
-            var remindLateDevelopers = new RemindLateDevelopers(_getLateDevelopersStub,_remindDeveloperSpy, clock);
+            var remindLateDevelopers = new RemindLateDevelopers(_getLateDevelopersStub,_sendReminderSpy, clock);
 
             remindLateDevelopers.Execute(new RemindLateDevelopersRequest
             {
                 Message = "TIMESHEETS ARE GOOD YO!"
             });
 
-            _remindDeveloperSpy.Called.Should().Be(expectedOutcome);
+            _sendReminderSpy.Called.Should().Be(expectedOutcome);
         }
         
     }    

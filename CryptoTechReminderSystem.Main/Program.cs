@@ -13,7 +13,7 @@ namespace CryptoTechReminderSystem.Main
         {    
             DotEnv.Config();
             
-            var remindDeveloper = new RemindDeveloper(
+            var remindDeveloper = new SendReminder(
                 new SlackGateway(
                     "https://slack.com/",
                     Environment.GetEnvironmentVariable("SLACK_TOKEN")
@@ -32,7 +32,7 @@ namespace CryptoTechReminderSystem.Main
 
             foreach (var id in idsList)
             {
-                remindDeveloper.Execute(new RemindDeveloperRequest
+                remindDeveloper.Execute(new SendReminderRequest
                 {
                     Channel = id,
                     Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
