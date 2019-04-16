@@ -20,23 +20,6 @@ namespace CryptoTechReminderSystem.UseCase
             _slackDeveloperRetriever = slackDeveloperRetriever;
             _clock = clock;
         }
-
-        private DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
-        {
-            switch (currentDateTime.DayOfWeek)
-            {
-                case DayOfWeek.Friday:
-                    return currentDateTime.AddDays(-4);
-                case DayOfWeek.Thursday:
-                    return currentDateTime.AddDays(-3);
-                case DayOfWeek.Wednesday:
-                    return currentDateTime.AddDays(-2);
-                case DayOfWeek.Tuesday:
-                    return currentDateTime.AddDays(-1);
-                default:
-                    return currentDateTime;
-            }
-        }
         
         public GetLateDevelopersResponse Execute()
         {
@@ -63,22 +46,17 @@ namespace CryptoTechReminderSystem.UseCase
             }
             return getLateDevelopersResponse;
         }
-
-        private DateTimeOffset GetEndingDate(DateTimeOffset currentDateTime)
+        
+        private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
         {
-            switch (currentDateTime.DayOfWeek)
-            {
-                case DayOfWeek.Monday:
-                    return currentDateTime.AddDays(4);
-                case DayOfWeek.Tuesday:
-                    return currentDateTime.AddDays(3);
-                case DayOfWeek.Wednesday:
-                    return currentDateTime.AddDays(2);
-                case DayOfWeek.Thursday:
-                    return currentDateTime.AddDays(1);
-                default:
-                    return currentDateTime;
-            }
+            var diff = (7 + (currentDateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
+            return currentDateTime.AddDays(-diff);
+        }
+
+        private static DateTimeOffset GetEndingDate(DateTimeOffset currentDateTime)
+        {
+            var diff = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
+            return currentDateTime.AddDays(diff);
         }
     }
 }
