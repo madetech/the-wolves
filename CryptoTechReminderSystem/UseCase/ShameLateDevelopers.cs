@@ -31,7 +31,6 @@ namespace CryptoTechReminderSystem.UseCase
                 {
                     Text = text,
                     Channel = shameLateDevelopersRequest.Channel
-           
                 });
             }
         }
