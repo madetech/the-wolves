@@ -7,22 +7,17 @@ namespace CryptoTechReminderSystem.Test.TestDouble
     public class GetLateDevelopersStub : IGetLateDevelopers
     {
         private readonly List<string> _lateDevelopers;
+
+        private static List<string> _defaultList => new List<string>
+        {
+            "W0123CHAN",
+            "W123AMON",
+            "W789ROSS"
+        };
         
         public GetLateDevelopersStub(List<string> lateDevelopers = null)
         {
-            if (lateDevelopers == null)
-            {
-                _lateDevelopers = new List<string>
-                {
-                    "W0123CHAN",
-                    "W123AMON",
-                    "W789ROSS"
-                };
-            }
-            else
-            {
-                _lateDevelopers = lateDevelopers;
-            }
+            _lateDevelopers = lateDevelopers ?? _defaultList;
         }
         
         public GetLateDevelopersResponse Execute()
