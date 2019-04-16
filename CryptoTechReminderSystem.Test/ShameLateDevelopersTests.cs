@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Test.TestDouble;
@@ -107,13 +108,18 @@ namespace CryptoTechReminderSystem.Test
         }
         
         [Test]
-        public void CannotShameLateDevelopersBeforeOneThirty()
+        [TestCase(01, 13, 30, true)]
+        [TestCase(01, 13, 00, false)]
+        [TestCase(01, 14, 00, false)]
+        [TestCase(02, 13, 30, false)]
+        [TestCase(03, 13, 30, false)]
+        public void CanOnlyShameLateDevelopersAtLearnTech(int day, int hour, int minute, bool expectedOutcome)
         {
             var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersSpy = new GetLateDevelopersSpy();
             var clock = new ClockStub(
                 new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 13, 00, 0)
+                    new DateTime(2019, 03, day, hour, minute, 0)
                 )
             );
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
@@ -125,29 +131,7 @@ namespace CryptoTechReminderSystem.Test
                 }
             );
 
-            remindDeveloperSpy.Called.Should().BeFalse();
-        }
-        
-        [Test]
-        public void CanShameLateDevelopersAtOneThirty()
-        {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 13, 30, 0)
-                )
-            );
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
-
-            shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest()
-                {
-                    Message = "TIMESHEETS ARE GOOD YO!"
-                }
-            );
-
-            remindDeveloperSpy.Called.Should().BeTrue();
+            remindDeveloperSpy.Called.Should().Be(expectedOutcome);
         }
     }
 }

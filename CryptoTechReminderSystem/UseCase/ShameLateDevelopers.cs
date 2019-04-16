@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
 
@@ -18,7 +19,9 @@ namespace CryptoTechReminderSystem.UseCase
 
         public void Execute(ShameLateDevelopersRequest shameLateDevelopersRequest)
         {
-            if (_clock.Now().Hour == 13 && _clock.Now().Minute == 30)
+            var currentDateTime = _clock.Now();
+            
+            if (currentDateTime.Hour == 13 && currentDateTime.Minute == 30 && currentDateTime.DayOfWeek == DayOfWeek.Friday)
             {
                 var lateDevelopers = _getLateDevelopers.Execute();
             
