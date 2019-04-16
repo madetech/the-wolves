@@ -5,4 +5,4 @@ run:
   console: 
     command: 
       - "dotnet CryptoTechReminderSystem.Main/out/CryptoTechReminderSystem.Main.dll"
-    image: docker
+    image: console
