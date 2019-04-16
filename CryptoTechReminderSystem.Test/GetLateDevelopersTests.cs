@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.Test
                 return result;
             }
 
-            public IEnumerable<TimeSheet> RetrieveTimeSheets()
+            public IList<TimeSheet> RetrieveTimeSheets()
             {
                 IList<TimeSheet> result = TimeSheets;
                 return result;
@@ -43,7 +43,7 @@ namespace CryptoTechReminderSystem.Test
                 return result;
             }
 
-            public IEnumerable<TimeSheet> RetrieveTimeSheets()
+            public IList<TimeSheet> RetrieveTimeSheets()
             {
                 IsRetrieveTimeSheetsCalled = true;
                 return new List<TimeSheet>();

@@ -5,6 +5,6 @@ namespace CryptoTechReminderSystem.Gateway
 {
     public interface ITimeSheetRetriever
     {
-        IEnumerable<TimeSheet> RetrieveTimeSheets();
+        IList<TimeSheet> RetrieveTimeSheets();
     }
 }

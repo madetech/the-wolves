@@ -42,7 +42,7 @@ namespace CryptoTechReminderSystem.Gateway
             ).ToList(); 
         }
 
-        public IEnumerable<TimeSheet> RetrieveTimeSheets()
+        public IList<TimeSheet> RetrieveTimeSheets()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
  
