@@ -16,9 +16,18 @@ namespace CryptoTechReminderSystem.UseCase
             _clock = clock;
         }
 
+        private bool IsHalfHourInterval()
+        {
+            return _clock.Now().ToUnixTimeSeconds() % 1800 == 0;
+        }
+
+        private bool IsBeforeTwoPm()
+        {
+            return _clock.Now().Hour < 14;
+        }
         public void Execute(RemindLateDevelopersRequest remindLateDevelopersRequest)
         {
-            if ((_clock.Now().ToUnixTimeSeconds() % 1800 == 0) && (_clock.Now().Hour < 14))
+            if(IsHalfHourInterval() && IsBeforeTwoPm())
             {
                 var lateDevelopers = _getLateDevelopers.Execute();
                 foreach (var lateDeveloper in lateDevelopers.Developers)
