@@ -17,7 +17,7 @@ namespace CryptoTechReminderSystem.Test
             var getLateDevelopersSpy = new GetLateDevelopersSpy();
             var clock = new ClockStub(
                 new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
+                    new DateTime(2019, 03, 01, 13, 30, 0)
                 )
             );
             var shameLateDevelopers = new ShameLateDevelopers
@@ -37,7 +37,7 @@ namespace CryptoTechReminderSystem.Test
             var getLateDevelopersSpy = new GetLateDevelopersSpy();
             var clock = new ClockStub(
                 new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
+                    new DateTime(2019, 03, 01, 13, 30, 0)
                 )
             );
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
@@ -61,7 +61,7 @@ namespace CryptoTechReminderSystem.Test
             var getLateDevelopersStub = new GetLateDevelopersStub(userId.ToList());
             var clock = new ClockStub(
                 new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
+                    new DateTime(2019, 03, 01, 13, 30, 0)
                 )
             );
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
@@ -89,7 +89,7 @@ namespace CryptoTechReminderSystem.Test
             var getLateDevelopersSpy = new GetLateDevelopersSpy();
             var clock = new ClockStub(
                 new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 10, 30, 0)
+                    new DateTime(2019, 03, 01, 13, 30, 0)
                 )
             );
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
@@ -104,6 +104,50 @@ namespace CryptoTechReminderSystem.Test
             );
             
             remindDeveloperSpy.Channels.First().Should().Be(expectedChannel);
+        }
+        
+        [Test]
+        public void CannotShameLateDevelopersBeforeOneThirty()
+        {
+            var remindDeveloperSpy = new RemindDeveloperSpy();
+            var getLateDevelopersSpy = new GetLateDevelopersSpy();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 13, 00, 0)
+                )
+            );
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
+
+            shameLateDevelopers.Execute(
+                new ShameLateDevelopersRequest()
+                {
+                    Message = "TIMESHEETS ARE GOOD YO!"
+                }
+            );
+
+            remindDeveloperSpy.Called.Should().BeFalse();
+        }
+        
+        [Test]
+        public void CanShameLateDevelopersAtOneThirty()
+        {
+            var remindDeveloperSpy = new RemindDeveloperSpy();
+            var getLateDevelopersSpy = new GetLateDevelopersSpy();
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 13, 30, 0)
+                )
+            );
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
+
+            shameLateDevelopers.Execute(
+                new ShameLateDevelopersRequest()
+                {
+                    Message = "TIMESHEETS ARE GOOD YO!"
+                }
+            );
+
+            remindDeveloperSpy.Called.Should().BeTrue();
         }
     }
 }
