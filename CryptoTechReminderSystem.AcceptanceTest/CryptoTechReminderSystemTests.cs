@@ -183,11 +183,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     Channel = channel
                 }
             );
+            
+            var lastSlackApiRequest = JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody);
 
-            JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody)["channel"]
-                .ToString().Should().Be(channel);
-            JObject.Parse(_slackApi.ReceivedRequests.Last().RequestBody)["text"]
-                .ToString().Should().Be($"{message}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>"); 
+            lastSlackApiRequest["channel"].ToString().Should().Be(channel);
+
+            var expectedMessage = $"{message}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
+            lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
     }
 }
