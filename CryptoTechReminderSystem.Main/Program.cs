@@ -11,7 +11,7 @@ namespace CryptoTechReminderSystem.Main
     {
         static void Main(string[] args)
         {    
-            DotEnv.Config();
+            DotEnv.Config(false);
             
             var remindDeveloper = new SendReminder(
                 new SlackGateway(
