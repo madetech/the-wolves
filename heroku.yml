@@ -1,3 +1,5 @@
 build:
   docker:
     console: Dockerfile
+run:
+  console: "dotnet CryptoTechReminderSystem.Main/out/CryptoTechReminderSystem.Main.dll"
