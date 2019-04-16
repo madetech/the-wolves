@@ -11,37 +11,38 @@ namespace CryptoTechReminderSystem.Test
 {
     public class ShameLateDevelopersTests
     {
-        [Test]
-        public void CanGetLateDevelopers()
+        private RemindDeveloperSpy _remindDeveloperSpy;
+        private GetLateDevelopersSpy _getLateDevelopersSpy;
+        private ClockStub _clock;
+
+        [SetUp]
+        public void SetUp()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new ClockStub(
+            _remindDeveloperSpy = new RemindDeveloperSpy();
+            _getLateDevelopersSpy = new GetLateDevelopersSpy();
+            _clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, 01, 13, 30, 0)
                 )
             );
+        }
+        [Test]
+        public void CanGetLateDevelopers()
+        {
             var shameLateDevelopers = new ShameLateDevelopers
-                (getLateDevelopersSpy, remindDeveloperSpy, clock);
+                (_getLateDevelopersSpy, _remindDeveloperSpy, _clock);
 
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest()
             );
 
-            getLateDevelopersSpy.Called.Should().BeTrue();
+            _getLateDevelopersSpy.Called.Should().BeTrue();
         }
 
         [Test]
         public void CanRemindDevelopers()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 13, 30, 0)
-                )
-            );
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _remindDeveloperSpy, _clock);
 
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest()
@@ -50,7 +51,7 @@ namespace CryptoTechReminderSystem.Test
                 }
             );
 
-            remindDeveloperSpy.Called.Should().BeTrue();
+            _remindDeveloperSpy.Called.Should().BeTrue();
         }
 
         [Test]
@@ -58,14 +59,8 @@ namespace CryptoTechReminderSystem.Test
         [TestCase( "W0123CHAN", "W123AMON")]
         public void CanCheckMessageHasAllUsers(params string[] userId)
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
             var getLateDevelopersStub = new GetLateDevelopersStub(userId.ToList());
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 13, 30, 0)
-                )
-            );
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub,_remindDeveloperSpy, _clock);
             var expectedMessage = "TIMESHEETS ARE GOOD YO!";
 
             shameLateDevelopers.Execute(
@@ -80,20 +75,13 @@ namespace CryptoTechReminderSystem.Test
                 expectedMessage += $"\n• <@{user}>";
             }
             
-            remindDeveloperSpy.Text.Should().Be(expectedMessage);
+            _remindDeveloperSpy.Text.Should().Be(expectedMessage);
         }
 
         [Test]
         public void CanCheckMessageHadChannel()
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, 01, 13, 30, 0)
-                )
-            );
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy,remindDeveloperSpy, clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy,_remindDeveloperSpy, _clock);
 
             const string expectedChannel = "CH123456";
             
@@ -104,7 +92,7 @@ namespace CryptoTechReminderSystem.Test
                 }
             );
             
-            remindDeveloperSpy.Channels.First().Should().Be(expectedChannel);
+            _remindDeveloperSpy.Channels.First().Should().Be(expectedChannel);
         }
         
         [Test]
@@ -115,23 +103,21 @@ namespace CryptoTechReminderSystem.Test
         [TestCase(03, 13, 30, false)]
         public void CanOnlyShameLateDevelopersAtLearnTech(int day, int hour, int minute, bool expectedOutcome)
         {
-            var remindDeveloperSpy = new RemindDeveloperSpy();
-            var getLateDevelopersSpy = new GetLateDevelopersSpy();
             var clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, day, hour, minute, 0)
                 )
             );
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersSpy, remindDeveloperSpy, clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _remindDeveloperSpy, clock);
 
             shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest()
+                new ShameLateDevelopersRequest
                 {
                     Message = "TIMESHEETS ARE GOOD YO!"
                 }
             );
 
-            remindDeveloperSpy.Called.Should().Be(expectedOutcome);
+            _remindDeveloperSpy.Called.Should().Be(expectedOutcome);
         }
     }
 }
