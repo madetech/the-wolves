@@ -4,7 +4,7 @@ using CryptoTechReminderSystem.UseCase;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace CryptoTechReminderSystem.Test
+namespace CryptoTechReminderSystem.Test.UseCase
 {
     public class RemindDeveloperTests
     {

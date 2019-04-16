@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Test.TestDouble;
@@ -7,7 +6,7 @@ using CryptoTechReminderSystem.UseCase;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace CryptoTechReminderSystem.Test
+namespace CryptoTechReminderSystem.Test.UseCase
 {
     public class ShameLateDevelopersTests
     {

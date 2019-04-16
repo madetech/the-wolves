@@ -9,8 +9,9 @@ using FluentSim;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
-namespace CryptoTechReminderSystem.Test
+namespace CryptoTechReminderSystem.Test.Gateway
 {
+    [TestFixture]
     public class SlackGatewayTests
     {
         private const string Address = "http://localhost:8011/";
@@ -129,7 +130,7 @@ namespace CryptoTechReminderSystem.Test
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../SlackUsersExampleResponse.json"
+                        "../../../Gateway/SlackUsersExampleResponse.json"
                     )
                 );
                 

@@ -2,12 +2,13 @@ using System;
 using System.IO;
 using System.Linq;
 using CryptoTechReminderSystem.Gateway;
-using FluentSim;
 using FluentAssertions;
+using FluentSim;
 using NUnit.Framework;
 
-namespace CryptoTechReminderSystem.Test
+namespace CryptoTechReminderSystem.Test.Gateway
 {
+    [TestFixture]
     public class HarvestGatewayTests
     {
         private const string Address = "http://localhost:8050/";
@@ -98,7 +99,7 @@ namespace CryptoTechReminderSystem.Test
                 _harvestApi = new FluentSimulator(Address);
                 _harvestApi.Start();
                 _harvestGateway = new HarvestGateway(Address, Token);
-                SetUpTimeSheetApiEndpoint("../../../HarvestTimeEntriesApiEndpoint.json");
+                SetUpTimeSheetApiEndpoint("../../../Gateway/HarvestTimeEntriesApiEndpoint.json");
             }
 
             [TearDown]
@@ -145,3 +146,4 @@ namespace CryptoTechReminderSystem.Test
         }
     }
 }
+
