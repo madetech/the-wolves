@@ -97,9 +97,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestApi.Start();
                 _harvestGateway = new HarvestGateway(Address, Token);
-                SetUpTimeSheetApiEndpoint("../../../Gateway/HarvestTimeEntriesApiEndpoint.json");
             }
 
             [TearDown]
@@ -108,7 +106,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestApi.Stop();
             }
             
-            private void SetUpTimeSheetApiEndpoint(string jsonFilePath)
+            private void SetUpTimeSheetApiEndpoint(string jsonFilePath, string dateFrom, string dateTo)
             {
                 var json = File.ReadAllText(
                     Path.Combine(
@@ -116,13 +114,25 @@ namespace CryptoTechReminderSystem.Test.Gateway
                         jsonFilePath
                     )
                 );
-                _harvestApi.Get("/api/v2/time_entries").Responds(json);
+                var address = "/api/v2/time_entries";
+                _harvestApi.Get(address).WithParameter("from", dateFrom).WithParameter("to", dateTo).Responds(json);
+                _harvestApi.Start();
             }
 
             [Test]
             public void CanGetATimeSheet()
             {
-                var response = _harvestGateway.RetrieveTimeSheets(new DateTimeOffset(), new DateTimeOffset());
+                SetUpTimeSheetApiEndpoint("../../../Gateway/HarvestTimeEntriesApiEndpoint.json", "2019-04-08", "2019-04-12");
+
+                var dateFrom = new DateTimeOffset(
+                    new DateTime(2019, 04, 08)
+                );
+                
+                var dateTo = new DateTimeOffset(
+                    new DateTime(2019, 04, 12)
+                );
+                
+                var response = _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
 
                 response.First().UserId.Should().Be(1782975);
             }
@@ -130,7 +140,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetAnotherTimeSheet()
             {
-                var response = _harvestGateway.RetrieveTimeSheets(new DateTimeOffset(), new DateTimeOffset());
+                SetUpTimeSheetApiEndpoint("../../../Gateway/HarvestTimeEntriesApiEndpoint.json", "2019-04-08", "2019-04-12");
+
+                var dateFrom = new DateTimeOffset(
+                    new DateTime(2019, 04, 08)
+                );
+                
+                var dateTo = new DateTimeOffset(
+                    new DateTime(2019, 04, 12)
+                );
+                
+                var response = _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
 
                 response.Any(entry => entry.UserId == 1782974).Should().Be(true);
             }
@@ -138,10 +158,38 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetAllTimeSheetProperties()
             {
-                var response = _harvestGateway.RetrieveTimeSheets(new DateTimeOffset(), new DateTimeOffset()).First();
+                SetUpTimeSheetApiEndpoint("../../../Gateway/HarvestTimeEntriesApiEndpoint.json", "2019-04-08", "2019-04-12");
+
+                var dateFrom = new DateTimeOffset(
+                    new DateTime(2019, 04, 08)
+                );
+                
+                var dateTo = new DateTimeOffset(
+                    new DateTime(2019, 04, 12)
+                );
+                
+                var response = _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo).First();
                 response.Id.Should().Be(456709345);
                 response.UserId.Should().Be(1782975);
                 response.Hours.Should().Be(8.0);
+            }
+            
+            [Test]
+            public void CanRequestTimesheetsUsingAStartingAndEndingDate()
+            {
+                SetUpTimeSheetApiEndpoint("../../../Gateway/HarvestTimeEntriesApiEndpoint.json", "2019-04-08", "2019-04-12");
+
+                var dateFrom = new DateTimeOffset(
+                    new DateTime(2019, 04, 08)
+                );
+                
+                var dateTo = new DateTimeOffset(
+                    new DateTime(2019, 04, 12)
+                );
+                
+                _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
+
+                _harvestApi.ReceivedRequests.First().Url.Should().Be(Address + "api/v2/time_entries?from=2019-04-08&to=2019-04-12");
             }
         }
     }

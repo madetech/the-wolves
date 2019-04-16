@@ -22,6 +22,7 @@ namespace CryptoTechReminderSystem.Gateway
         
         private async Task<JObject> GetApiResponse(string address)
         {
+            Console.WriteLine(address);
             var response = await _client.GetAsync(address);
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
@@ -45,8 +46,12 @@ namespace CryptoTechReminderSystem.Gateway
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
- 
-            var apiResponse = GetApiResponse("/api/v2/time_entries").Result;
+            
+            var dateFromFmt = dateFrom.ToString("yyyy-MM-dd");
+            var dateToFmt = dateTo.ToString("yyyy-MM-dd");
+            var address = $"/api/v2/time_entries?from={dateFromFmt}&to={dateToFmt}";
+            
+            var apiResponse = GetApiResponse(address).Result;
             var timeSheets = apiResponse["time_entries"];
             return timeSheets.Select(timeSheet => new TimeSheet
                 {

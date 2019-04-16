@@ -73,8 +73,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     "../../../HarvestTimeEntriesExampleResponse.json"
                 )
             );
-            
-            _harvestApi.Get("/api/v2/time_entries").Responds(harvestGetTimeEntriesResponse);
+            _harvestApi.Get("/api/v2/time_entries")
+                .WithParameter("from", "2019-02-25")
+                .WithParameter("to", "2019-03-01")
+                .Responds(harvestGetTimeEntriesResponse);
             
             _slackApi.Start();
             _harvestApi.Start();
