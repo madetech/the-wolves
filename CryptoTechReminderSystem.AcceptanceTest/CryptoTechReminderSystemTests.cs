@@ -96,12 +96,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         [Test]
         public void CanRemindLateDevelopersAtTenThirtyOnFriday()
         {                      
-            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
             var clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, 01, 10, 30, 0)
                 )
             );
+            
+            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder, clock);
 
@@ -142,12 +143,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             [TestCase(13, 15, 20)]
             public void CanRemindLateDevelopersEveryHalfHourUntilOneThirty(int hour, int minute, int expectedCount)
             {                      
-                var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
                 var clock = new ClockStub(
                     new DateTimeOffset(
                         new DateTime(2019, 03, 01, hour, minute, 0)
                     )
                 );
+                
+                var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
                 var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder, clock);
 
@@ -164,13 +166,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         [Test]
         public void CanRemindLearnTechChannelAtOneThirty()
         {
-            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway);
-            
             var clock = new ClockStub(
                 new DateTimeOffset(
                     new DateTime(2019, 03, 01, 13, 30, 0)
                 )
             );
+            
+            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _sendReminder, clock);
 

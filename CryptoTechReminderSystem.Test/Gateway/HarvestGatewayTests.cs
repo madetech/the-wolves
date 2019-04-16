@@ -122,7 +122,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetATimeSheet()
             {
-                var response = _harvestGateway.RetrieveTimeSheets();
+                var response = _harvestGateway.RetrieveTimeSheets(new DateTimeOffset(), new DateTimeOffset());
 
                 response.First().UserId.Should().Be(1782975);
             }
@@ -130,7 +130,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetAnotherTimeSheet()
             {
-                var response = _harvestGateway.RetrieveTimeSheets();
+                var response = _harvestGateway.RetrieveTimeSheets(new DateTimeOffset(), new DateTimeOffset());
 
                 response.Any(entry => entry.UserId == 1782974).Should().Be(true);
             }
@@ -138,7 +138,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetAllTimeSheetProperties()
             {
-                var response = _harvestGateway.RetrieveTimeSheets().First();
+                var response = _harvestGateway.RetrieveTimeSheets(new DateTimeOffset(), new DateTimeOffset()).First();
                 response.Id.Should().Be(456709345);
                 response.UserId.Should().Be(1782975);
                 response.Hours.Should().Be(8.0);
