@@ -22,9 +22,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
         public void CanRemindDeveloper()
         {
             var spy = new SlackGatewaySpy();
-            var remindDeveloper = new RemindDeveloper(spy);
+            var remindDeveloper = new SendReminder(spy);
             
-            remindDeveloper.Execute(new RemindDeveloperRequest
+            remindDeveloper.Execute(new SendReminderRequest
             {
                 Channel = "U120123D",
                 Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
@@ -37,10 +37,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
         public void CanRemindDeveloper2()
         {
             var spy = new SlackGatewaySpy();
-            var remindDeveloper = new RemindDeveloper(spy);
+            var remindDeveloper = new SendReminder(spy);
             var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
             
-            remindDeveloper.Execute(new RemindDeveloperRequest
+            remindDeveloper.Execute(new SendReminderRequest
             {
                 Channel = "U87219AW",
                 Text = text

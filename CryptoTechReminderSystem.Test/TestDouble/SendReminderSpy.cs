@@ -4,24 +4,24 @@ using CryptoTechReminderSystem.UseCase;
 
 namespace CryptoTechReminderSystem.Test.TestDouble
 {
-    public class RemindDeveloperSpy : IRemindDeveloper
+    public class SendReminderSpy : ISendReminder
     {
         public bool Called { private set; get; }
         public int CountCalled{ private set; get; }
         public List<string> Channels{ private set; get; }
         public string Text{ private set; get; }
 
-        public RemindDeveloperSpy()
+        public SendReminderSpy()
         {
             Channels = new List<string>();
         }
         
-        public void Execute(RemindDeveloperRequest remindDeveloperRequest)
+        public void Execute(SendReminderRequest sendReminderRequest)
         {
             Called = true;
             CountCalled++;
-            Channels.Add(remindDeveloperRequest.Channel);
-            Text = remindDeveloperRequest.Text;
+            Channels.Add(sendReminderRequest.Channel);
+            Text = sendReminderRequest.Text;
         }
     }
 }

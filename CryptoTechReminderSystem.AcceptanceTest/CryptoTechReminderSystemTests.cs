@@ -22,7 +22,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         private static FluentSimulator _harvestApi;
         private static HarvestGateway _harvestGateway;
         private static SlackGateway _slackGateway;
-        private static RemindDeveloper _remindDeveloper;
+        private static SendReminder _sendReminder;
         
         private class ClockStub : IClock
         {
@@ -45,7 +45,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackGateway = new SlackGateway(SlackApiAddress,"xxxx-xxxxxxxxx-xxxx");
             _harvestApi = new FluentSimulator(HarvestApiAddress);
             _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx");
-            _remindDeveloper = new RemindDeveloper(_slackGateway);
+            _sendReminder = new SendReminder(_slackGateway);
             
             var slackGetUsersResponse = File.ReadAllText(
                 Path.Combine(
@@ -103,7 +103,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
 
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder, clock);
 
             remindLateDevelopers.Execute(new RemindLateDevelopersRequest
                 {
@@ -149,7 +149,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     )
                 );
 
-                var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+                var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder, clock);
 
                 remindLateDevelopers.Execute(new RemindLateDevelopersRequest
                     {
@@ -172,7 +172,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
 
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _remindDeveloper, clock);
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _sendReminder, clock);
 
             const string message = "These are the people yet to submit time sheets:";
             const string channel = "CHBUZLJT1";

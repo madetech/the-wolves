@@ -7,13 +7,13 @@ namespace CryptoTechReminderSystem.UseCase
     public class ShameLateDevelopers
     {
         private IGetLateDevelopers _getLateDevelopers;
-        private IRemindDeveloper _remindDeveloper;
+        private ISendReminder _sendReminder;
         private IClock _clock;
 
-        public ShameLateDevelopers(IGetLateDevelopers getLateDevelopers, IRemindDeveloper remindDeveloper, IClock clock)
+        public ShameLateDevelopers(IGetLateDevelopers getLateDevelopers, ISendReminder sendReminder, IClock clock)
         {
             _getLateDevelopers = getLateDevelopers;
-            _remindDeveloper = remindDeveloper;
+            _sendReminder = sendReminder;
             _clock = clock;
         }
 
@@ -27,7 +27,7 @@ namespace CryptoTechReminderSystem.UseCase
             
                 var text = lateDevelopers.Developers.Aggregate(shameLateDevelopersRequest.Message, (current, developer) => current + $"\n• <@{developer}>");
 
-                _remindDeveloper.Execute(new RemindDeveloperRequest()
+                _sendReminder.Execute(new SendReminderRequest()
                 {
                     Text = text,
                     Channel = shameLateDevelopersRequest.Channel
