@@ -101,7 +101,7 @@ namespace CryptoTechReminderSystem.Test
         [TestCase(01, 14, 00, false)]
         [TestCase(02, 13, 30, false)]
         [TestCase(03, 13, 30, false)]
-        public void CanOnlyShameLateDevelopersAtLearnTech(int day, int hour, int minute, bool expectedOutcome)
+        public void CanShameLateDevelopersAtOneThirtyOnFriday(int day, int hour, int minute, bool expectedOutcome)
         {
             var clock = new ClockStub(
                 new DateTimeOffset(

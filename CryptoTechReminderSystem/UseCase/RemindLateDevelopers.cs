@@ -27,7 +27,7 @@ namespace CryptoTechReminderSystem.UseCase
         }
         public void Execute(RemindLateDevelopersRequest remindLateDevelopersRequest)
         {
-            if(IsHalfHourInterval() && IsBeforeTwoPm())
+            if(IsHalfHourInterval() && IsBeforeTwoPm() && _clock.Now().DayOfWeek == DayOfWeek.Friday)
             {
                 var lateDevelopers = _getLateDevelopers.Execute();
                 foreach (var lateDeveloper in lateDevelopers.Developers)

@@ -98,12 +98,34 @@ namespace CryptoTechReminderSystem.Test
             );
             var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopersStub,remindDeveloperSpy, clock);
             
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest()
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
             {
                 Message = "TIMESHEETS ARE GOOD YO!"
             });
 
             remindDeveloperSpy.CountCalled.Should().Be(0);
+        }
+        
+        [Test]
+        [TestCase(01, 11, 30, true)]
+        [TestCase(02, 11, 30, false)]
+        [TestCase(01, 14, 00, false)]
+        [TestCase(08, 12, 00, true)]
+        public void CanRemindLateDevelopersOnFriday(int day, int hour, int minute, bool expectedOutcome)
+        {
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, day, hour, minute, 0)
+                )
+            );
+            var remindLateDevelopers = new RemindLateDevelopers(_getLateDevelopersStub,_remindDeveloperSpy, clock);
+
+            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+            {
+                Message = "TIMESHEETS ARE GOOD YO!"
+            });
+
+            _remindDeveloperSpy.Called.Should().Be(expectedOutcome);
         }
         
     }    
