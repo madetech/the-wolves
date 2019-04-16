@@ -1,8 +1,8 @@
 build:
   docker:
-    console: Dockerfile
+    worker: Dockerfile
 run:
-  console: 
+  worker: 
     command: 
       - "dotnet CryptoTechReminderSystem.Main/out/CryptoTechReminderSystem.Main.dll"
-    image: console
+    image: worker
