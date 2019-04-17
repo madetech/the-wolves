@@ -49,14 +49,14 @@ namespace CryptoTechReminderSystem.UseCase
         
         private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
         {
-            var diff = (7 + (currentDateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
-            return currentDateTime.AddDays(-diff);
+            var daysFromMonday = (7 + (currentDateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
+            return currentDateTime.AddDays(-daysFromMonday);
         }
 
         private static DateTimeOffset GetEndingDate(DateTimeOffset currentDateTime)
         {
-            var diff = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
-            return currentDateTime.AddDays(diff);
+            var daysToFriday = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
+            return currentDateTime.AddDays(daysToFriday);
         }
     }
 }
