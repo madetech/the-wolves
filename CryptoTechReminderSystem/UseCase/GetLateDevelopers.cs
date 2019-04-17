@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
@@ -10,19 +11,25 @@ namespace CryptoTechReminderSystem.UseCase
         private readonly IHarvestDeveloperRetriever _harvestDeveloperRetriever;
         private readonly ITimeSheetRetriever _harvestTimeSheetRetriever;
         private readonly ISlackDeveloperRetriever _slackDeveloperRetriever;
+        private readonly IClock _clock;
 
-        public GetLateDevelopers(ISlackDeveloperRetriever slackDeveloperRetriever, IHarvestDeveloperRetriever harvestDeveloperRetriever, ITimeSheetRetriever harvestTimeSheetRetriever)
+        public GetLateDevelopers(ISlackDeveloperRetriever slackDeveloperRetriever, IHarvestDeveloperRetriever harvestDeveloperRetriever, ITimeSheetRetriever harvestTimeSheetRetriever, IClock clock)
         {
             _harvestDeveloperRetriever = harvestDeveloperRetriever;
             _harvestTimeSheetRetriever = harvestTimeSheetRetriever;
             _slackDeveloperRetriever = slackDeveloperRetriever;
+            _clock = clock;
         }
-
+        
         public GetLateDevelopersResponse Execute()
         {
             var harvestGetDevelopersResponse = _harvestDeveloperRetriever.RetrieveDevelopers();
             var slackGetDevelopersResponse = _slackDeveloperRetriever.RetrieveDevelopers();
-            var harvestGetTimesheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets();
+
+            var dateFrom = GetStartingDate(_clock.Now());
+            var dateTo = GetEndingDate(_clock.Now());
+            
+            var harvestGetTimesheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             var getLateDevelopersResponse = new GetLateDevelopersResponse
             {
                 Developers = new List<string>()
@@ -38,6 +45,18 @@ namespace CryptoTechReminderSystem.UseCase
                 }
             }
             return getLateDevelopersResponse;
+        }
+        
+        private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
+        {
+            var daysFromMonday = (7 + (currentDateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
+            return currentDateTime.AddDays(-daysFromMonday);
+        }
+
+        private static DateTimeOffset GetEndingDate(DateTimeOffset currentDateTime)
+        {
+            var daysToFriday = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
+            return currentDateTime.AddDays(daysToFriday);
         }
     }
 }

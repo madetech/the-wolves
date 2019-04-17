@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
+using CryptoTechReminderSystem.Test.TestDouble;
 using CryptoTechReminderSystem.UseCase;
 using FluentAssertions;
 using NUnit.Framework;
@@ -10,22 +12,29 @@ namespace CryptoTechReminderSystem.Test.UseCase
 {
     public class GetLateDevelopersTests
     {
+        private static HarvestGatewaySpy _harvestGatewaySpy;
+        private static SlackGatewaySpy _slackGatewaySpy;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _harvestGatewaySpy = new HarvestGatewaySpy();
+            _slackGatewaySpy = new SlackGatewaySpy();
+        }
         private class HarvestGatewayStub : IHarvestDeveloperRetriever, ITimeSheetRetriever
         {
-            public HarvestDeveloper[] Developers { get; set; }
+            public HarvestDeveloper[] Developers { private get; set; }
             
-            public TimeSheet[] TimeSheets { get; set; }
+            public TimeSheet[] TimeSheets { private get; set; }
             
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
-                IList<HarvestDeveloper> result = Developers;
-                return result;
+                return Developers;
             }
 
-            public IList<TimeSheet> RetrieveTimeSheets()
+            public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
             {
-                IList<TimeSheet> result = TimeSheets;
-                return result;
+                return TimeSheets;
             }
         }
 
@@ -33,18 +42,25 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             public bool IsRetrieveDevelopersCalled;
             public bool IsRetrieveTimeSheetsCalled;
+            public DateTimeOffset[] RetrieveTimeSheetsArguments;
             
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
                 IsRetrieveDevelopersCalled = true;
-                IList<HarvestDeveloper> result = new List<HarvestDeveloper>();
               
-                return result;
+                return new List<HarvestDeveloper>();
             }
 
-            public IList<TimeSheet> RetrieveTimeSheets()
+            public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
             {
                 IsRetrieveTimeSheetsCalled = true;
+            
+                RetrieveTimeSheetsArguments = new[]
+                {
+                    dateFrom,
+                    dateTo
+                };
+
                 return new List<TimeSheet>();
             }
         }
@@ -55,8 +71,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
 
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
-                IList<SlackDeveloper> result = Developers;
-                return result;
+                return Developers;
             }
         }
 
@@ -67,51 +82,130 @@ namespace CryptoTechReminderSystem.Test.UseCase
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
                 IsRetrieveDevelopersCalled = true;
+                
                 return new List<SlackDeveloper>();
             }
         }
-        
-        [Test]
-        public void CanGetHarvestDevelopers()
+
+        [TestFixture]
+        public class CanGetDevelopers
         {
-            var harvestGatewaySpy = new HarvestGatewaySpy();
-            var slackGatewaySpy = new SlackGatewaySpy();
-            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy, harvestGatewaySpy);
+            private ClockStub _clock;
+            private GetLateDevelopers _getDevelopers;
             
-            getDevelopers.Execute();
+            [SetUp]
+            public void SetUp()
+            {
+                _harvestGatewaySpy = new HarvestGatewaySpy();
+                _slackGatewaySpy = new SlackGatewaySpy();
+                _clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 03, 01, 10, 30, 0)
+                    )
+                );
+
+                _getDevelopers =
+                    new GetLateDevelopers(_slackGatewaySpy, _harvestGatewaySpy, _harvestGatewaySpy, _clock);
+            }
             
-            harvestGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
+            [Test]
+            public void CanGetHarvestDevelopers()
+            {
+                _getDevelopers.Execute();
+
+                _harvestGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
+            }
+
+            [Test]
+            public void CanGetSlackDevelopers()
+            {
+                _getDevelopers.Execute();
+
+                _slackGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
+            }
+        }
+
+        [TestFixture]
+        public class CanGetTimeSheets
+        {
+            private SlackGatewayStub _slackGatewayStub;
+
+            [SetUp]
+            public void SetUp()
+            {
+                _harvestGatewaySpy = new HarvestGatewaySpy();
+                _slackGatewayStub = new SlackGatewayStub();
+            }
+            
+            [Test]
+            public void CanRetrieveTimeSheets()
+            {
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 03, 01, 10, 30, 0)
+                    )
+                );
+            
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
+            
+                getDevelopers.Execute();
+
+                _harvestGatewaySpy.IsRetrieveTimeSheetsCalled.Should().BeTrue();
+            }
+            
+            [Test]
+            [TestCase(19)]
+            [TestCase(18)]
+            [TestCase(17)]
+            [TestCase(16)]
+            [TestCase(15)]
+            public void CanRetrieveTimeSheetsWithStartingDate(int day)
+            {
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 04, day)
+                    )
+                );
+            
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
+            
+                getDevelopers.Execute();
+
+                _harvestGatewaySpy.RetrieveTimeSheetsArguments[0].Should().Be(
+                    new DateTimeOffset(
+                        new DateTime(2019, 04, 15)
+                    )
+                );
+            }
+            
+            [Test]
+            [TestCase(08)]
+            [TestCase(09)]
+            [TestCase(10)]
+            [TestCase(11)]
+            [TestCase(12)]
+            public void CanRetrieveTimeSheetsWithEndingDate(int day)
+            {
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 04, day)
+                    )
+                );
+            
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
+            
+                getDevelopers.Execute();
+
+                _harvestGatewaySpy.RetrieveTimeSheetsArguments[1].Should().Be(
+                    new DateTimeOffset(
+                        new DateTime(2019, 04, 12)
+                    )
+                );
+            }
         }
         
-        
-        [Test]
-        public void CanGetSlackDevelopers()
-        {
-            var harvestGatewaySpy = new HarvestGatewaySpy();
-            var slackGatewaySpy = new SlackGatewaySpy();            
-            var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy, harvestGatewaySpy);
-            
-            getDevelopers.Execute();
-
-            slackGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
-        }
-        
-        [Test]
-        public void CanGetTimesheets()
-        {
-            var harvestGatewaySpy = new HarvestGatewaySpy();
-            var slackGatewayStub = new SlackGatewayStub();
-            
-            var getDevelopers = new GetLateDevelopers(slackGatewayStub, harvestGatewaySpy, harvestGatewaySpy);
-            
-            getDevelopers.Execute();
-
-            harvestGatewaySpy.IsRetrieveTimeSheetsCalled.Should().BeTrue();
-        }
-        
-
-        [TestFixture()]
-        public class TestGetLateUserResponse
+        [TestFixture]
+        public class CanGetLateDevelopers
         {
             private HarvestGatewayStub _harvestGatewayStub;
             private SlackGatewayStub _slackGatewayStub;
@@ -159,31 +253,25 @@ namespace CryptoTechReminderSystem.Test.UseCase
             }
             
             [Test]
-            public void CanGetLateDevelopers()
+            [TestCase(1337, "U9999")]
+            [TestCase(123, "U8723")]
+            public void CanGetLateADeveloper(int harvestUserId, string slackUserId)
             {
                 _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
-                    new TimeSheet { Hours = 7, UserId = 1337 }, 5
+                    new TimeSheet { Hours = 7, UserId = harvestUserId }, 5
                 ).ToArray();
                 
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub);
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 03, 01, 10, 30, 0)
+                    )
+                );
+                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 
                 var response = getDevelopers.Execute();
          
-                response.Developers.First().Should().Be("U9999");
-            }
-            
-            [Test]
-            public void CanGetAnotherLateDeveloper()
-            {                
-                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
-                    new TimeSheet { Hours = 7, UserId = 123 }, 5
-                ).ToArray();
-
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub);
-                
-                var response = getDevelopers.Execute();
-              
-                response.Developers.First().Should().Be("U8723");
+                response.Developers.First().Should().Be(slackUserId);
             }
         }
     }

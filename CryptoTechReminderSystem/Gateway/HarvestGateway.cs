@@ -12,8 +12,13 @@ namespace CryptoTechReminderSystem.Gateway
     public class HarvestGateway : IHarvestDeveloperRetriever, ITimeSheetRetriever
     {
         private readonly HttpClient _client;
-        private string _token;
+        private readonly string _token;
 
+        private static string ToHarvestApiString(DateTimeOffset date)
+        {
+            return date.ToString("yyyy-MM-dd");
+        }
+        
         public HarvestGateway(string address, string token)
         {
             _client = new HttpClient { BaseAddress = new Uri(address) };
@@ -42,18 +47,20 @@ namespace CryptoTechReminderSystem.Gateway
             ).ToList(); 
         }
 
-        public IList<TimeSheet> RetrieveTimeSheets()
+        public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
- 
-            var apiResponse = GetApiResponse("/api/v2/time_entries").Result;
+
+            var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
+            
+            var apiResponse = GetApiResponse(address).Result;
             var timeSheets = apiResponse["time_entries"];
             return timeSheets.Select(timeSheet => new TimeSheet
                 {
                     Id = (int)timeSheet["id"],
                     TimeSheetDate = timeSheet["spent_date"].ToString(),
                     UserId = (int)timeSheet["user"]["id"],
-                    Hours = (float)timeSheet["hours"],
+                    Hours = (float)timeSheet["hours"]
                 }
             ).ToList(); 
         }
