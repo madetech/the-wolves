@@ -14,20 +14,18 @@ namespace CryptoTechReminderSystem.Test.UseCase
     {
         private class HarvestGatewayStub : IHarvestDeveloperRetriever, ITimeSheetRetriever
         {
-            public HarvestDeveloper[] Developers { get; set; }
+            public HarvestDeveloper[] Developers { private get; set; }
             
-            public TimeSheet[] TimeSheets { get; set; }
+            public TimeSheet[] TimeSheets { private get; set; }
             
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
-                IList<HarvestDeveloper> result = Developers;
-                return result;
+                return Developers;
             }
 
             public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
             {
-                IList<TimeSheet> result = TimeSheets;
-                return result;
+                return TimeSheets;
             }
         }
 
@@ -40,9 +38,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
             public IList<HarvestDeveloper> RetrieveDevelopers()
             {
                 IsRetrieveDevelopersCalled = true;
-                IList<HarvestDeveloper> result = new List<HarvestDeveloper>();
               
-                return result;
+                return new List<HarvestDeveloper>();
             }
 
             public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
@@ -65,8 +62,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
 
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
-                IList<SlackDeveloper> result = Developers;
-                return result;
+                return Developers;
             }
         }
 
@@ -77,6 +73,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             public IList<SlackDeveloper> RetrieveDevelopers()
             {
                 IsRetrieveDevelopersCalled = true;
+                
                 return new List<SlackDeveloper>();
             }
         }
@@ -91,6 +88,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new DateTime(2019, 03, 01, 10, 30, 0)
                 )
             );
+            
             var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy, harvestGatewaySpy, clock);
             
             getDevelopers.Execute();
@@ -109,6 +107,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new DateTime(2019, 03, 01, 10, 30, 0)
                 )
             );
+            
             var getDevelopers = new GetLateDevelopers(slackGatewaySpy, harvestGatewaySpy, harvestGatewaySpy, clock);
             
             getDevelopers.Execute();
@@ -117,10 +116,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
 
         [TestFixture]
-        public class CanGetTimesheets
+        public class CanGetTimeSheets
         {
             [Test]
-            public void CanRetrieveTimesheets()
+            public void CanRetrieveTimeSheets()
             {
                 var harvestGatewaySpy = new HarvestGatewaySpy();
                 var slackGatewayStub = new SlackGatewayStub();
@@ -143,7 +142,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             [TestCase(17)]
             [TestCase(16)]
             [TestCase(15)]
-            public void CanRetrieveTimesheetsWithStartingDate(int day)
+            public void CanRetrieveTimeSheetsWithStartingDate(int day)
             {
                 var harvestGatewaySpy = new HarvestGatewaySpy();
                 var slackGatewayStub = new SlackGatewayStub();
@@ -170,7 +169,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             [TestCase(10)]
             [TestCase(11)]
             [TestCase(12)]
-            public void CanRetrieveTimesheetsWithEndingDate(int day)
+            public void CanRetrieveTimeSheetsWithEndingDate(int day)
             {
                 var harvestGatewaySpy = new HarvestGatewaySpy();
                 var slackGatewayStub = new SlackGatewayStub();
@@ -241,10 +240,12 @@ namespace CryptoTechReminderSystem.Test.UseCase
             }
             
             [Test]
-            public void CanGetLateDeveloper()
+            [TestCase(1337, "U9999")]
+            [TestCase(123, "U8723")]
+            public void CanGetLateADeveloper(int harvestUserId, string slackUserId)
             {
                 _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
-                    new TimeSheet { Hours = 7, UserId = 1337 }, 5
+                    new TimeSheet { Hours = 7, UserId = harvestUserId }, 5
                 ).ToArray();
                 
                 var clock = new ClockStub(
@@ -257,27 +258,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 var response = getDevelopers.Execute();
          
-                response.Developers.First().Should().Be("U9999");
-            }
-            
-            [Test]
-            public void CanGetAnotherLateDeveloper()
-            {                
-                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
-                    new TimeSheet { Hours = 7, UserId = 123 }, 5
-                ).ToArray();
-                
-                var clock = new ClockStub(
-                    new DateTimeOffset(
-                        new DateTime(2019, 03, 01, 10, 30, 0)
-                    )
-                );
-
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
-                
-                var response = getDevelopers.Execute();
-              
-                response.Developers.First().Should().Be("U8723");
+                response.Developers.First().Should().Be(slackUserId);
             }
         }
     }
