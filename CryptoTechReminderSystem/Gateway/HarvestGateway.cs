@@ -13,16 +13,18 @@ namespace CryptoTechReminderSystem.Gateway
     {
         private readonly HttpClient _client;
         private readonly string _token;
+        private readonly string _accountId;
 
         private static string ToHarvestApiString(DateTimeOffset date)
         {
             return date.ToString("yyyy-MM-dd");
         }
         
-        public HarvestGateway(string address, string token)
+        public HarvestGateway(string address, string token, string accountId)
         {
             _client = new HttpClient { BaseAddress = new Uri(address) };
             _token = token;
+            _accountId = accountId;
         }
         
         private async Task<JObject> GetApiResponse(string address)
@@ -34,6 +36,7 @@ namespace CryptoTechReminderSystem.Gateway
         public IList<HarvestDeveloper> RetrieveDevelopers()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            _client.DefaultRequestHeaders.Add("Harvest-Account-Id",_accountId);
  
             var apiResponse = GetApiResponse("/api/v2/users").Result;
             var users = apiResponse["users"];
