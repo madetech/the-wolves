@@ -44,7 +44,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi = new FluentSimulator(SlackApiAddress);
             _slackGateway = new SlackGateway(SlackApiAddress,"xxxx-xxxxxxxxx-xxxx");
             _harvestApi = new FluentSimulator(HarvestApiAddress);
-            _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx");
+            _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx", "234567");
             _sendReminder = new SendReminder(_slackGateway);
             
             var slackGetUsersResponse = File.ReadAllText(
