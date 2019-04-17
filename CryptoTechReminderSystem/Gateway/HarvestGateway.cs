@@ -51,9 +51,7 @@ namespace CryptoTechReminderSystem.Gateway
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
-            var dateFromFmt = ToHarvestApiString(dateFrom);
-            var dateToFmt = ToHarvestApiString(dateTo);
-            var address = $"/api/v2/time_entries?from={dateFromFmt}&to={dateToFmt}";
+            var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
             
             var apiResponse = GetApiResponse(address).Result;
             var timeSheets = apiResponse["time_entries"];
@@ -62,7 +60,7 @@ namespace CryptoTechReminderSystem.Gateway
                     Id = (int)timeSheet["id"],
                     TimeSheetDate = timeSheet["spent_date"].ToString(),
                     UserId = (int)timeSheet["user"]["id"],
-                    Hours = (float)timeSheet["hours"],
+                    Hours = (float)timeSheet["hours"]
                 }
             ).ToList(); 
         }
