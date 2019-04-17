@@ -22,7 +22,6 @@ namespace CryptoTechReminderSystem.Gateway
         
         private async Task<JObject> GetApiResponse(string address)
         {
-            Console.WriteLine(address);
             var response = await _client.GetAsync(address);
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
