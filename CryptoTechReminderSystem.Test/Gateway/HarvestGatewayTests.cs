@@ -127,10 +127,9 @@ namespace CryptoTechReminderSystem.Test.Gateway
             }
 
             [Test]
-            [TestCase(456709345)]
-            [TestCase(636709355)]
-            [TestCase(636709356)]
-            public void CanGetATimeSheet(int expectedId)
+            [TestCase(1782975)]
+            [TestCase(1782974)]
+            public void CanGetATimeSheet(int expectedUserId)
             {
                 SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
 
@@ -144,7 +143,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 
                 var response = _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
 
-                response.Any(entry => entry.Id == expectedId).Should().BeTrue();
+                response.Any(entry => entry.UserId == expectedUserId).Should().BeTrue();
             }
 
             [Test]
