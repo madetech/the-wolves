@@ -11,7 +11,7 @@ namespace CryptoTechReminderSystem.UseCase
         private readonly IHarvestDeveloperRetriever _harvestDeveloperRetriever;
         private readonly ITimeSheetRetriever _harvestTimeSheetRetriever;
         private readonly ISlackDeveloperRetriever _slackDeveloperRetriever;
-        private IClock _clock;
+        private readonly IClock _clock;
 
         public GetLateDevelopers(ISlackDeveloperRetriever slackDeveloperRetriever, IHarvestDeveloperRetriever harvestDeveloperRetriever, ITimeSheetRetriever harvestTimeSheetRetriever, IClock clock)
         {
@@ -26,8 +26,8 @@ namespace CryptoTechReminderSystem.UseCase
             var harvestGetDevelopersResponse = _harvestDeveloperRetriever.RetrieveDevelopers();
             var slackGetDevelopersResponse = _slackDeveloperRetriever.RetrieveDevelopers();
 
-            DateTimeOffset dateFrom = GetStartingDate(_clock.Now());
-            DateTimeOffset dateTo = GetEndingDate(_clock.Now());
+            var dateFrom = GetStartingDate(_clock.Now());
+            var dateTo = GetEndingDate(_clock.Now());
             
             var harvestGetTimesheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             var getLateDevelopersResponse = new GetLateDevelopersResponse

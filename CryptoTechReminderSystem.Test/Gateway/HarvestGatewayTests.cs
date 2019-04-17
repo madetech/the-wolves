@@ -72,12 +72,20 @@ namespace CryptoTechReminderSystem.Test.Gateway
             private const string ApiTimeSheetPath = "api/v2/time_entries";
             private FluentSimulator _harvestApi;
             private HarvestGateway _harvestGateway;
-            
+            private DateTimeOffset _defaultDateFrom;
+            private DateTimeOffset _defaultDateTo;
+
             [SetUp]
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
                 _harvestGateway = new HarvestGateway(Address, Token);
+                _defaultDateFrom = new DateTimeOffset(
+                    new DateTime(2019, 04, 08)
+                );
+                _defaultDateTo = new DateTimeOffset(
+                    new DateTime(2019, 04, 12)
+                );
             }
 
             [TearDown]
@@ -133,15 +141,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
 
-                var dateFrom = new DateTimeOffset(
-                    new DateTime(2019, 04, 08)
-                );
-                
-                var dateTo = new DateTimeOffset(
-                    new DateTime(2019, 04, 12)
-                );
-                
-                var response = _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
                 response.Any(entry => entry.UserId == expectedUserId).Should().BeTrue();
             }
@@ -151,15 +151,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
 
-                var dateFrom = new DateTimeOffset(
-                    new DateTime(2019, 04, 08)
-                );
-                
-                var dateTo = new DateTimeOffset(
-                    new DateTime(2019, 04, 12)
-                );
-                
-                var response = _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                 
                 response.First().Id.Should().Be(456709345);
                 response.First().UserId.Should().Be(1782975);
