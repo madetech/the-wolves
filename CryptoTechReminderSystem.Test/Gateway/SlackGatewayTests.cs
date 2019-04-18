@@ -182,5 +182,74 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _response.First().Email.Should().Be("chandler@friends.com");
             }
         }
+        
+        [TestFixture]
+        public class CanExcludeUsers
+        {
+            private FluentSimulator _slackApi;
+            private SlackGateway _slackGateway;
+            private IList<SlackDeveloper> _response;
+
+            [SetUp]
+            public void SetUp()
+            {
+                _slackApi = new FluentSimulator(Address);
+                _slackGateway = new SlackGateway(Address, Token);
+            
+                var json = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "../../../Gateway/ExcludedSlackUsersExampleResponse.json"
+                    )
+                );
+                
+                _slackApi.Get("/api/users.list").Responds(json);
+            
+                _slackApi.Start();
+
+                _response = _slackGateway.RetrieveDevelopers();
+            }
+            
+            [TearDown]
+            public void TearDown()
+            {
+                _slackApi.Stop();
+            }
+            
+            [Test]
+            public void CanSendAGetUsersRequest()
+            {
+                var receivedRequest = _slackApi.ReceivedRequests.First();
+                
+                receivedRequest.Url.Should().Be(Address + "api/users.list");
+            }
+            
+            [Test]
+            public void CanSendAGetUsersRequestWithAToken()
+            {
+                var receivedRequest = _slackApi.ReceivedRequests.First();
+                
+                receivedRequest.Headers["Authorization"].Should().Be("Bearer " + Token);
+            }
+        
+            [Test]
+            public void CanGetAListOfSlackDevelopers()
+            {
+                _response.Should().BeOfType<List<SlackDeveloper>>();
+                _response.Should().HaveCount(2);
+            }
+        
+            [Test]
+            public void CanGetIdOfSlackDeveloper()
+            {
+                _response.First().Id.Should().Be("W345JOEY");
+            }
+            
+            [Test]
+            public void CanGetEmailOfSlackDeveloper()
+            {
+                _response.First().Email.Should().Be("joey@friends.com");
+            }
+        }
     }
 }
