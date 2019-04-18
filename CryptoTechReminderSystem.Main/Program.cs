@@ -18,7 +18,7 @@ namespace CryptoTechReminderSystem.Main
 
     public class Program : Registry
     {
-        private static void Main(string[] args)
+        private static void Main()
         {    
             DotEnv.Config(false);
             JobManager.Initialize(new ReminderRegistry());
