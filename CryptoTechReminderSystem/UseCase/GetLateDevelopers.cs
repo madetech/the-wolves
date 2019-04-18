@@ -40,8 +40,11 @@ namespace CryptoTechReminderSystem.UseCase
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 if (sumOfHours < 35)
                 {
-                    var slackLateDeveloper = slackGetDevelopersResponse.Single(developer => developer.Email == harvestDeveloper.Email);
-                    getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
+                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => developer.Email == harvestDeveloper.Email);
+                    if (slackLateDeveloper != null)
+                    {
+                        getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
+                    }
                 }
             }
             return getLateDevelopersResponse;
