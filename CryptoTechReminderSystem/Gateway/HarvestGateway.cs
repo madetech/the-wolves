@@ -47,15 +47,16 @@ namespace CryptoTechReminderSystem.Gateway
             
             var apiResponse = response.Result;
             var users = apiResponse["users"];
-            
-            return users.Select(developer => new HarvestDeveloper
-                {
-                    Id = (int) developer["id"],
-                    FirstName = developer["first_name"].ToString(),
-                    LastName = developer["last_name"].ToString(),
-                    Email = developer["email"].ToString()
-                }
-            ).ToList(); 
+           
+            return users.Where(user => (bool)user["is_active"] != false)
+                .Select(developer => new HarvestDeveloper()
+                    {
+                        Id = (int) developer["id"],
+                        FirstName = developer["first_name"].ToString(),
+                        LastName = developer["last_name"].ToString(),
+                        Email = developer["email"].ToString()
+                    }
+                ).ToList();
         }
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
