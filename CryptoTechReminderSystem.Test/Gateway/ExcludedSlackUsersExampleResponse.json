@@ -15,13 +15,13 @@
         "email": "chandler@friends.com"
       },
       "is_bot": false,
-      "is_ultra_restricted": false
+      "is_ultra_restricted": true
     },
     {
       "id": "W123AMON",
       "team_id": "T012AB3C4",
-      "name": "Monica",
       "deleted": false,
+      "name": "Monica",
       "real_name": "Monica Geller-Bing",
       "tz": "America/Los_Angeles",
       "tz_label": "Pacific Daylight Time",
@@ -31,12 +31,12 @@
         "email": "monica@friends.com"
       },
       "is_bot": false,
-      "is_ultra_restricted": false
+      "is_ultra_restricted": true
     },
     {
       "id": "W789ROSS",
       "team_id": "T012AB3C4",
-      "deleted": false,
+      "deleted": true,
       "name": "Ross",
       "real_name": "Ross Geller",
       "tz": "America/Los_Angeles",
@@ -52,7 +52,7 @@
     {
       "id": "W345RACH",
       "team_id": "T012AB3C4",
-      "deleted": false,
+      "deleted": true,
       "name": "Rachel",
       "real_name": "Rachel Green",
       "tz": "America/Los_Angeles",
