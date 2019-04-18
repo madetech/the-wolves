@@ -6,7 +6,8 @@
       "last_name":"Wayne",
       "email":"batman@gotham.com",
       "weekly_capacity":126000,
-      "roles":["Engineer"]
+      "roles":["Engineer"],
+      "is_active":true
     },
     {
       "id":1782959,
@@ -14,15 +15,18 @@
       "last_name":"Grayson",
       "email":"robin@gotham.com",
       "weekly_capacity":126000,
-      "roles":["Engineer"]
+      "roles":["Engineer"],
+      "is_active":true
     },
+    
     {
       "id":1782884,
       "first_name":"Barbara",
       "last_name":"Gordon",
       "email":"batgirl@gotham.com",
       "weekly_capacity":126000,
-      "roles":["Engineer"]
+      "roles":["Engineer"],
+      "is_active":true
     },
     {
       "id":1710101,
@@ -30,7 +34,8 @@
       "last_name":"Pennyworth",
       "email":"alfred@gotham.com",
       "weekly_capacity":126000,
-      "roles":["Engineer"]
+      "roles":["Engineer"],
+      "is_active":true
     }
   ]
 }

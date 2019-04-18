@@ -1,0 +1,49 @@
+{
+  "users": [
+    {
+      "id": 1782974,
+      "first_name": "Bruce",
+      "last_name": "Wayne",
+      "email": "batman@gotham.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Engineer"
+      ],
+      "is_active":false
+    },
+    
+    {
+      "id": 1782959,
+      "first_name": "Dick",
+      "last_name": "Grayson",
+      "email": "robin@gotham.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Engineer"
+      ],
+      "is_active":true
+    },
+    {
+      "id": 1782884,
+      "first_name": "Barbara",
+      "last_name": "Gordon",
+      "email": "batgirl@gotham.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Engineer"
+      ],
+      "is_active":false
+    },
+    {
+      "id": 1710101,
+      "first_name": "Alfred",
+      "last_name": "Pennyworth",
+      "email": "alfred@gotham.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Engineer"
+      ],
+      "is_active":true
+    }
+  ]
+}
