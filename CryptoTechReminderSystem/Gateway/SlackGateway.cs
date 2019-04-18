@@ -50,7 +50,9 @@ namespace CryptoTechReminderSystem.Gateway
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
-            var result = GetUsersAsync().Result;
+            var response = GetUsersAsync();
+            response.Wait();
+            var result = response.Result;
             var users = result["members"];
 
             return users.Where(user => user["profile"]["email"] != null && 
