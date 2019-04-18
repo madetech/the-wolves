@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using CryptoTechReminderSystem.DomainObject;
-using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.Test.TestDouble;
 using CryptoTechReminderSystem.UseCase;
 using FluentAssertions;
@@ -21,72 +19,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             _harvestGatewaySpy = new HarvestGatewaySpy();
             _slackGatewaySpy = new SlackGatewaySpy();
         }
-        private class HarvestGatewayStub : IHarvestDeveloperRetriever, ITimeSheetRetriever
-        {
-            public HarvestDeveloper[] Developers { private get; set; }
-            
-            public TimeSheet[] TimeSheets { private get; set; }
-            
-            public IList<HarvestDeveloper> RetrieveDevelopers()
-            {
-                return Developers;
-            }
-
-            public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
-            {
-                return TimeSheets;
-            }
-        }
-
-        private class HarvestGatewaySpy : IHarvestDeveloperRetriever, ITimeSheetRetriever
-        {
-            public bool IsRetrieveDevelopersCalled;
-            public bool IsRetrieveTimeSheetsCalled;
-            public DateTimeOffset[] RetrieveTimeSheetsArguments;
-            
-            public IList<HarvestDeveloper> RetrieveDevelopers()
-            {
-                IsRetrieveDevelopersCalled = true;
-              
-                return new List<HarvestDeveloper>();
-            }
-
-            public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
-            {
-                IsRetrieveTimeSheetsCalled = true;
-            
-                RetrieveTimeSheetsArguments = new[]
-                {
-                    dateFrom,
-                    dateTo
-                };
-
-                return new List<TimeSheet>();
-            }
-        }
-
-        private class SlackGatewayStub : ISlackDeveloperRetriever
-        {
-            public SlackDeveloper[] Developers;
-
-            public IList<SlackDeveloper> RetrieveDevelopers()
-            {
-                return Developers;
-            }
-        }
-
-        private class SlackGatewaySpy : ISlackDeveloperRetriever
-        {
-            public bool IsRetrieveDevelopersCalled;
-
-            public IList<SlackDeveloper> RetrieveDevelopers()
-            {
-                IsRetrieveDevelopersCalled = true;
-                
-                return new List<SlackDeveloper>();
-            }
-        }
-
+        
         [TestFixture]
         public class CanGetDevelopers
         {
@@ -217,14 +150,14 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 {
                     Developers = new[]
                     {
-                        new HarvestDeveloper()
+                        new HarvestDeveloper
                         {   
                             Id = 1337,
                             FirstName = "Fred",
                             LastName = "Flintstone",
                             Email = "fred@fred.com",
                         },
-                        new HarvestDeveloper()
+                        new HarvestDeveloper
                         {
                             Id = 123,
                             FirstName = "Joe",
@@ -284,25 +217,25 @@ namespace CryptoTechReminderSystem.Test.UseCase
             [SetUp]
             public void Setup()
             {
-                _harvestGatewayStub = new HarvestGatewayStub()
+                _harvestGatewayStub = new HarvestGatewayStub
                 {
                     Developers = new[]
                     {
-                        new HarvestDeveloper()
+                        new HarvestDeveloper
                         {   
                             Id = 1337,
                             FirstName = "Fred",
                             LastName = "Flintstone",
                             Email = "fred@fred.com",
                         },
-                        new HarvestDeveloper()
+                        new HarvestDeveloper
                         {
                             Id = 123,
                             FirstName = "Joe",
                             LastName = "Bloggs",
                             Email = "Joe@Bloggs.com"
                         },
-                        new HarvestDeveloper()
+                        new HarvestDeveloper
                         {
                             Id = 101,
                             FirstName = "Jimbob",
