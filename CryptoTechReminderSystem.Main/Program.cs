@@ -52,21 +52,18 @@ namespace CryptoTechReminderSystem.Main
 
         private void ResetSchedule()
         {
-            // Stops scheduled jobs then sets them up again for next week
             JobManager.RemoveAllJobs();
             CreateSchedule();
         }
         
         private void CreateSchedule()
         {
-            // Creates schedule that starts and stops schedule jobs
             JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(1).Weeks().On(DayOfWeek.Friday).At(10,30));
             JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(1).Weeks().On(DayOfWeek.Friday).At(13,45));
         }
 
         private void ScheduleJobs()
         {
-            // Do all of your actual job scheduling here
             JobManager.AddJob(RemindLateDevelopersJob, s => s.ToRunEvery(30).Minutes());
             JobManager.AddJob(ShameLateDevelopersJob, s => s.ToRunOnceAt(13, 30));
         }
