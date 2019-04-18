@@ -274,5 +274,82 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 response.Developers.First().Should().Be(slackUserId);
             }
         }
+
+        [TestFixture]
+        public class CanHandleNoMatches
+        {
+            private HarvestGatewayStub _harvestGatewayStub;
+            private SlackGatewayStub _slackGatewayStub;
+            
+            [SetUp]
+            public void Setup()
+            {
+                _harvestGatewayStub = new HarvestGatewayStub()
+                {
+                    Developers = new[]
+                    {
+                        new HarvestDeveloper()
+                        {   
+                            Id = 1337,
+                            FirstName = "Fred",
+                            LastName = "Flintstone",
+                            Email = "fred@fred.com",
+                        },
+                        new HarvestDeveloper()
+                        {
+                            Id = 123,
+                            FirstName = "Joe",
+                            LastName = "Bloggs",
+                            Email = "Joe@Bloggs.com"
+                        },
+                        new HarvestDeveloper()
+                        {
+                            Id = 101,
+                            FirstName = "Jimbob",
+                            LastName = "BaconBath",
+                            Email = "JBB@aol.com"
+                        },
+                    }
+                };
+                
+                _slackGatewayStub = new SlackGatewayStub()
+                {
+                    Developers = new[]
+                    {
+                        new SlackDeveloper
+                        {
+                            Email = "fred@fred.com",
+                            Id = "U8723",
+                        }, 
+                        new SlackDeveloper
+                        {
+                            Email = "Joe@Bloggs.com",
+                            Id = "U9999",
+                        }
+                    }
+                };
+                
+            }
+            
+            [Test]
+            public void CanHandleWhenCannotFindMatchingSlackDeveloper()
+            {
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 7, UserId = 123 }, 5
+                ).ToArray();
+                
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 03, 01, 10, 30, 0)
+                    )
+                );
+                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
+                
+                var response = getDevelopers.Execute();
+
+                response.Developers.First().Should().Be("U8723");
+            }
+        }
     }
 }
