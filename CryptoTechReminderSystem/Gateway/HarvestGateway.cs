@@ -40,9 +40,14 @@ namespace CryptoTechReminderSystem.Gateway
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             _client.DefaultRequestHeaders.Add("Harvest-Account-Id",_accountId);
             _client.DefaultRequestHeaders.Add("User-Agent",_userAgent);
- 
-            var apiResponse = GetApiResponse("/api/v2/users").Result;
+
+            var response = GetApiResponse("/api/v2/users");
+            
+            response.Wait();
+            
+            var apiResponse = response.Result;
             var users = apiResponse["users"];
+            
             return users.Select(developer => new HarvestDeveloper
                 {
                     Id = (int) developer["id"],
@@ -59,7 +64,11 @@ namespace CryptoTechReminderSystem.Gateway
 
             var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
             
-            var apiResponse = GetApiResponse(address).Result;
+            var response = GetApiResponse(address);
+            
+            response.Wait();
+            
+            var apiResponse = response.Result;
             var timeSheets = apiResponse["time_entries"];
             return timeSheets.Select(timeSheet => new TimeSheet
                 {

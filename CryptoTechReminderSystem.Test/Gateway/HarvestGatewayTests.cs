@@ -45,6 +45,16 @@ namespace CryptoTechReminderSystem.Test.Gateway
             }
             
             [Test]
+            public void CanSendRequestOnceAtATime()
+            {
+                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
+
+                _harvestGateway.RetrieveDevelopers();
+               
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+            }
+            
+            [Test]
             public void CanGetDevelopersWithAuthentication()
             {
                 SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
@@ -178,6 +188,16 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.First().Id.Should().Be(456709345);
                 response.First().UserId.Should().Be(1782975);
                 response.First().Hours.Should().Be(8.0);
+            }
+            
+            [Test]
+            public void CanSendRequestOnceAtATime()
+            {
+                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+
+                _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+               
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
         }
     }

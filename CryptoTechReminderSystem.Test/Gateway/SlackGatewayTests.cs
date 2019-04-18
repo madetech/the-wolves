@@ -66,7 +66,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanSendAPostMessageRequestWithAChannel()
             {
                 var channel = "U98DL811";
-                var message = new Message()
+                var message = new Message
                 {
                     Channel = channel
                 };
