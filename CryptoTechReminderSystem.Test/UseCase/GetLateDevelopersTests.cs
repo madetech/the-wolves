@@ -78,7 +78,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 03, 01, 10, 30, 0)
                     )
                 );
-            
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
             
                 getDevelopers.Execute();
@@ -99,7 +98,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 04, day)
                     )
                 );
-            
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
             
                 getDevelopers.Execute();
@@ -124,7 +122,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 04, day)
                     )
                 );
-            
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
             
                 getDevelopers.Execute();
@@ -146,7 +143,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             [SetUp]
             public void SetUp()
             {
-                _harvestGatewayStub = new HarvestGatewayStub()
+                _harvestGatewayStub = new HarvestGatewayStub
                 {
                     Developers = new[]
                     {
@@ -155,7 +152,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             Id = 1337,
                             FirstName = "Fred",
                             LastName = "Flintstone",
-                            Email = "fred@fred.com",
+                            Email = "fred@fred.com"
                         },
                         new HarvestDeveloper
                         {
@@ -163,23 +160,23 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             FirstName = "Joe",
                             LastName = "Bloggs",
                             Email = "Joe@Bloggs.com"
-                        },
+                        }
                     }
                 };
                 
-                _slackGatewayStub = new SlackGatewayStub()
+                _slackGatewayStub = new SlackGatewayStub
                 {
                     Developers = new[]
                     {
                         new SlackDeveloper
                         {
                             Email = "fred@fred.com",
-                            Id = "U8723",
+                            Id = "U8723"
                         }, 
                         new SlackDeveloper
                         {
                             Email = "Joe@Bloggs.com",
-                            Id = "U9999",
+                            Id = "U9999"
                         }
                     }
                 };
@@ -199,9 +196,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 03, 01, 10, 30, 0)
                     )
                 );
-                
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
-                
                 var response = getDevelopers.Execute();
          
                 response.Developers.First().Should().Be(slackUserId);
@@ -213,10 +208,17 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             private HarvestGatewayStub _harvestGatewayStub;
             private SlackGatewayStub _slackGatewayStub;
-            
+            private ClockStub _clock;
+
             [SetUp]
             public void Setup()
             {
+                _clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 03, 01, 10, 30, 0)
+                    )
+                );
+                
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
                     Developers = new[]
@@ -226,7 +228,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             Id = 1337,
                             FirstName = "Fred",
                             LastName = "Flintstone",
-                            Email = "fred@fred.com",
+                            Email = "fred@fred.com"
                         },
                         new HarvestDeveloper
                         {
@@ -241,23 +243,23 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             FirstName = "Jimbob",
                             LastName = "BaconBath",
                             Email = "JBB@aol.com"
-                        },
+                        }
                     }
                 };
                 
-                _slackGatewayStub = new SlackGatewayStub()
+                _slackGatewayStub = new SlackGatewayStub
                 {
                     Developers = new[]
                     {
                         new SlackDeveloper
                         {
                             Email = "fred@fred.com",
-                            Id = "U8723",
+                            Id = "U8723"
                         }, 
                         new SlackDeveloper
                         {
                             Email = "Joe@Bloggs.com",
-                            Id = "U9999",
+                            Id = "U9999"
                         }
                     }
                 };
@@ -271,14 +273,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new TimeSheet { Hours = 7, UserId = 123 }, 5
                 ).ToArray();
                 
-                var clock = new ClockStub(
-                    new DateTimeOffset(
-                        new DateTime(2019, 03, 01, 10, 30, 0)
-                    )
-                );
-                
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
-                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
                 var response = getDevelopers.Execute();
 
                 response.Developers.First().Should().Be("U8723");
@@ -287,34 +282,33 @@ namespace CryptoTechReminderSystem.Test.UseCase
             [Test]
             public void CanHandleWhenNoMatchesAreFound()
             {
-                
-                _harvestGatewayStub = new HarvestGatewayStub()
+                _harvestGatewayStub = new HarvestGatewayStub
                 {
                     Developers = new[]
                     {
-                        new HarvestDeveloper()
+                        new HarvestDeveloper
                         {
                             Id = 101,
                             FirstName = "Jimbob",
                             LastName = "BaconBath",
                             Email = "JBB@aol.com"
-                        },
+                        }
                     }
                 };
                 
-                _slackGatewayStub = new SlackGatewayStub()
+                _slackGatewayStub = new SlackGatewayStub
                 {
                     Developers = new[]
                     {
                         new SlackDeveloper
                         {
                             Email = "fred@fred.com",
-                            Id = "U8723",
+                            Id = "U8723"
                         }, 
                         new SlackDeveloper
                         {
                             Email = "Joe@Bloggs.com",
-                            Id = "U9999",
+                            Id = "U9999"
                         }
                     }
                 };
@@ -323,17 +317,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new TimeSheet { Hours = 0, UserId = 444 }, 5
                 ).ToArray();
                 
-                var clock = new ClockStub(
-                    new DateTimeOffset(
-                        new DateTime(2019, 03, 01, 10, 30, 0)
-                    )
-                );
-                
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
-                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
                 var response = getDevelopers.Execute();
-                response.Developers.Count.Should().Be(0);
                 
+                response.Developers.Count.Should().Be(0);
             }
         }
     }
