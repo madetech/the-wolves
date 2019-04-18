@@ -4,6 +4,7 @@
     {
       "id": "W012A3BAT",
       "team_id": "T012AB3C4",
+      "deleted": false,
       "name": "Batman",
       "real_name": "Bruce Wayne",
       "tz": "America/Los_Angeles",
@@ -13,11 +14,13 @@
         "display_name": "Batman",
         "email": "batman@gotham.com"
       },
-      "is_bot": false
+      "is_bot": false,
+      "is_ultra_restricted": false
     },
     {
       "id": "W123AROB",
       "team_id": "T012AB3C4",
+      "deleted": false,
       "name": "Robin",
       "real_name": "Dick Grayson",
       "tz": "America/Los_Angeles",
@@ -27,11 +30,13 @@
         "display_name": "Robin",
         "email": "robin@gotham.com"
       },
-      "is_bot": false
+      "is_bot": false,
+      "is_ultra_restricted": false
     },
     {
       "id": "W345ABAT",
       "team_id": "T012AB3C4",
+      "deleted": false,
       "name": "Batgirl",
       "real_name": "Barbara Gordon",
       "tz": "America/Los_Angeles",
@@ -41,11 +46,13 @@
         "display_name": "Batgirl",
         "email": "batgirl@gotham.com"
       },
-      "is_bot": false
+      "is_bot": false,
+      "is_ultra_restricted": false
     },
     {
       "id": "W345ALFR",
       "team_id": "T012AB3C4",
+      "deleted": false,
       "name": "Alfred",
       "real_name": "Alfred Pennyworth",
       "tz": "America/Los_Angeles",
@@ -55,7 +62,8 @@
         "display_name": "Alfred",
         "email": "alfred@gotham.com"
       },
-      "is_bot": false
+      "is_bot": false,
+      "is_ultra_restricted": false
     }
   ]
 }

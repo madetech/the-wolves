@@ -53,7 +53,10 @@ namespace CryptoTechReminderSystem.Gateway
             var result = GetUsersAsync().Result;
             var users = result["members"];
 
-            return users.Select(developer => new SlackDeveloper
+            return users.Where(user => user["profile"]["email"] != null && 
+                                       (bool) user["deleted"] != true &&
+                                       (bool) user["is_ultra_restricted"] != true)
+            .Select(developer => new SlackDeveloper
                 {
                     Id = developer["id"].ToString(),
                     Email = developer["profile"]["email"].ToString()
