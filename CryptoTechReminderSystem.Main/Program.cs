@@ -86,7 +86,7 @@ namespace CryptoTechReminderSystem.Main
                 new ShameLateDevelopersRequest
                 {
                     Message = "These are the people yet to submit timesheets:",
-                    Channel = "CGHBW6YGM"
+                    Channel = Environment.GetEnvironmentVariable("LEARNTECH_CHANNEL_ID")
                 }
             );
         }
