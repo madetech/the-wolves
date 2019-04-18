@@ -24,7 +24,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             
             [SetUp]
             public void Setup()
-            {    
+            {
                 _harvestApi = new FluentSimulator(Address);
                 _harvestApi.Start();
                 _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent);
