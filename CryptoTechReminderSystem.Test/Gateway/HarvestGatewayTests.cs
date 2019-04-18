@@ -14,6 +14,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string Address = "http://localhost:8050/";
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private const string HarvestAccountId = "123456";
+        private const string UserAgent = "The Wolves";
 
         [TestFixture]
         public class CanRequestDevelopers
@@ -26,7 +27,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 _harvestApi = new FluentSimulator(Address);
                 _harvestApi.Start();
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent);
             }
 
             [TearDown]
@@ -41,6 +42,16 @@ namespace CryptoTechReminderSystem.Test.Gateway
                            $",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
                 
                 _harvestApi.Get("/api/v2/users").Responds(json);
+            }
+            
+            [Test]
+            public void CanSendRequestOnceAtATime()
+            {
+                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
+
+                _harvestGateway.RetrieveDevelopers();
+               
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
             
             [Test]
@@ -61,6 +72,16 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestGateway.RetrieveDevelopers();
                 
                 _harvestApi.ReceivedRequests.First().Headers["Harvest-Account-Id"].Should().Be(HarvestAccountId);
+            }
+            
+            [Test]
+            public void CanGetDevelopersWithUserAgent()
+            {
+                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
+
+                _harvestGateway.RetrieveDevelopers();
+                
+                _harvestApi.ReceivedRequests.First().Headers["User-Agent"].Should().Be(UserAgent);
             }
 
             [Test]
@@ -90,7 +111,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent);
                 _defaultDateFrom = new DateTimeOffset(
                     new DateTime(2019, 04, 08)
                 );
@@ -167,6 +188,16 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.First().Id.Should().Be(456709345);
                 response.First().UserId.Should().Be(1782975);
                 response.First().Hours.Should().Be(8.0);
+            }
+            
+            [Test]
+            public void CanSendRequestOnceAtATime()
+            {
+                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+
+                _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+               
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
         }
     }
