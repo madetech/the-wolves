@@ -41,7 +41,8 @@ namespace CryptoTechReminderSystem.Main
             var harvestGateway = new HarvestGateway(
                 "https://api.harvestapp.com/",
                 Environment.GetEnvironmentVariable("HARVEST_TOKEN"),
-                Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID")
+                Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID"),
+                Environment.GetEnvironmentVariable("HARVEST_USER_AGENT")
             );
             _clock = new Clock();
             _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, _clock);
