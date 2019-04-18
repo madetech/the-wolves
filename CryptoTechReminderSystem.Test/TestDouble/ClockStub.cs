@@ -5,7 +5,7 @@ namespace CryptoTechReminderSystem.Test.TestDouble
 {
     public class ClockStub : IClock
     {
-        private DateTimeOffset _currentDateTime;
+        private readonly DateTimeOffset _currentDateTime;
 
         public ClockStub(DateTimeOffset dateTime)
         {
