@@ -283,6 +283,58 @@ namespace CryptoTechReminderSystem.Test.UseCase
 
                 response.Developers.First().Should().Be("U8723");
             }
+            
+            [Test]
+            public void CanHandleWhenNoMatchesAreFound()
+            {
+                
+                _harvestGatewayStub = new HarvestGatewayStub()
+                {
+                    Developers = new[]
+                    {
+                        new HarvestDeveloper()
+                        {
+                            Id = 101,
+                            FirstName = "Jimbob",
+                            LastName = "BaconBath",
+                            Email = "JBB@aol.com"
+                        },
+                    }
+                };
+                
+                _slackGatewayStub = new SlackGatewayStub()
+                {
+                    Developers = new[]
+                    {
+                        new SlackDeveloper
+                        {
+                            Email = "fred@fred.com",
+                            Id = "U8723",
+                        }, 
+                        new SlackDeveloper
+                        {
+                            Email = "Joe@Bloggs.com",
+                            Id = "U9999",
+                        }
+                    }
+                };
+                
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 0, UserId = 444 }, 5
+                ).ToArray();
+                
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 03, 01, 10, 30, 0)
+                    )
+                );
+                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
+                
+                var response = getDevelopers.Execute();
+                response.Developers.Count.Should().Be(0);
+                
+            }
         }
     }
 }
