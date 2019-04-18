@@ -39,7 +39,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
             {
                 var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
-                           $",      \"last_name\":\"{lastName}\",      \"email\":\"{email}\"    }}  ]}}";
+                           $",      \"last_name\":\"{lastName}\",       \"email\":\"{email}\" , \"is_active\":\"true\"   }}  ]}}";
                 
                 _harvestApi.Get("/api/v2/users").Responds(json);
             }
