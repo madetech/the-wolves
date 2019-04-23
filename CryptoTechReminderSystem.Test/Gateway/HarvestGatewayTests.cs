@@ -16,7 +16,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string HarvestAccountId = "123456";
         private const string UserAgent = "The Wolves";
 
-        private static readonly string Roles =
+        private static readonly string DeveloperRoles =
             "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, "+
                 "Delivery Manager, SRE, Consultant, Delivery Principal";
         
@@ -31,7 +31,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 _harvestApi = new FluentSimulator(Address);
                 _harvestApi.Start();
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, Roles);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
             }
 
             [TearDown]
@@ -130,7 +130,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, Roles);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
                 _defaultDateFrom = new DateTimeOffset(
                     new DateTime(2019, 04, 08)
                 );

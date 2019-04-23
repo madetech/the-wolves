@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         private static HarvestGateway _harvestGateway;
         private static SlackGateway _slackGateway;
         private static SendReminder _sendReminder;
-        private static readonly string Roles =  
+        private static readonly string DeveloperRoles =  
             "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, "+
             "Delivery Manager, SRE, Consultant, Delivery Principal";
         
@@ -47,7 +47,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi = new FluentSimulator(SlackApiAddress);
             _slackGateway = new SlackGateway(SlackApiAddress,"xxxx-xxxxxxxxx-xxxx");
             _harvestApi = new FluentSimulator(HarvestApiAddress);
-            _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx", "234567", "The Wolves", Roles);
+            _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx", "234567", "The Wolves", DeveloperRoles);
             _sendReminder = new SendReminder(_slackGateway);
             
             var slackGetUsersResponse = File.ReadAllText(
