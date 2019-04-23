@@ -48,7 +48,7 @@ namespace CryptoTechReminderSystem.Gateway
             var apiResponse = response.Result;
             var users = apiResponse["users"];
            
-            return users.Where(user => (bool)user["is_active"] != false)
+            return users.Where (user => (bool)user["is_active"] != false && CheckUserRole(user))
                 .Select(developer => new HarvestDeveloper()
                     {
                         Id = (int) developer["id"],
@@ -57,6 +57,21 @@ namespace CryptoTechReminderSystem.Gateway
                         Email = developer["email"].ToString()
                     }
                 ).ToList();
+        }
+
+        private bool CheckUserRole(JToken user)
+        {
+            var userRole = user["roles"].Select(role => role.ToString());
+            return (userRole.Contains("Software Engineer") ||
+                    userRole.Contains("Senior Software Engineer") ||
+                    userRole.Contains("Senior Engineer") ||
+                    userRole.Contains("Lead Engineer") ||
+                    userRole.Contains("Delivery Manager") ||
+                    userRole.Contains("SRE") ||
+                    userRole.Contains("Consultant") ||
+                    userRole.Contains("Delivery Principal")
+                   );
+           
         }
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)

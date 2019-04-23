@@ -7,7 +7,7 @@
       "email": "batman@gotham.com",
       "weekly_capacity": 126000,
       "roles": [
-        "Engineer"
+        "Lead Engineer"
       ],
       "is_active":false
     },
@@ -19,7 +19,7 @@
       "email": "robin@gotham.com",
       "weekly_capacity": 126000,
       "roles": [
-        "Engineer"
+        "Software Engineer"
       ],
       "is_active":true
     },
@@ -30,7 +30,7 @@
       "email": "batgirl@gotham.com",
       "weekly_capacity": 126000,
       "roles": [
-        "Engineer"
+        "Senior Engineer"
       ],
       "is_active":false
     },
@@ -41,9 +41,74 @@
       "email": "alfred@gotham.com",
       "weekly_capacity": 126000,
       "roles": [
-        "Engineer"
+        "Senior Software Engineer"
+      ],
+      "is_active":true
+    },
+    {
+      "id": 1796101,
+      "first_name": "Jim",
+      "last_name": "Bobby",
+      "email": "jim@yahoo.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "SRE"
+      ],
+      "is_active":true
+    },
+    {
+      "id": 1888101,
+      "first_name": "Eric",
+      "last_name": "Bobby",
+      "email": "bobby@aol.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Delivery Manager"
+      ],
+      "is_active":true
+    },
+    {
+      "id": 567894,
+      "first_name": "Frank",
+      "last_name": "Bobby",
+      "email": "bobby@aol.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Consultant"
+      ],
+      "is_active":true
+    },
+    {
+      "id": 846274,
+      "first_name": "Bert",
+      "last_name": "Bobby",
+      "email": "bobby@aol.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Delivery Principal"
+      ],
+      "is_active":true
+    },
+    {
+      "id": 846274,
+      "first_name": "Greg",
+      "last_name": "Bobby",
+      "email": "bobby@aol.com",
+      "weekly_capacity": 126000,
+      "roles": [],
+      "is_active":true
+    },
+    {
+      "id": 846274,
+      "first_name": "Harry",
+      "last_name": "Bobby",
+      "email": "bobby@aol.com",
+      "weekly_capacity": 126000,
+      "roles": [
+        "Marketing Manager"
       ],
       "is_active":true
     }
+    
   ]
 }
