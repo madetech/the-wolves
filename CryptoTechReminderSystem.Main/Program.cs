@@ -43,7 +43,7 @@ namespace CryptoTechReminderSystem.Main
                 Environment.GetEnvironmentVariable("HARVEST_TOKEN"),
                 Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID"),
                 Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
-                Environment.GetEnvironmentVariable("HARVEST_ROLES")
+                Environment.GetEnvironmentVariable("HARVEST_DEVELOPER_ROLES")
             );
             _clock = new Clock();
             _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, _clock);
