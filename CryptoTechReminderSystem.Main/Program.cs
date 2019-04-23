@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
@@ -53,8 +52,6 @@ namespace CryptoTechReminderSystem.Main
             CreateSchedule();
         }
 
-       
-
         private void ResetSchedule()
         {
             JobManager.RemoveAllJobs();
@@ -79,7 +76,7 @@ namespace CryptoTechReminderSystem.Main
             remindLateDevelopers.Execute(
                 new RemindLateDevelopersRequest
                 {
-                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                    Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
                 }
             );
         }
@@ -90,7 +87,7 @@ namespace CryptoTechReminderSystem.Main
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
-                    Message = "These are the people yet to submit timesheets:",
+                    Message = Environment.GetEnvironmentVariable("SLACK_SHAME_MESSAGE"),
                     Channel = Environment.GetEnvironmentVariable("LEARNTECH_CHANNEL_ID")
                 }
             );
