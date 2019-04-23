@@ -16,18 +16,7 @@ namespace CryptoTechReminderSystem.Gateway
         private readonly string _accountId;
         private readonly string _userAgent;
         private readonly string[] _listOfDeveloperRoles;
-        /*private readonly List<string> _listOfDeveloperRoles = new List<string>
-        {
-            "Software Engineer",
-            "Senior Software Engineer",
-            "Senior Engineer",
-            "Lead Engineer",
-            "Delivery Manager",
-            "SRE",
-            "Consultant",
-            "Delivery Principal"
-        };*/
-
+       
         private static string ToHarvestApiString(DateTimeOffset date)
         {
             return date.ToString("yyyy-MM-dd");
