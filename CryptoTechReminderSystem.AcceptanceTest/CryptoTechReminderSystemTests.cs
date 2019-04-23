@@ -23,10 +23,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         private static HarvestGateway _harvestGateway;
         private static SlackGateway _slackGateway;
         private static SendReminder _sendReminder;
-        private static readonly string DeveloperRoles =  
-            "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, "+
+        private const string DeveloperRoles = 
+            "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, " +
             "Delivery Manager, SRE, Consultant, Delivery Principal";
-        
+
         private class ClockStub : IClock
         {
             private readonly DateTimeOffset _currentDateTime;
