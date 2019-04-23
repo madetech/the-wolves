@@ -27,7 +27,6 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, "+
             "Delivery Manager, SRE, Consultant, Delivery Principal";
         
-        
         private class ClockStub : IClock
         {
             private readonly DateTimeOffset _currentDateTime;

@@ -20,7 +20,6 @@ namespace CryptoTechReminderSystem.Test.Gateway
             "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, "+
                 "Delivery Manager, SRE, Consultant, Delivery Principal";
         
-
         [TestFixture]
         public class CanRequestDevelopers
         {
