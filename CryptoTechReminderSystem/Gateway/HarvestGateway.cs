@@ -48,7 +48,7 @@ namespace CryptoTechReminderSystem.Gateway
             var apiResponse = response.Result;
             var users = apiResponse["users"];
            
-            return users.Where (user => (bool)user["is_active"] != false && CheckUserRole(user))
+            return users.Where (user => (bool)user["is_active"] != false && IsDeveloper(user))
                 .Select(developer => new HarvestDeveloper()
                     {
                         Id = (int) developer["id"],
@@ -59,7 +59,7 @@ namespace CryptoTechReminderSystem.Gateway
                 ).ToList();
         }
 
-        private bool CheckUserRole(JToken user)
+        private bool IsDeveloper(JToken user)
         {
             var userRole = user["roles"].Select(role => role.ToString());
             return (userRole.Contains("Software Engineer") ||
