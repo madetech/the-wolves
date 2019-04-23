@@ -12,9 +12,6 @@ namespace CryptoTechReminderSystem.Gateway
     public class HarvestGateway : IHarvestDeveloperRetriever, ITimeSheetRetriever
     {
         private readonly HttpClient _client;
-        private readonly string _token;
-        private readonly string _accountId;
-        private readonly string _userAgent;
         private readonly string[] _developerRoles;
        
         private static string ToHarvestApiString(DateTimeOffset date)
@@ -29,11 +26,11 @@ namespace CryptoTechReminderSystem.Gateway
         
         public HarvestGateway(string address, string token, string accountId, string userAgent, string roles)
         {
-            _client = new HttpClient { BaseAddress = new Uri(address) };
-            _token = token;
-            _accountId = accountId;
-            _userAgent = userAgent;
             _developerRoles = CreateRoleArray(roles);
+            _client = new HttpClient { BaseAddress = new Uri(address) };
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Add("Harvest-Account-Id",accountId);
+            _client.DefaultRequestHeaders.Add("User-Agent",userAgent);
         }
         
         private async Task<JObject> GetApiResponse(string address)
@@ -44,10 +41,6 @@ namespace CryptoTechReminderSystem.Gateway
 
         public IList<HarvestDeveloper> RetrieveDevelopers()
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            _client.DefaultRequestHeaders.Add("Harvest-Account-Id",_accountId);
-            _client.DefaultRequestHeaders.Add("User-Agent",_userAgent);
-
             var response = GetApiResponse("/api/v2/users");
             
             response.Wait();
@@ -73,8 +66,6 @@ namespace CryptoTechReminderSystem.Gateway
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-
             var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
             
             var response = GetApiResponse(address);

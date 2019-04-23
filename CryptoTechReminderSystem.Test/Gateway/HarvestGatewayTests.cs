@@ -15,22 +15,31 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private const string HarvestAccountId = "123456";
         private const string UserAgent = "The Wolves";
-        private const string DeveloperRoles =
-            "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, " +
-            "Delivery Manager, SRE, Consultant, Delivery Principal";
+        private const string DeveloperRoles = 
+            @"Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, 
+            Delivery Manager, SRE, Consultant, Delivery Principal";
+        
+        private static FluentSimulator _harvestApi;
+        private static HarvestGateway _harvestGateway;
         
         [TestFixture]
         public class CanRequestDevelopers
         {
-            private FluentSimulator _harvestApi;
-            private HarvestGateway _harvestGateway;
-            
             [SetUp]
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestApi.Start();
                 _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
+                
+                var json = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "../../../Gateway/HarvestUsersExampleResponse.json"
+                    )
+                );
+                
+                _harvestApi.Get("/api/v2/users").Responds(json);
+                _harvestApi.Start();
             }
 
             [TearDown]
@@ -39,78 +48,30 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestApi.Stop();
             }
 
-            private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
-            {
-                var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
-                           $",      \"last_name\":\"{lastName}\",       \"email\":\"{email}\" , \"is_active\":\"true\", \"roles\": [\"Delivery Principal\"]  }}  ]}}";
-                
-                _harvestApi.Get("/api/v2/users").Responds(json);
-            }
-            
             [Test]
-            public void CanSendRequestOnceAtATime()
+            public void CanSendOneRequestAtATime()
             {
-                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
-
                 _harvestGateway.RetrieveDevelopers();
                
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
             
             [Test]
-            public void CanGetDevelopersWithAuthentication()
+            [TestCase("Authorization", "Bearer " + Token)]
+            [TestCase("Harvest-Account-Id", HarvestAccountId)]
+            [TestCase("User-Agent", UserAgent)]
+            public void CanGetDevelopersWithHeaders(string header, string expected)
             {
-                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
-
                 _harvestGateway.RetrieveDevelopers();
                 
-                _harvestApi.ReceivedRequests.First().Headers["Authorization"].Should().Be($"Bearer {Token}");
+                _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
             }
             
             [Test]
-            public void CanGetDevelopersWithHarvestAccountId()
+            public void CanOnlyGetActiveDevelopers()
             {
-                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
-
-                _harvestGateway.RetrieveDevelopers();
-                
-                _harvestApi.ReceivedRequests.First().Headers["Harvest-Account-Id"].Should().Be(HarvestAccountId);
-            }
-            
-            [Test]
-            public void CanGetDevelopersWithUserAgent()
-            {
-                SetUpUsersApiEndpoint("1234567", "Wen Ting", "Wang","wenting@ting.com");
-
-                _harvestGateway.RetrieveDevelopers();
-                
-                _harvestApi.ReceivedRequests.First().Headers["User-Agent"].Should().Be(UserAgent);
-            }
-
-            [Test]
-            [TestCase("2345678", "Tingky", "Winky", "tingkywinky@ting.com")]
-            [TestCase("3456789", "Tingker", "Bell", "tingkerbell@ting.com")]
-            [TestCase("4567891", "Ting", "Tings", "tingtings@ting.com")]
-            public void CanGetADeveloper(string id, string firstName, string lastName, string email)
-            {
-                SetUpUsersApiEndpoint(id, firstName, lastName, email);
-
                 var response = _harvestGateway.RetrieveDevelopers();
-
-                response.First().FirstName.Should().Be(firstName);
-            }
-            
-            [Test]
-            public void CanOnlyGetDevelopersWhoAreActive()
-            {
-                var jsonWithIsActive = File.ReadAllText(
-                    Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestUsersExampleResponse.json"
-                    )
-                );
-                _harvestApi.Get("/api/v2/users").Responds(jsonWithIsActive);
-                var response = _harvestGateway.RetrieveDevelopers();
+                
                 response.First().FirstName.Should().Be("Dick");
                 response.Count.Should().Be(6);
             }
@@ -120,8 +81,6 @@ namespace CryptoTechReminderSystem.Test.Gateway
         public class CanRequestTimeSheets
         {
             private const string ApiTimeSheetPath = "api/v2/time_entries";
-            private FluentSimulator _harvestApi;
-            private HarvestGateway _harvestGateway;
             private DateTimeOffset _defaultDateFrom;
             private DateTimeOffset _defaultDateTo;
 
@@ -138,12 +97,6 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 );
             }
 
-            [TearDown]
-            public void TearDown()
-            {
-                _harvestApi.Stop();
-            }
-            
             private void SetUpTimeSheetApiEndpoint(string dateFrom, string dateTo)
             {
                 var json = File.ReadAllText(
@@ -161,11 +114,40 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestApi.Start();
             }
             
+            [TearDown]
+            public void TearDown()
+            {
+                _harvestApi.Stop();
+            }
+            
+            [Test]
+            public void CanSendOneRequestAtATime()
+            {
+                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+
+                _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+               
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+            }
+            
+            [Test]
+            [TestCase("Authorization", "Bearer " + Token)]
+            [TestCase("Harvest-Account-Id", HarvestAccountId)]
+            [TestCase("User-Agent", UserAgent)]
+            public void CanGetTimeSheetsWithHeaders(string header, string expected)
+            {
+                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+                
+                _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+
+                _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
+            }
+            
             [Test]
             [TestCase("08", "12")]
             [TestCase("14", "19")]
             [TestCase("01", "05")]
-            public void CanRequestTimeSheetsUsingAStartingAndEndingDate(string dayFrom, string dayTo)
+            public void CanRequestTimeSheetsWithAStartingAndEndingDate(string dayFrom, string dayTo)
             {
                 SetUpTimeSheetApiEndpoint($"2019-04-{dayFrom}", $"2019-04-{dayTo}");
 
@@ -205,19 +187,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 
                 response.First().Id.Should().Be(456709345);
                 response.First().UserId.Should().Be(1782975);
-                response.First().Hours.Should().Be(8.0);
-            }
-            
-            [Test]
-            public void CanSendRequestOnceAtATime()
-            {
-                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
-
-                _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
-               
-                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+                response.First().Hours.Should().Be(7.0);
             }
         }
     }
 }
-
