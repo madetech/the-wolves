@@ -15,29 +15,25 @@ namespace CryptoTechReminderSystem.Gateway
         private readonly string _token;
         private readonly string _accountId;
         private readonly string _userAgent;
-        private readonly List<string> _listOfDeveloperRoles = new List<string>
-        {
-            "Software Engineer",
-            "Senior Software Engineer",
-            "Senior Engineer",
-            "Lead Engineer",
-            "Delivery Manager",
-            "SRE",
-            "Consultant",
-            "Delivery Principal"
-        };
-
+        private readonly string[] _developerRoles;
+       
         private static string ToHarvestApiString(DateTimeOffset date)
         {
             return date.ToString("yyyy-MM-dd");
         }
         
-        public HarvestGateway(string address, string token, string accountId, string userAgent)
+        private static string[] CreateRoleArray(string roles)
+        {
+            return roles.Split(',').Select(role => role.Trim()).ToArray();
+        }
+        
+        public HarvestGateway(string address, string token, string accountId, string userAgent, string roles)
         {
             _client = new HttpClient { BaseAddress = new Uri(address) };
             _token = token;
             _accountId = accountId;
             _userAgent = userAgent;
+            _developerRoles = CreateRoleArray(roles);
         }
         
         private async Task<JObject> GetApiResponse(string address)
@@ -72,7 +68,7 @@ namespace CryptoTechReminderSystem.Gateway
         
         private bool IsDeveloper(JToken user)
         {
-            return user["roles"].ToArray().Any(role => _listOfDeveloperRoles.Contains(role.ToString()));
+            return user["roles"].ToArray().Any(role => _developerRoles.Contains(role.ToString()));
         }
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)

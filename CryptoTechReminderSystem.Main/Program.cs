@@ -42,7 +42,8 @@ namespace CryptoTechReminderSystem.Main
                 "https://api.harvestapp.com/",
                 Environment.GetEnvironmentVariable("HARVEST_TOKEN"),
                 Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID"),
-                Environment.GetEnvironmentVariable("HARVEST_USER_AGENT")
+                Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
+                Environment.GetEnvironmentVariable("HARVEST_DEVELOPER_ROLES")
             );
             _clock = new Clock();
             _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, _clock);
@@ -75,7 +76,7 @@ namespace CryptoTechReminderSystem.Main
             remindLateDevelopers.Execute(
                 new RemindLateDevelopersRequest
                 {
-                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                    Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
                 }
             );
         }
@@ -86,8 +87,8 @@ namespace CryptoTechReminderSystem.Main
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
-                    Message = "These are the people yet to submit timesheets:",
-                    Channel = Environment.GetEnvironmentVariable("LEARNTECH_CHANNEL_ID")
+                    Message = Environment.GetEnvironmentVariable("SLACK_SHAME_MESSAGE"),
+                    Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
         }
