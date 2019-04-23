@@ -96,6 +96,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 response.First().FirstName.Should().Be(firstName);
             }
+            
             [Test]
             public void CanOnlyGetDevelopersWhoAreActive()
             {
