@@ -22,7 +22,7 @@ namespace CryptoTechReminderSystem.Gateway
             return date.ToString("yyyy-MM-dd");
         }
         
-        private string[] CreateRoleArray(string roles)
+        private static string[] CreateRoleArray(string roles)
         {
             return roles.Split(',').Select(role => role.Trim()).ToArray();
         }
