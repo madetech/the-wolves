@@ -71,7 +71,6 @@ namespace CryptoTechReminderSystem.Gateway
                     userRole.Contains("Consultant") ||
                     userRole.Contains("Delivery Principal")
                    );
-           
         }
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
