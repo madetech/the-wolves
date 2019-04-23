@@ -15,6 +15,17 @@ namespace CryptoTechReminderSystem.Gateway
         private readonly string _token;
         private readonly string _accountId;
         private readonly string _userAgent;
+        private readonly List<string> _listOfDeveloperRoles = new List<string>
+        {
+            "Software Engineer",
+            "Senior Software Engineer",
+            "Senior Engineer",
+            "Lead Engineer",
+            "Delivery Manager",
+            "SRE",
+            "Consultant",
+            "Delivery Principal"
+        };
 
         private static string ToHarvestApiString(DateTimeOffset date)
         {
@@ -47,16 +58,21 @@ namespace CryptoTechReminderSystem.Gateway
             
             var apiResponse = response.Result;
             var users = apiResponse["users"];
-           
-            return users.Where(user => (bool)user["is_active"] != false)
-                .Select(developer => new HarvestDeveloper()
-                    {
-                        Id = (int) developer["id"],
-                        FirstName = developer["first_name"].ToString(),
-                        LastName = developer["last_name"].ToString(),
-                        Email = developer["email"].ToString()
-                    }
-                ).ToList();
+
+            var activeDevelopers = users.Where(user => (bool)user["is_active"] && IsDeveloper(user));
+            return activeDevelopers.Select(developer => new HarvestDeveloper
+                {
+                    Id = (int) developer["id"],
+                    FirstName = developer["first_name"].ToString(),
+                    LastName = developer["last_name"].ToString(),
+                    Email = developer["email"].ToString()
+                }
+            ).ToList();
+        }
+        
+        private bool IsDeveloper(JToken user)
+        {
+            return user["roles"].ToArray().Any(role => _listOfDeveloperRoles.Contains(role.ToString()));
         }
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)

@@ -39,7 +39,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             private void SetUpUsersApiEndpoint(string id, string firstName, string lastName, string email)
             {
                 var json = $"{{  \"users\":[    {{      \"id\":{id},      \"first_name\":\"{firstName}\"" +
-                           $",      \"last_name\":\"{lastName}\",       \"email\":\"{email}\" , \"is_active\":\"true\"   }}  ]}}";
+                           $",      \"last_name\":\"{lastName}\",       \"email\":\"{email}\" , \"is_active\":\"true\", \"roles\": [\"Delivery Principal\"]  }}  ]}}";
                 
                 _harvestApi.Get("/api/v2/users").Responds(json);
             }
@@ -96,6 +96,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 response.First().FirstName.Should().Be(firstName);
             }
+            
             [Test]
             public void CanOnlyGetDevelopersWhoAreActive()
             {
@@ -108,7 +109,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestApi.Get("/api/v2/users").Responds(jsonWithIsActive);
                 var response = _harvestGateway.RetrieveDevelopers();
                 response.First().FirstName.Should().Be("Dick");
-                response.Count.Should().Be(2);
+                response.Count.Should().Be(6);
             }
         }
 
