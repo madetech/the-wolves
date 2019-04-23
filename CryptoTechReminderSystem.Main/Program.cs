@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
@@ -42,7 +43,8 @@ namespace CryptoTechReminderSystem.Main
                 "https://api.harvestapp.com/",
                 Environment.GetEnvironmentVariable("HARVEST_TOKEN"),
                 Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID"),
-                Environment.GetEnvironmentVariable("HARVEST_USER_AGENT")
+                Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
+                Environment.GetEnvironmentVariable("HARVEST_ROLES")
             );
             _clock = new Clock();
             _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, _clock);
@@ -50,6 +52,8 @@ namespace CryptoTechReminderSystem.Main
 
             CreateSchedule();
         }
+
+       
 
         private void ResetSchedule()
         {
