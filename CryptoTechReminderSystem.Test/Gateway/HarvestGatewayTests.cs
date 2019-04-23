@@ -110,20 +110,6 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.First().FirstName.Should().Be("Dick");
                 response.Count.Should().Be(6);
             }
-
-            [Test]
-            public void CanGeDevelopersOnly()
-            {
-                var jsonWithIsActive = File.ReadAllText(
-                    Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestUsersExampleResponse.json"
-                    )
-                );
-                _harvestApi.Get("/api/v2/users").Responds(jsonWithIsActive);
-                var response = _harvestGateway.RetrieveDevelopers();
-                response.Count.Should().Be(6);
-            }
         }
 
         [TestFixture]
