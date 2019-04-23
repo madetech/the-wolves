@@ -49,7 +49,7 @@ namespace CryptoTechReminderSystem.Gateway
             var users = apiResponse["users"];
            
             return users.Where (user => (bool)user["is_active"]  && IsDeveloper(user))
-                .Select(developer => new HarvestDeveloper()
+                .Select(developer => new HarvestDeveloper
                     {
                         Id = (int) developer["id"],
                         FirstName = developer["first_name"].ToString(),
