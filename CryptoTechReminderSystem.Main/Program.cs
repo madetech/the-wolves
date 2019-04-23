@@ -88,7 +88,7 @@ namespace CryptoTechReminderSystem.Main
                 new ShameLateDevelopersRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_SHAME_MESSAGE"),
-                    Channel = Environment.GetEnvironmentVariable("LEARNTECH_CHANNEL_ID")
+                    Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
         }
