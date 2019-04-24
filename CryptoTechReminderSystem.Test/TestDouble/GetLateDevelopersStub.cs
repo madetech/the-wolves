@@ -8,7 +8,7 @@ namespace CryptoTechReminderSystem.Test.TestDouble
     {
         private readonly List<string> _lateDevelopers;
 
-        private static List<string> _defaultList => new List<string>
+        private static List<string> DefaultList => new List<string>
         {
             "W0123CHAN",
             "W123AMON",
@@ -17,7 +17,7 @@ namespace CryptoTechReminderSystem.Test.TestDouble
         
         public GetLateDevelopersStub(List<string> lateDevelopers = null)
         {
-            _lateDevelopers = lateDevelopers ?? _defaultList;
+            _lateDevelopers = lateDevelopers ?? DefaultList;
         }
         
         public GetLateDevelopersResponse Execute()

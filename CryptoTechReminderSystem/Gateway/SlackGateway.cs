@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
-using CryptoTechReminderSystem.UseCase;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -36,16 +35,10 @@ namespace CryptoTechReminderSystem.Gateway
                 Text = message.Text
             });
             var content = new StringContent(request, Encoding.UTF8, "application/json");
+            
             PostChatMessageAsync(content).Wait();
         }
         
-        private async Task<string> PostChatMessageAsync(HttpContent content)
-        {
-            var response = await _client.PostAsync("/api/chat.postMessage", content);
-            var result = await response.Content.ReadAsStringAsync();
-            return result;
-        }
-
         public IList<SlackDeveloper> RetrieveDevelopers()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
@@ -68,8 +61,17 @@ namespace CryptoTechReminderSystem.Gateway
             ).ToList();
         }
         
-        private async Task<JObject> GetUsersAsync(){
+        private async Task<string> PostChatMessageAsync(HttpContent content)
+        {
+            var response = await _client.PostAsync("/api/chat.postMessage", content);
+            var result = await response.Content.ReadAsStringAsync();
+            
+            return result;
+        }
+        
+        private async Task<JObject> GetUsersAsync() {
             var response = await _client.GetAsync("/api/users.list");
+            
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
         

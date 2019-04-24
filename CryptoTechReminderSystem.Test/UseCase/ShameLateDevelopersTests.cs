@@ -25,15 +25,14 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 )
             );
         }
+        
         [Test]
         public void CanGetLateDevelopers()
         {
             var shameLateDevelopers = new ShameLateDevelopers
                 (_getLateDevelopersSpy, _sendReminderSpy, _clock);
 
-            shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest()
-            );
+            shameLateDevelopers.Execute(new ShameLateDevelopersRequest());
 
             _getLateDevelopersSpy.Called.Should().BeTrue();
         }
@@ -44,7 +43,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _sendReminderSpy, _clock);
 
             shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest()
+                new ShameLateDevelopersRequest
                 {
                     Message = "TIMESHEETS ARE GOOD YO!"
                 }

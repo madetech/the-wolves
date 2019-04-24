@@ -34,7 +34,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestUsersExampleResponse.json"
+                        "../../../Gateway/ApiEndpointResponse/HarvestUsersResponse.json"
                     )
                 );
                 
@@ -102,7 +102,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestTimeEntriesApiEndpoint.json"
+                        "../../../Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpoint.json"
                     )
                 );
 
@@ -120,7 +120,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var jsonPageOne = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestTimeEntriesApiEndpointPageOne.json"
+                        "../../../Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpointPageOne.json"
                     )
                 );
 
@@ -133,7 +133,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var jsonPageTwo = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestTimeEntriesApiEndpointPageTwo.json"
+                        "../../../Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpointPageTwo.json"
                     )
                 );
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using CryptoTechReminderSystem.DomainObject;
 
 namespace CryptoTechReminderSystem.Boundary
 {
