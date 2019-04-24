@@ -44,11 +44,8 @@ namespace CryptoTechReminderSystem.UseCase
                     if (slackLateDeveloper != null)
                     {
                         getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
-                        Console.WriteLine($"harvest email {TrimEmail(harvestDeveloper.Email)} slack email {TrimEmail(slackLateDeveloper.Email)}");
 
                     }
-                    Console.WriteLine($"harvest email {TrimEmail(harvestDeveloper.Email)}");
-
                 }
             }
             return getLateDevelopersResponse;
