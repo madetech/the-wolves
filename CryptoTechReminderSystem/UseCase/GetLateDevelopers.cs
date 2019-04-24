@@ -40,7 +40,7 @@ namespace CryptoTechReminderSystem.UseCase
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 if (sumOfHours < 35)
                 {
-                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => developer.Email == harvestDeveloper.Email);
+                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => RemoveTopLevelDomain(developer.Email) == RemoveTopLevelDomain(harvestDeveloper.Email));
                     if (slackLateDeveloper != null)
                     {
                         getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
@@ -60,6 +60,11 @@ namespace CryptoTechReminderSystem.UseCase
         {
             var daysToFriday = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
             return currentDateTime.AddDays(daysToFriday);
+        }
+
+        private static string RemoveTopLevelDomain(string email)
+        {
+            return email.Replace(".co.uk", "").Replace(".com","");
         }
     }
 }

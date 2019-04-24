@@ -201,7 +201,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
          
                 response.Developers.First().Should().Be(slackUserId);
             }
-        }
+        } 
 
         [TestFixture]
         public class CanHandleNoMatches
@@ -321,6 +321,51 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var response = getDevelopers.Execute();
                 
                 response.Developers.Count.Should().Be(0);
+            }
+            
+            [Test]
+            public void CanHandleWhenEmailsAreNotExact()
+            {
+                _harvestGatewayStub = new HarvestGatewayStub
+                {
+                    Developers = new[]
+                    {
+                        new HarvestDeveloper
+                        {
+                            Id = 101,
+                            FirstName = "Fred",
+                            LastName = "Flintstone",
+                            Email = "freddy@aol.com"
+                        }
+                    }
+                };
+                
+                _slackGatewayStub = new SlackGatewayStub
+                {
+                    Developers = new[]
+                    {
+                        new SlackDeveloper
+                        {
+                            Email = "freddy@aol.co.uk",
+                            Id = "U8723"
+                        }, 
+                        new SlackDeveloper
+                        {
+                            Email = "Joe@Bloggs.com",
+                            Id = "U9999"
+                        }
+                    }
+                };
+                
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 0, UserId = 444 }, 5
+                ).ToArray();
+                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
+                var response = getDevelopers.Execute();
+                
+                response.Developers.Count.Should().Be(1);
+                response.Developers.First().Should().Be("U8723");
             }
         }
     }
