@@ -6,18 +6,38 @@ namespace CryptoTechReminderSystem.Test.TestDouble
 {
     public class GetLateDevelopersStub : IGetLateDevelopers
     {
-        private readonly List<string> _lateDevelopers;
+        private readonly List<GetLateDevelopersResponse.LateDeveloper> _lateDevelopers;
 
-        private static List<string> DefaultList => new List<string>
+        private static List<GetLateDevelopersResponse.LateDeveloper> DefaultList => new List<GetLateDevelopersResponse.LateDeveloper>
         {
-            "W0123CHAN",
-            "W123AMON",
-            "W789ROSS"
+            new GetLateDevelopersResponse.LateDeveloper
+                {
+                    Id = "W0123CHAN"
+                },
+            new GetLateDevelopersResponse.LateDeveloper
+                {
+                    Id = "W123AMON"
+                },
+            new GetLateDevelopersResponse.LateDeveloper
+                {
+                    Id = "W789ROSS"
+                }
         };
         
         public GetLateDevelopersStub(List<string> lateDevelopers = null)
         {
-            _lateDevelopers = lateDevelopers ?? DefaultList;
+            var templateDeveloper = new List<GetLateDevelopersResponse.LateDeveloper>();
+
+            if (lateDevelopers != null)
+                foreach (var developer in lateDevelopers)
+                {
+                    templateDeveloper.Add(new GetLateDevelopersResponse.LateDeveloper
+                    {
+                        Id = developer
+                    });
+                }
+
+            _lateDevelopers = templateDeveloper.Count == 0 ? DefaultList : templateDeveloper;
         }
         
         public GetLateDevelopersResponse Execute()

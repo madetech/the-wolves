@@ -57,6 +57,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [TestCase( "W0123CHAN", "W123AMON")]
         public void CanCheckMessageHasAllUsers(params string[] userId)
         {
+            
             var getLateDevelopersStub = new GetLateDevelopersStub(userId.ToList());
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub,_sendReminderSpy, _clock);
             var expectedMessage = "TIMESHEETS ARE GOOD YO!";

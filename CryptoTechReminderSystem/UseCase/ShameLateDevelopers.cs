@@ -25,9 +25,9 @@ namespace CryptoTechReminderSystem.UseCase
             {
                 var lateDevelopers = _getLateDevelopers.Execute();
             
-                var text = lateDevelopers.Developers.Aggregate(shameLateDevelopersRequest.Message, (current, developer) => current + $"\n• <@{developer}>");
+                var text = lateDevelopers.Developers.Aggregate(shameLateDevelopersRequest.Message, (current, developer) => current + $"\n• <@{developer.Id}>");
 
-                _sendReminder.Execute(new SendReminderRequest()
+                _sendReminder.Execute(new SendReminderRequest
                 {
                     Text = text,
                     Channel = shameLateDevelopersRequest.Channel
