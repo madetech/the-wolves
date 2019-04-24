@@ -30,35 +30,42 @@ namespace CryptoTechReminderSystem.UseCase
             var dateTo = GetEndingDate(_clock.Now());
             
             var harvestGetTimeSheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
+            
             var getLateDevelopersResponse = new GetLateDevelopersResponse
             {
                 Developers = new List<string>()
             };
+            
             foreach (var harvestDeveloper in harvestGetDevelopersResponse)
             {
                 var timeSheetForDeveloper = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
+                
                 if (sumOfHours < 35)
                 {
                     var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => RemoveTopLevelDomain(developer.Email) == RemoveTopLevelDomain(harvestDeveloper.Email));
+                    
                     if (slackLateDeveloper != null)
                     {
                         getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
                     }
                 }
             }
+            
             return getLateDevelopersResponse;
         }
         
         private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
         {
             var daysFromMonday = (7 + (currentDateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
+            
             return currentDateTime.AddDays(-daysFromMonday);
         }
 
         private static DateTimeOffset GetEndingDate(DateTimeOffset currentDateTime)
         {
             var daysToFriday = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
+            
             return currentDateTime.AddDays(daysToFriday);
         }
 
