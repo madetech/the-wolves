@@ -45,12 +45,12 @@ namespace CryptoTechReminderSystem.Gateway
         
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
-            var apiResponse = RetrieveATimeSheet(dateFrom, dateTo, 1);
+            var apiResponse = RetrieveATimeSheetWithPagination(dateFrom, dateTo, 1);
             var totalPages = (int) apiResponse["total_pages"];
 
             for (var page = 2; page <= totalPages ; page++)
             {
-                apiResponse.Merge(RetrieveATimeSheet(dateFrom, dateTo, page));
+                apiResponse.Merge(RetrieveATimeSheetWithPagination(dateFrom, dateTo, page));
             }
             
             var timeSheets = apiResponse["time_entries"];
@@ -87,7 +87,7 @@ namespace CryptoTechReminderSystem.Gateway
             return user["roles"].ToArray().Any(role => _developerRoles.Contains(role.ToString()));
         }
         
-        private JObject RetrieveATimeSheet(DateTimeOffset dateFrom, DateTimeOffset dateTo, int page)
+        private JObject RetrieveATimeSheetWithPagination(DateTimeOffset dateFrom, DateTimeOffset dateTo, int page)
         {
             var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}&page={page}";
             var response = GetApiResponse(address);
