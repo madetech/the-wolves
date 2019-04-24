@@ -66,6 +66,15 @@ namespace CryptoTechReminderSystem.Gateway
             var response = await _client.PostAsync("/api/chat.postMessage", content);
             var result = await response.Content.ReadAsStringAsync();
             
+            try
+            {
+                response.EnsureSuccessStatusCode();
+                Console.WriteLine($"Slack message sent:  ");
+            }
+            catch (HttpRequestException)
+            {
+                Console.WriteLine($"Error: ");
+            }
             return result;
         }
         
