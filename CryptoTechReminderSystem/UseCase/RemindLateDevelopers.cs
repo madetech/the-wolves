@@ -35,7 +35,7 @@ namespace CryptoTechReminderSystem.UseCase
         
         private bool IsHalfHourInterval()
         {
-            return _clock.Now().ToUnixTimeSeconds() % 1800 == 0;
+            return _clock.Now().Minute % 30 == 0;
         }
 
         private bool IsBeforeTwoPm()
