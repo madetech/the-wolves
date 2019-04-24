@@ -9,6 +9,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
 {
     public class RemindDeveloperTests
     {
+        private const string Text = "Please make sure your timesheet is submitted today by 13:30.";
+
         private class SlackGatewaySpy : IMessageSender
         {
             public Message Message;
@@ -28,7 +30,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             remindDeveloper.Execute(new SendReminderRequest
             {
                 Channel = "U120123D",
-                Text = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                Text = Text
             });
             
             spy.Message.Channel.Should().Be("U120123D");
@@ -39,16 +41,15 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             var spy = new SlackGatewaySpy();
             var remindDeveloper = new SendReminder(spy);
-            const string text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
-            
+
             remindDeveloper.Execute(new SendReminderRequest
             {
                 Channel = "U87219AW",
-                Text = text
+                Text = Text
             });
             
             spy.Message.Channel.Should().Be("U87219AW");
-            spy.Message.Text.Should().Be(text);
+            spy.Message.Text.Should().Be(Text);
         }
     }
 }
