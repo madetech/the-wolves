@@ -59,7 +59,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             _slackApi.Get("/" + SlackApiUsersPath).Responds(slackGetUsersResponse);
 
-            _slackApi.Post("/" + SlackApiPostMessagePath).Responds("{{\"ok\": true}}");
+            _slackApi.Post("/" + SlackApiPostMessagePath).Responds(new {ok = true});
             
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(

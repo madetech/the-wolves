@@ -31,7 +31,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _slackApi = new FluentSimulator(Address);
                 _slackGateway = new SlackGateway(Address, Token);
 
-                _slackApi.Post(PostMessageApiPath).Responds(new {ok = true});
+                _slackApi.Post("/" + PostMessageApiPath).Responds(new {ok = true});
 
                 _slackApi.Start();
             }
