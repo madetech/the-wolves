@@ -66,13 +66,15 @@ namespace CryptoTechReminderSystem.Gateway
 
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
-            var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
+            var apiResponse = RetrieveATimeSheet(dateFrom, dateTo, 1);
+
+            var totalPages = (int) apiResponse["total_pages"];
+
+            for (var page = 2; page <= totalPages ; page++)
+            {
+                apiResponse.Merge(RetrieveATimeSheet(dateFrom, dateTo, page));
+            }
             
-            var response = GetApiResponse(address);
-            
-            response.Wait();
-            
-            var apiResponse = response.Result;
             var timeSheets = apiResponse["time_entries"];
             return timeSheets.Select(timeSheet => new TimeSheet
                 {
@@ -82,6 +84,17 @@ namespace CryptoTechReminderSystem.Gateway
                     Hours = (float)timeSheet["hours"]
                 }
             ).ToList(); 
+        }
+        
+        private JObject RetrieveATimeSheet(DateTimeOffset dateFrom, DateTimeOffset dateTo, int page)
+        {
+            var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}&page={page}";
+            
+            var response = GetApiResponse(address);
+            
+            response.Wait();
+            
+            return response.Result;
         }
     }
 }

@@ -99,7 +99,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
             private void SetUpTimeSheetApiEndpoint(string dateFrom, string dateTo)
             {
-                var json = File.ReadAllText(
+                var jsonPageOne = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
                         "../../../Gateway/HarvestTimeEntriesApiEndpoint.json"
@@ -109,7 +109,21 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestApi.Get($"/{ApiTimeSheetPath}")
                     .WithParameter("from", dateFrom)
                     .WithParameter("to", dateTo)
-                    .Responds(json);
+                    .WithParameter("page", "1")
+                    .Responds(jsonPageOne);
+                
+                var jsonPageTwo = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "../../../Gateway/HarvestTimeEntriesApiEndpointPageTwo.json"
+                    )
+                );
+
+                _harvestApi.Get($"/{ApiTimeSheetPath}")
+                    .WithParameter("from", dateFrom)
+                    .WithParameter("to", dateTo)
+                    .WithParameter("page", "2")
+                    .Responds(jsonPageTwo);
                 
                 _harvestApi.Start();
             }
@@ -127,7 +141,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                
-                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+                _harvestApi.ReceivedRequests.Count.Should().Be(2);
             }
             
             [Test]
@@ -162,7 +176,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
 
                 _harvestApi.ReceivedRequests.First().Url.Should().Be(
-                    $"{Address}{ApiTimeSheetPath}?from=2019-04-{dayFrom}&to=2019-04-{dayTo}"
+                    $"{Address}{ApiTimeSheetPath}?from=2019-04-{dayFrom}&to=2019-04-{dayTo}&page=1"
                 );
             }
 
@@ -177,7 +191,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 response.Any(entry => entry.UserId == expectedUserId).Should().BeTrue();
             }
+            
+            [Test]
+            public void CanGetAllTimeSheets()
+            {
+                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
 
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+
+                response.Count.Should().Be(6);
+            }
+            
             [Test]
             public void CanGetAllTimeSheetProperties()
             {

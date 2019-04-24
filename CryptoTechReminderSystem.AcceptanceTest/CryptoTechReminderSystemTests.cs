@@ -79,6 +79,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _harvestApi.Get("/api/v2/time_entries")
                 .WithParameter("from", "2019-02-25")
                 .WithParameter("to", "2019-03-01")
+                .WithParameter("page", "1")
                 .Responds(harvestGetTimeEntriesResponse);
             
             _slackApi.Start();
