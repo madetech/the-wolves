@@ -144,7 +144,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 var channel = "U98ZL999";
                 var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
-                var message = new Message()
+                var message = new Message
                 {
                     Channel = channel,
                     Text = text
