@@ -1,3 +1,4 @@
+using System;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
@@ -15,9 +16,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             public Message Message;
         
-            public void Send(Message message)
+            public PostMessageResponse<bool, Exception> Send(Message message)
             {
                 Message = message;
+                return PostMessageResponse<bool, Exception>.OfSuccessful(true);
             }
         }
        

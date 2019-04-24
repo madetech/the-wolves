@@ -25,7 +25,7 @@ namespace CryptoTechReminderSystem.Gateway
             _token = token;
         }
 
-        public void Send(Message message)
+        public PostMessageResponse<bool, Exception> Send(Message message)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             
@@ -35,8 +35,17 @@ namespace CryptoTechReminderSystem.Gateway
                 Text = message.Text
             });
             var content = new StringContent(request, Encoding.UTF8, "application/json");
-            
-            PostChatMessageAsync(content).Wait();
+            var response = PostChatMessageAsync(content);
+
+            response.Wait();
+
+            if ((bool) response.Result["ok"])
+            {
+                return PostMessageResponse<bool, Exception>.OfSuccessful(true);
+            }
+
+            return PostMessageResponse<bool, Exception>
+                .OfError(new Exception(response.Result["error"].ToString()));
         }
         
         public IList<SlackDeveloper> RetrieveDevelopers()
@@ -64,19 +73,7 @@ namespace CryptoTechReminderSystem.Gateway
         private async Task<JObject> PostChatMessageAsync(HttpContent content)
         {
             var response = await _client.PostAsync("/api/chat.postMessage", content);
-            var result = JObject.Parse(await response.Content.ReadAsStringAsync());
-            
-            try
-            {
-                response.EnsureSuccessStatusCode();
-                Console.WriteLine($"Slack message sent: {result}");
-            }
-            catch (HttpRequestException)
-            {
-                Console.WriteLine($"Error: {result}");
-            }
-
-            return result;
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
         
         private async Task<JObject> GetUsersAsync() {
@@ -91,6 +88,32 @@ namespace CryptoTechReminderSystem.Gateway
             public string Channel { get; set; }
             [JsonProperty("text")]
             public string Text { get; set; }
+        }
+    }
+
+    public class PostMessageResponse<TBool, TException>
+    {
+        private TBool Success { get; set; }
+        private TException Error { get; set; }
+
+        public static PostMessageResponse<TBool, TException> OfSuccessful(TBool successful)
+        {
+            return new PostMessageResponse<TBool, TException> {Success = successful};
+        }
+
+        public static PostMessageResponse<TBool, TException> OfError(TException error)
+        {
+            return new PostMessageResponse<TBool, TException> {Error = error};
+        }
+
+        public void OnSuccess(Action<TBool> action)
+        {
+            if (Success != null) action(Success);
+        }
+
+        public void OnError(Action<TException> action)
+        {
+            if (Error != null) action(Error);
         }
     }
 }
