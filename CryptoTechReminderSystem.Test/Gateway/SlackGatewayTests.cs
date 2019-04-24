@@ -31,7 +31,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _slackApi = new FluentSimulator(Address);
                 _slackGateway = new SlackGateway(Address, Token);
 
-                _slackApi.Post(PostMessageApiPath).Responds("{{\"ok\": true}}");
+                _slackApi.Post(PostMessageApiPath).Responds(new {ok = true});
 
                 _slackApi.Start();
             }
@@ -82,7 +82,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanSendAPostMessageRequestWithText()
             {
                 var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
-                var message = new Message()
+                var message = new Message
                 {
                     Text = text
                 };
