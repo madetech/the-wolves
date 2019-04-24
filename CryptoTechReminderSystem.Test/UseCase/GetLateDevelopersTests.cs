@@ -37,8 +37,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     )
                 );
 
-                _getDevelopers =
-                    new GetLateDevelopers(_slackGatewaySpy, _harvestGatewaySpy, _harvestGatewaySpy, _clock);
+                _getDevelopers = new GetLateDevelopers(_slackGatewaySpy, _harvestGatewaySpy, _harvestGatewaySpy, _clock);
             }
             
             [Test]
@@ -263,7 +262,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         }
                     }
                 };
-                
             }
             
             [Test]

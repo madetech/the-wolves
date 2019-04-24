@@ -1,5 +1,6 @@
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.DomainObject;
+using CryptoTechReminderSystem.Gateway;
 using CryptoTechReminderSystem.UseCase;
 using FluentAssertions;
 using NUnit.Framework;
@@ -8,7 +9,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
 {
     public class RemindDeveloperTests
     {
-        class SlackGatewaySpy : IMessageSender
+        private class SlackGatewaySpy : IMessageSender
         {
             public Message Message;
         
@@ -38,7 +39,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             var spy = new SlackGatewaySpy();
             var remindDeveloper = new SendReminder(spy);
-            var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
+            const string text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
             
             remindDeveloper.Execute(new SendReminderRequest
             {

@@ -6,9 +6,9 @@ namespace CryptoTechReminderSystem.UseCase
 {
     public class ShameLateDevelopers
     {
-        private IGetLateDevelopers _getLateDevelopers;
-        private ISendReminder _sendReminder;
-        private IClock _clock;
+        private readonly IGetLateDevelopers _getLateDevelopers;
+        private readonly ISendReminder _sendReminder;
+        private readonly IClock _clock;
 
         public ShameLateDevelopers(IGetLateDevelopers getLateDevelopers, ISendReminder sendReminder, IClock clock)
         {

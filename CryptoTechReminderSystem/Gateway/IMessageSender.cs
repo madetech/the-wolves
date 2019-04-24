@@ -1,6 +1,6 @@
 using CryptoTechReminderSystem.DomainObject;
 
-namespace CryptoTechReminderSystem.UseCase
+namespace CryptoTechReminderSystem.Gateway
 {
     public interface IMessageSender
     {
