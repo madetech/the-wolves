@@ -61,20 +61,21 @@ namespace CryptoTechReminderSystem.Gateway
             ).ToList();
         }
         
-        private async Task<string> PostChatMessageAsync(HttpContent content)
+        private async Task<JObject> PostChatMessageAsync(HttpContent content)
         {
             var response = await _client.PostAsync("/api/chat.postMessage", content);
-            var result = await response.Content.ReadAsStringAsync();
+            var result = JObject.Parse(await response.Content.ReadAsStringAsync());
             
             try
             {
                 response.EnsureSuccessStatusCode();
-                Console.WriteLine($"Slack message sent:  ");
+                Console.WriteLine($"Slack message sent: {result}");
             }
             catch (HttpRequestException)
             {
-                Console.WriteLine($"Error: ");
+                Console.WriteLine($"Error: {result}");
             }
+
             return result;
         }
         
