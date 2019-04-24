@@ -40,11 +40,15 @@ namespace CryptoTechReminderSystem.UseCase
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 if (sumOfHours < 35)
                 {
-                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => developer.Email == harvestDeveloper.Email);
+                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => TrimEmail(developer.Email) == TrimEmail(harvestDeveloper.Email));
                     if (slackLateDeveloper != null)
                     {
                         getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
+                        Console.WriteLine($"harvest email {TrimEmail(harvestDeveloper.Email)} slack email {TrimEmail(slackLateDeveloper.Email)}");
+
                     }
+                    Console.WriteLine($"harvest email {TrimEmail(harvestDeveloper.Email)}");
+
                 }
             }
             return getLateDevelopersResponse;
@@ -60,6 +64,12 @@ namespace CryptoTechReminderSystem.UseCase
         {
             var daysToFriday = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
             return currentDateTime.AddDays(daysToFriday);
+        }
+
+        private static string TrimEmail(string email)
+        {
+            var indexOfAt = email.IndexOf('@');
+            return email.Substring(0, indexOfAt);
         }
     }
 }
