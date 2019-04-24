@@ -53,7 +53,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             var slackGetUsersResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "../../../SlackUsersExampleResponse.json"
+                    "../../../ApiEndpointResponse/SlackUsersResponse.json"
                 )
             );
 
@@ -64,7 +64,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "../../../HarvestUsersExampleResponse.json"
+                    "../../../ApiEndpointResponse/HarvestUsersResponse.json"
                 )
             );
             
@@ -73,7 +73,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             var harvestGetTimeEntriesResponse = File.ReadAllText(
                 Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    "../../../HarvestTimeEntriesExampleResponse.json"
+                    "../../../ApiEndpointResponse/HarvestTimeEntriesResponse.json"
                 )
             );
             _harvestApi.Get("/api/v2/time_entries")

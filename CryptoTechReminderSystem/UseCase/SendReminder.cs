@@ -1,5 +1,6 @@
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.DomainObject;
+using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {

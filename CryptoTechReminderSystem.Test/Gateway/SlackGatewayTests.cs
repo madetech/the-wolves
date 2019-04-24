@@ -130,7 +130,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/SlackUsersExampleResponse.json"
+                        "../../../Gateway/ApiEndpointResponse/SlackUsersResponse.json"
                     )
                 );
                 
@@ -199,7 +199,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/ExcludedSlackUsersExampleResponse.json"
+                        "../../../Gateway/ApiEndpointResponse/ExcludedSlackUsersResponse.json"
                     )
                 );
                 

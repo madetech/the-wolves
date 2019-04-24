@@ -29,14 +29,14 @@ namespace CryptoTechReminderSystem.UseCase
             var dateFrom = GetStartingDate(_clock.Now());
             var dateTo = GetEndingDate(_clock.Now());
             
-            var harvestGetTimesheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
+            var harvestGetTimeSheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             var getLateDevelopersResponse = new GetLateDevelopersResponse
             {
                 Developers = new List<string>()
             };
             foreach (var harvestDeveloper in harvestGetDevelopersResponse)
             {
-                var timeSheetForDeveloper = harvestGetTimesheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
+                var timeSheetForDeveloper = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 if (sumOfHours < 35)
                 {
