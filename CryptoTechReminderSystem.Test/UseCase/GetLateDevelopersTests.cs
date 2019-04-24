@@ -324,7 +324,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             }
             
             [Test]
-            public void CanHandleWhenNoEmailsAreNotExact()
+            public void CanHandleWhenEmailsAreNotExact()
             {
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
