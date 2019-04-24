@@ -322,6 +322,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 response.Developers.Count.Should().Be(0);
             }
+            
             [Test]
             public void CanHandleWhenNoEmailsAreNotExact()
             {
