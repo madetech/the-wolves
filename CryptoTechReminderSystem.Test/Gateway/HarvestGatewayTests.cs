@@ -97,7 +97,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 );
             }
 
-            private void SetUpTimeSheetApiEndpoint(string dateFrom, string dateTo)
+            private void SetUpTimeSheetApiEndpointWithOnePage(string dateFrom, string dateTo)
             {
                 var json = File.ReadAllText(
                     Path.Combine(
@@ -109,11 +109,43 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestApi.Get($"/{ApiTimeSheetPath}")
                     .WithParameter("from", dateFrom)
                     .WithParameter("to", dateTo)
+                    .WithParameter("page", "1")
                     .Responds(json);
-                
+
                 _harvestApi.Start();
             }
             
+            private void SetUpTimeSheetApiEndpointWithTwoPages(string dateFrom, string dateTo)
+            {
+                var jsonPageOne = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "../../../Gateway/HarvestTimeEntriesApiEndpointPageOne.json"
+                    )
+                );
+
+                _harvestApi.Get($"/{ApiTimeSheetPath}")
+                    .WithParameter("from", dateFrom)
+                    .WithParameter("to", dateTo)
+                    .WithParameter("page", "1")
+                    .Responds(jsonPageOne);
+                
+                var jsonPageTwo = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "../../../Gateway/HarvestTimeEntriesApiEndpointPageTwo.json"
+                    )
+                );
+
+                _harvestApi.Get($"/{ApiTimeSheetPath}")
+                    .WithParameter("from", dateFrom)
+                    .WithParameter("to", dateTo)
+                    .WithParameter("page", "2")
+                    .Responds(jsonPageTwo);
+                
+                _harvestApi.Start();
+            }
+
             [TearDown]
             public void TearDown()
             {
@@ -123,11 +155,11 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanSendOneRequestAtATime()
             {
-                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+                SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
 
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                
-                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+                _harvestApi.ReceivedRequests.Count.Should().Be(2);
             }
             
             [Test]
@@ -136,7 +168,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase("User-Agent", UserAgent)]
             public void CanGetTimeSheetsWithHeaders(string header, string expected)
             {
-                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+                SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
                 
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
@@ -149,7 +181,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase("01", "05")]
             public void CanRequestTimeSheetsWithAStartingAndEndingDate(string dayFrom, string dayTo)
             {
-                SetUpTimeSheetApiEndpoint($"2019-04-{dayFrom}", $"2019-04-{dayTo}");
+                SetUpTimeSheetApiEndpointWithTwoPages($"2019-04-{dayFrom}", $"2019-04-{dayTo}");
 
                 var dateFrom = new DateTimeOffset(
                     new DateTime(2019, 04, int.Parse(dayFrom))
@@ -162,7 +194,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
 
                 _harvestApi.ReceivedRequests.First().Url.Should().Be(
-                    $"{Address}{ApiTimeSheetPath}?from=2019-04-{dayFrom}&to=2019-04-{dayTo}"
+                    $"{Address}{ApiTimeSheetPath}?from=2019-04-{dayFrom}&to=2019-04-{dayTo}&page=1"
                 );
             }
 
@@ -171,17 +203,37 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase(1782974)]
             public void CanGetATimeSheet(int expectedUserId)
             {
-                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+                SetUpTimeSheetApiEndpointWithOnePage("2019-04-08", "2019-04-12");
 
                 var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
                 response.Any(entry => entry.UserId == expectedUserId).Should().BeTrue();
             }
+            
+            [Test]
+            public void CanGetAllTimeSheetsWithOnePage()
+            {
+                SetUpTimeSheetApiEndpointWithOnePage("2019-04-08", "2019-04-12");
 
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+
+                response.Count.Should().Be(4);
+            }
+            
+            [Test]
+            public void CanGetAllTimeSheetsWithTwoPages()
+            {
+                SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
+
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+
+                response.Count.Should().Be(6);
+            }
+            
             [Test]
             public void CanGetAllTimeSheetProperties()
             {
-                SetUpTimeSheetApiEndpoint("2019-04-08", "2019-04-12");
+                SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
 
                 var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                 
