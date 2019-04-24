@@ -11,6 +11,8 @@ namespace CryptoTechReminderSystem.Gateway
 {
     public class HarvestGateway : IHarvestDeveloperRetriever, ITimeSheetRetriever
     {
+        private const string UsersApiAddress = "/api/v2/users";
+        private const string TimeEntriesApiAddress = "/api/v2/time_entries";
         private readonly HttpClient _client;
         private readonly string[] _developerRoles;
        
@@ -25,7 +27,7 @@ namespace CryptoTechReminderSystem.Gateway
         
         public IList<HarvestDeveloper> RetrieveDevelopers()
         {
-            var response = GetApiResponse("/api/v2/users");
+            var response = GetApiResponse(UsersApiAddress);
             
             response.Wait();
             
@@ -89,7 +91,7 @@ namespace CryptoTechReminderSystem.Gateway
         
         private JObject RetrieveATimeSheetWithPagination(DateTimeOffset dateFrom, DateTimeOffset dateTo, int page)
         {
-            var address = $"/api/v2/time_entries?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}&page={page}";
+            var address = $"{TimeEntriesApiAddress}?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}&page={page}";
             var response = GetApiResponse(address);
             
             response.Wait();
