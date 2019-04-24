@@ -14,9 +14,13 @@ namespace CryptoTechReminderSystem.Test.TestDouble
             
             return new GetLateDevelopersResponse
             {
-                Developers = new List<string>
+                Developers = new List<GetLateDevelopersResponse.LateDeveloper>
                 {
-                    "Uncle Craig"
+                    new GetLateDevelopersResponse.LateDeveloper()
+                    {
+                        Id = "U9034950",
+                        Email = "UncleCraig@aol.com"
+                    }
                 }
             };
         }

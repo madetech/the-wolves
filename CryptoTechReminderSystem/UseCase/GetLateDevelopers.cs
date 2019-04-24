@@ -33,7 +33,7 @@ namespace CryptoTechReminderSystem.UseCase
             
             var getLateDevelopersResponse = new GetLateDevelopersResponse
             {
-                Developers = new List<string>()
+                Developers = new List<GetLateDevelopersResponse.LateDeveloper>()
             };
             
             foreach (var harvestDeveloper in harvestGetDevelopersResponse)
@@ -47,7 +47,11 @@ namespace CryptoTechReminderSystem.UseCase
                     
                     if (slackLateDeveloper != null)
                     {
-                        getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
+                        getLateDevelopersResponse.Developers.Add(new GetLateDevelopersResponse.LateDeveloper
+                        {
+                            Id = slackLateDeveloper.Id,
+                            Email = slackLateDeveloper.Email
+                        });
                     }
                 }
             }

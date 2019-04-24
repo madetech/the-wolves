@@ -198,7 +198,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 var response = getDevelopers.Execute();
          
-                response.Developers.First().Should().Be(slackUserId);
+                response.Developers.First().Id.Should().Be(slackUserId);
             }
         } 
 
@@ -274,7 +274,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
                 var response = getDevelopers.Execute();
 
-                response.Developers.First().Should().Be("U8723");
+                response.Developers.First().Id.Should().Be("U8723");
             }
             
             [Test]
@@ -363,7 +363,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var response = getDevelopers.Execute();
                 
                 response.Developers.Count.Should().Be(1);
-                response.Developers.First().Should().Be("U8723");
+                response.Developers.First().Id.Should().Be("U8723");
             }
         }
     }
