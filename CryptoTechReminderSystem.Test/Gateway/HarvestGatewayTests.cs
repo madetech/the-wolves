@@ -102,7 +102,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var jsonPageOne = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/HarvestTimeEntriesApiEndpoint.json"
+                        "../../../Gateway/HarvestTimeEntriesApiEndpointPageOne.json"
                     )
                 );
 
