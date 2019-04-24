@@ -201,8 +201,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
          
                 response.Developers.First().Should().Be(slackUserId);
             }
-        }
-        
+        } 
 
         [TestFixture]
         public class CanHandleNoMatches
@@ -366,7 +365,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 response.Developers.Count.Should().Be(1);
                 response.Developers.First().Should().Be("U8723");
-
             }
         }
     }
