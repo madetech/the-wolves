@@ -65,11 +65,13 @@ namespace CryptoTechReminderSystem.Gateway
         {
             var response = await _client.PostAsync("/api/chat.postMessage", content);
             var result = await response.Content.ReadAsStringAsync();
+            
             return result;
         }
         
         private async Task<JObject> GetUsersAsync() {
             var response = await _client.GetAsync("/api/users.list");
+            
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
         
