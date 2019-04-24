@@ -44,7 +44,6 @@ namespace CryptoTechReminderSystem.UseCase
                     if (slackLateDeveloper != null)
                     {
                         getLateDevelopersResponse.Developers.Add(slackLateDeveloper.Id);
-
                     }
                 }
             }
