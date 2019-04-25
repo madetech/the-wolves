@@ -42,11 +42,11 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     return _simulator.ReceivedRequests.ToArray();
                 }
 
-                public void ShouldRespondWithOk()
+                public void RespondWithOk()
                 {
                     _simulator.Post("/" + PostMessageApiPath).Responds(new { ok = true });
                 }
-                public void ShouldRespondWithError()
+                public void RespondWithError()
                 {
                     _simulator.Post("/" + PostMessageApiPath).Responds(
                         new {ok = false, error = "error message"});
@@ -79,7 +79,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _slackApi = new SlackSimulator(Address);
                 _slackGateway = new SlackGateway(Address, Token);
                 _slackApi.Start();
-                _slackApi.ShouldRespondWithOk();
+                _slackApi.RespondWithOk();
             }
             
             [TearDown]
@@ -181,7 +181,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanRespondWithErrorIfMessageSendFails()
             {
-                _slackApi.ShouldRespondWithError();
+                _slackApi.RespondWithError();
                 var channel = "U98ZL999";
                 var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
                 var message = new Message
