@@ -21,10 +21,12 @@ namespace CryptoTechReminderSystem.UseCase
                 Channel = sendReminderRequest.Channel,
                 Text = sendReminderRequest.Text
             });
+
+            var address = sendReminderRequest.Email ?? sendReminderRequest.Channel;
             
-            result.OnSuccess(success => Console.WriteLine($"{sendReminderRequest.Email} was sent a reminder."));
+            result.OnSuccess(success => Console.WriteLine($"{address} was sent a reminder."));
             result.OnError(error => Console.WriteLine(
-                $"!Failed to send message to {sendReminderRequest.Email} with error: {error.Message}"));
+                $"!Failed to send message to {address} with error: {error.Message}"));
         }
     }
 }
