@@ -24,7 +24,7 @@ namespace CryptoTechReminderSystem.UseCase
             
             result.OnSuccess(f => Console.WriteLine($"{sendReminderRequest.Email} was sent a reminder."));
             result.OnError(error => Console.WriteLine(
-                $"!Failed to send message to {sendReminderRequest.Email} with error {error.Message}"));
+                $"!Failed to send message to {sendReminderRequest.Email} with error: {error.Message}"));
         }
     }
 }
