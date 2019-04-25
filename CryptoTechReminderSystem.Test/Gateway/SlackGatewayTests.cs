@@ -168,7 +168,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 
                 var response = _slackGateway.Send(message);
 
-                response.OnSuccess(f => _slackApi.SpyMethod());
+                response.OnSuccess(success => _slackApi.SpyMethod());
                 _slackApi.SpyMethodCalled.Should().BeTrue();
                 response.OnError(error => _slackApi.HandleError(error));
                 _slackApi.ReceivedErrorMessage.Should().BeNullOrEmpty();
@@ -186,7 +186,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 
                 var response = _slackGateway.Send(message);
 
-                response.OnSuccess(f => _slackApi.SpyMethod());
+                response.OnSuccess(success => _slackApi.SpyMethod());
                 _slackApi.SpyMethodCalled.Should().BeFalse();
                 response.OnError(error => _slackApi.HandleError(error));
                 _slackApi.ReceivedErrorMessage.Should().Be("error message");
