@@ -5,6 +5,6 @@ namespace CryptoTechReminderSystem.Gateway
 {
     public interface IMessageSender
     {
-        PostMessageResponse<bool, Exception> Send(Message message);
+        PostMessageResponse<Success, Exception> Send(Message message);
     }
 }

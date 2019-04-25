@@ -27,9 +27,9 @@ namespace CryptoTechReminderSystem.UseCase
                     _sendReminder.Execute(new SendReminderRequest
                     {
                         Channel = lateDeveloper.Id,
-                        Text = remindLateDevelopersRequest.Message
+                        Text = remindLateDevelopersRequest.Message,
+                        Email = lateDeveloper.Email
                     });
-                    Console.WriteLine($"{lateDeveloper.Email} was sent a reminder.");
                 }
             }
         }

@@ -2,22 +2,22 @@ using System;
 
 namespace CryptoTechReminderSystem.DomainObject
 {
-    public class PostMessageResponse<TBool, TException>
+    public class PostMessageResponse<TSuccess, TException>
     {
-        private TBool Success { get; set; }
+        private TSuccess Success { get; set; }
         private TException Error { get; set; }
 
-        public static PostMessageResponse<TBool, TException> OfSuccessful(TBool successful)
+        public static PostMessageResponse<TSuccess, TException> OfSuccessful(TSuccess successful)
         {
-            return new PostMessageResponse<TBool, TException> {Success = successful};
+            return new PostMessageResponse<TSuccess, TException> {Success = successful};
         }
 
-        public static PostMessageResponse<TBool, TException> OfError(TException error)
+        public static PostMessageResponse<TSuccess, TException> OfError(TException error)
         {
-            return new PostMessageResponse<TBool, TException> {Error = error};
+            return new PostMessageResponse<TSuccess, TException> {Error = error};
         }
 
-        public void OnSuccess(Action<TBool> action)
+        public void OnSuccess(Action<TSuccess> action)
         {
             if (Success != null) action(Success);
         }
@@ -27,4 +27,5 @@ namespace CryptoTechReminderSystem.DomainObject
             if (Error != null) action(Error);
         }
     }
+    public class Success{}
 }

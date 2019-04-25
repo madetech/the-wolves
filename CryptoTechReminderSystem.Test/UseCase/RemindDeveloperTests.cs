@@ -16,10 +16,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             public Message Message;
         
-            public PostMessageResponse<bool, Exception> Send(Message message)
+            public PostMessageResponse<Success, Exception> Send(Message message)
             {
                 Message = message;
-                return PostMessageResponse<bool, Exception>.OfSuccessful(true);
+                return PostMessageResponse<Success, Exception>.OfSuccessful(new Success());
             }
         }
        
