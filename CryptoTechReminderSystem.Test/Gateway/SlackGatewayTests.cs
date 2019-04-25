@@ -107,7 +107,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 
                 receivedRequest.Headers["Authorization"].Should().Be("Bearer " + Token);
             }
-            
+
             [Test]
             public void CanSendAPostMessageRequestWithAChannel()
             {
