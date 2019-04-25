@@ -67,9 +67,9 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     SpyMethodCalled = true;
                 }
 
-                public void HandleError(Exception ex)
+                public void HandleError(Exception exception)
                 {
-                    ReceivedErrorMessage = ex.Message;
+                    ReceivedErrorMessage = exception.Message;
                 }
             }
             
