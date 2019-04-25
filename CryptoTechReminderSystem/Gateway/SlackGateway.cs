@@ -25,7 +25,7 @@ namespace CryptoTechReminderSystem.Gateway
             _token = token;
         }
 
-        public PostMessageResponse<bool, Exception> Send(Message message)
+        public PostMessageResponse<Success, Exception> Send(Message message)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             
@@ -41,11 +41,11 @@ namespace CryptoTechReminderSystem.Gateway
 
             if ((bool) response.Result["ok"])
             {
-                return PostMessageResponse<bool, Exception>.OfSuccessful(true);
+                return PostMessageResponse<Success, Exception>.OfSuccessful(new Success());
             }
 
-            return PostMessageResponse<bool, Exception>
-                .OfError(new Exception(response.Result["error"].ToString()));
+            return PostMessageResponse<Success, Exception>
+                .OfError(new Exception(response.Result["error"].ToString() ?? "Default error message"));
         }
         
         public IList<SlackDeveloper> RetrieveDevelopers()
