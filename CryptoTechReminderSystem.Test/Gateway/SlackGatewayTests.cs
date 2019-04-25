@@ -18,6 +18,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private const string PostMessageApiPath = "api/chat.postMessage";
         private const string PostMessageApiUrl = Address + PostMessageApiPath;
+        private const string PostMessageText = "Please make sure your timesheet is submitted by 13:30 on Friday.";
+        private const string PostMessageChannel = "U98ZL999";
 
         [TestFixture]
         public class CanSendMessage
@@ -111,63 +113,57 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanSendAPostMessageRequestWithAChannel()
             {
-                var channel = "U98DL811";
                 var message = new Message
                 {
-                    Channel = channel
+                    Channel = PostMessageChannel
                 };
             
                 _slackGateway.Send(message);
             
                 var receivedRequest = _slackApi.ReceivedRequests().First();
             
-                JObject.Parse(receivedRequest.RequestBody)["channel"].ToString().Should().Be(channel);
+                JObject.Parse(receivedRequest.RequestBody)["channel"].ToString().Should().Be(PostMessageChannel);
             }
         
             [Test]
             public void CanSendAPostMessageRequestWithText()
             {
-                var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
                 var message = new Message
                 {
-                    Text = text
+                    Text = PostMessageText
                 };
             
                 _slackGateway.Send(message);
             
                 var receivedRequest = _slackApi.ReceivedRequests().First();
                 
-                JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(text);
+                JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(PostMessageText);
             }
             
             [Test]
             public void CanSendAPostMessageRequestWithAChannelAndText()
             {
-                var channel = "U98ZL999";
-                var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
                 var message = new Message
                 {
-                    Channel = channel,
-                    Text = text
+                    Channel = PostMessageChannel,
+                    Text = PostMessageText
                 };
             
                 _slackGateway.Send(message);
             
                 var receivedRequest = _slackApi.ReceivedRequests().First();
                 
-                JObject.Parse(receivedRequest.RequestBody)["channel"].ToString().Should().Be(channel);
-                JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(text);
+                JObject.Parse(receivedRequest.RequestBody)["channel"].ToString().Should().Be(PostMessageChannel);
+                JObject.Parse(receivedRequest.RequestBody)["text"].ToString().Should().Be(PostMessageText);
             }
             
             [Test]
             public void CanSendAPostMessageRequestWithSuccess()
             {
-                var channel = "U98ZL999";
-                var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
                 var message = new Message
                 {
-                    Channel = channel,
-                    Text = text
+                    Channel = PostMessageChannel,
+                    Text = PostMessageText
                 };
                 
                 var response = _slackGateway.Send(message);
@@ -182,12 +178,10 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanRespondWithErrorIfMessageSendFails()
             {
                 _slackApi.RespondWithError();
-                var channel = "U98ZL999";
-                var text = "Please make sure your timesheet is submitted by 13:30 on Friday.";
                 var message = new Message
                 {
-                    Channel = channel,
-                    Text = text
+                    Channel = PostMessageChannel,
+                    Text = PostMessageText
                 };
                 
                 var response = _slackGateway.Send(message);
