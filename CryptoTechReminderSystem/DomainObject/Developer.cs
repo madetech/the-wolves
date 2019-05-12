@@ -10,7 +10,7 @@ namespace CryptoTechReminderSystem.DomainObject
         public string LastName { get; set; }
         [JsonProperty("email")] 
         public string Email { get; set; }
-        [JsonProperty("hours")]
+        [JsonProperty("weekly_capacity")]
         public int Hours { get; set; }
     }
 }

@@ -73,7 +73,16 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var response = _harvestGateway.RetrieveDevelopers();
                 
                 response.First().FirstName.Should().Be("Dick");
-                response.Count.Should().Be(6);
+                response.Count.Should().Be(7);
+            }
+            
+            [Test]
+            [TestCase("Alfred", 35)]
+            [TestCase("Harvey", 28)]
+            public void CanGetWeeklyHoursForDevelopers(string name, int hours)
+            {
+                var response = _harvestGateway.RetrieveDevelopers();   
+                response.First(developer => developer.FirstName == name).Hours.Should().Be(hours);
             }
         }
 
