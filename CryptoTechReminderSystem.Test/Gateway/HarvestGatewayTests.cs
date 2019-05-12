@@ -82,7 +82,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanGetWeeklyHoursForDevelopers(string name, int hours)
             {
                 var response = _harvestGateway.RetrieveDevelopers();   
-                response.First(developer => developer.FirstName == name).Hours.Should().Be(hours);
+                response.First(developer => developer.FirstName == name).WeeklyHours.Should().Be(hours);
             }
         }
 

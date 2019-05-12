@@ -41,7 +41,7 @@ namespace CryptoTechReminderSystem.Gateway
                     FirstName = developer["first_name"].ToString(),
                     LastName = developer["last_name"].ToString(),
                     Email = developer["email"].ToString(),
-                    Hours = (int)developer["weekly_capacity"] / 3600
+                    WeeklyHours = (int)developer["weekly_capacity"] / 3600
                 }
             ).ToList();
         }

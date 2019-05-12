@@ -151,14 +151,16 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             Id = 1337,
                             FirstName = "Fred",
                             LastName = "Flintstone",
-                            Email = "fred@fred.com"
+                            Email = "fred@fred.com",
+                            WeeklyHours = 35
                         },
                         new HarvestDeveloper
                         {
                             Id = 123,
                             FirstName = "Joe",
                             LastName = "Bloggs",
-                            Email = "Joe@Bloggs.com"
+                            Email = "Joe@Bloggs.com",
+                            WeeklyHours = 28
                         }
                     }
                 };
@@ -182,12 +184,12 @@ namespace CryptoTechReminderSystem.Test.UseCase
             }
             
             [Test]
-            [TestCase(1337, "U9999")]
-            [TestCase(123, "U8723")]
-            public void CanGetLateADeveloper(int harvestUserId, string slackUserId)
+            [TestCase(1337, "U9999", 5)]
+            [TestCase(123, "U8723", 4)]
+            public void CanGetLateADeveloper(int harvestUserId, string slackUserId, int capacityInDays)
             {
                 _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
-                    new TimeSheet { Hours = 7, UserId = harvestUserId }, 5
+                    new TimeSheet { Hours = 7, UserId = harvestUserId }, capacityInDays
                 ).ToArray();
                 
                 var clock = new ClockStub(
@@ -227,21 +229,24 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             Id = 1337,
                             FirstName = "Fred",
                             LastName = "Flintstone",
-                            Email = "fred@fred.com"
+                            Email = "fred@fred.com",
+                            WeeklyHours = 35
                         },
                         new HarvestDeveloper
                         {
                             Id = 123,
                             FirstName = "Joe",
                             LastName = "Bloggs",
-                            Email = "Joe@Bloggs.com"
+                            Email = "Joe@Bloggs.com",
+                            WeeklyHours = 35
                         },
                         new HarvestDeveloper
                         {
                             Id = 101,
                             FirstName = "Jimbob",
                             LastName = "BaconBath",
-                            Email = "JBB@aol.com"
+                            Email = "JBB@aol.com",
+                            WeeklyHours = 35
                         }
                     }
                 };
@@ -289,7 +294,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             Id = 101,
                             FirstName = "Jimbob",
                             LastName = "BaconBath",
-                            Email = "JBB@aol.com"
+                            Email = "JBB@aol.com",
+                            WeeklyHours = 35
                         }
                     }
                 };
@@ -333,7 +339,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
                             Id = 101,
                             FirstName = "Fred",
                             LastName = "Flintstone",
-                            Email = "freddy@aol.com"
+                            Email = "freddy@aol.com",
+                            WeeklyHours = 35
                         }
                     }
                 };
