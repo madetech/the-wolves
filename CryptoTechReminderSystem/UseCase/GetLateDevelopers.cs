@@ -41,7 +41,7 @@ namespace CryptoTechReminderSystem.UseCase
                 var timeSheetForDeveloper = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 
-                if (sumOfHours < 35)
+                if (sumOfHours < harvestDeveloper.WeeklyHours)
                 {
                     var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => RemoveTopLevelDomain(developer.Email) == RemoveTopLevelDomain(harvestDeveloper.Email));
                     

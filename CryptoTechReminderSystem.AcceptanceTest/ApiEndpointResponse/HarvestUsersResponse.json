@@ -55,6 +55,17 @@
         "Marketing Manager"
       ],
       "is_active":false
+    },
+    {
+      "id": 1902070,
+      "first_name": "Harvey",
+      "last_name": "Dent",
+      "email": "two-face@gotham.com",
+      "weekly_capacity": 100800,
+      "roles": [
+        "Lead Engineer"
+      ],
+      "is_active":true
     }
   ]
 }

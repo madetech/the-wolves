@@ -11,6 +11,6 @@ namespace CryptoTechReminderSystem.DomainObject
         [JsonProperty("email")] 
         public string Email { get; set; }
         [JsonProperty("weekly_capacity")]
-        public int Hours { get; set; }
+        public int WeeklyHours { get; set; }
     }
 }
