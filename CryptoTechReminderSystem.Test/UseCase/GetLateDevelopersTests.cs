@@ -184,9 +184,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
             }
             
             [Test]
-            [TestCase(1337, "U9999", 5)]
-            [TestCase(123, "U8723", 4)]
-            public void CanGetLateADeveloper(int harvestUserId, string slackUserId, int capacityInDays)
+            [TestCase(1337, 5, "U8723", "U9999")]
+            [TestCase(123, 4,"U9999", "U8723")]
+            public void CanGetLateADeveloper(int harvestUserId, int capacityInDays,string submittingUserSlackUserId, string lateUsersSlackUserId)
             {
                 _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
                     new TimeSheet { Hours = 7, UserId = harvestUserId }, capacityInDays
@@ -197,10 +197,11 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 03, 01, 10, 30, 0)
                     )
                 );
-                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
-                var response = getDevelopers.Execute();
-         
-                response.Developers.First().Id.Should().Be(slackUserId);
+                var getLateDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
+                var response = getLateDevelopers.Execute();
+                
+                response.Developers.Any(developer => developer.Id == lateUsersSlackUserId).Should().BeTrue();
+                response.Developers.Any(developer => developer.Id == submittingUserSlackUserId).Should().BeFalse();
             }
         } 
 
