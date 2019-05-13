@@ -2,11 +2,11 @@ version: 2
 jobs:
   build_and_test:
     docker:
-      - image: microsoft/aspnetcore-build:2.0
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2
     steps:
       - checkout
       - run: 
-          name: restore
+          name: restore packages
           command: dotnet restore
       - run: dotnet build
       - run: dotnet test
