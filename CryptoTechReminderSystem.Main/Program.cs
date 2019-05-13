@@ -60,7 +60,7 @@ namespace CryptoTechReminderSystem.Main
         
         private void CreateSchedule()
         {
-            JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(10,30));
+            JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(10,25));
             JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(13,45));
         }
 
