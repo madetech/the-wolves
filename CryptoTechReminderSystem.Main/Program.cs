@@ -66,7 +66,7 @@ namespace CryptoTechReminderSystem.Main
 
         private void ScheduleJobs()
         {
-            JobManager.AddJob(RemindLateDevelopersJob, s => s.ToRunEvery(30).Minutes());
+            JobManager.AddJob(RemindLateDevelopersJob, s => s.ToRunOnceAt(10, 30).AndEvery(30).Minutes());
             JobManager.AddJob(ShameLateDevelopersJob, s => s.ToRunOnceAt(13, 30));
         }
         
