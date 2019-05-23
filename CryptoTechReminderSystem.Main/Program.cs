@@ -72,7 +72,7 @@ namespace CryptoTechReminderSystem.Main
         
         private void RemindLateDevelopersJob()
         {
-            var remindLateDevelopers = new RemindLateDevelopers(_getLateDevelopers, _sendReminder, _clock);
+            var remindLateDevelopers = new RemindLateDevelopers(_getLateDevelopers, _sendReminder);
             remindLateDevelopers.Execute(
                 new RemindLateDevelopersRequest
                 {
