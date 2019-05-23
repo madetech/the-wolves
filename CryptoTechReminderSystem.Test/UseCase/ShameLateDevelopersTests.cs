@@ -29,8 +29,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [Test]
         public void CanGetLateDevelopers()
         {
-            var shameLateDevelopers = new ShameLateDevelopers
-                (_getLateDevelopersSpy, _sendReminderSpy, _clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _sendReminderSpy);
 
             shameLateDevelopers.Execute(new ShameLateDevelopersRequest());
 
@@ -40,7 +39,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [Test]
         public void CanRemindDevelopers()
         {
-            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _sendReminderSpy, _clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _sendReminderSpy);
 
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
@@ -59,7 +58,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             
             var getLateDevelopersStub = new GetLateDevelopersStub(userId.ToList());
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub,_sendReminderSpy, _clock);
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub, _sendReminderSpy);
             var expectedMessage = "TIMESHEETS ARE GOOD YO!";
 
             shameLateDevelopers.Execute(
@@ -80,7 +79,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [Test]
         public void CanCheckMessageHadChannel()
         {
-            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy,_sendReminderSpy, _clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _sendReminderSpy);
 
             const string expectedChannel = "CH123456";
             
@@ -92,31 +91,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
             );
             
             _sendReminderSpy.Channels.First().Should().Be(expectedChannel);
-        }
-        
-        [Test]
-        [TestCase(01, 13, 30, true)]
-        [TestCase(01, 13, 00, false)]
-        [TestCase(01, 14, 00, false)]
-        [TestCase(02, 13, 30, false)]
-        [TestCase(03, 13, 30, false)]
-        public void CanShameLateDevelopersAtOneThirtyOnFriday(int day, int hour, int minute, bool expectedOutcome)
-        {
-            var clock = new ClockStub(
-                new DateTimeOffset(
-                    new DateTime(2019, 03, day, hour, minute, 0)
-                )
-            );
-            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopersSpy, _sendReminderSpy, clock);
-
-            shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest
-                {
-                    Message = "TIMESHEETS ARE GOOD YO!"
-                }
-            );
-
-            _sendReminderSpy.Called.Should().Be(expectedOutcome);
         }
     }
 }

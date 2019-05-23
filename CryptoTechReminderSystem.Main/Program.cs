@@ -28,7 +28,6 @@ namespace CryptoTechReminderSystem.Main
 
     public class ReminderRegistry : Registry
     {
-        private readonly IClock _clock;
         private readonly GetLateDevelopers _getLateDevelopers;
         private readonly SendReminder _sendReminder;
 
@@ -45,8 +44,9 @@ namespace CryptoTechReminderSystem.Main
                 Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
                 Environment.GetEnvironmentVariable("HARVEST_DEVELOPER_ROLES")
             );
-            _clock = new Clock();
-            _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, _clock);
+            
+            var clock = new Clock();
+            _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, clock);
             _sendReminder = new SendReminder(slackGateway);
 
             CreateSchedule();
@@ -83,7 +83,7 @@ namespace CryptoTechReminderSystem.Main
         
         private void ShameLateDevelopersJob()
         {
-            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopers, _sendReminder, _clock);
+            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopers, _sendReminder);
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
