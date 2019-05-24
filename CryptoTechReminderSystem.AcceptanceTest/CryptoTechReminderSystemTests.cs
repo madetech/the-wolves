@@ -47,7 +47,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi = new FluentSimulator(SlackApiAddress);
             _slackGateway = new SlackGateway(SlackApiAddress,"xxxx-xxxxxxxxx-xxxx");
             _harvestApi = new FluentSimulator(HarvestApiAddress);
-            _harvestGateway = new HarvestGateway(HarvestApiAddress, "xxxx-xxxxxxxxx-xxxx", "234567", "The Wolves", DeveloperRoles);
+            _harvestGateway = new HarvestGateway(
+                HarvestApiAddress, 
+                "xxxx-xxxxxxxxx-xxxx",
+                "234567",
+                "The Wolves",
+                DeveloperRoles
+            );
             _sendReminder = new SendReminder(_slackGateway);
             
             var slackGetUsersResponse = File.ReadAllText(
@@ -59,7 +65,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             _slackApi.Get("/" + SlackApiUsersPath).Responds(slackGetUsersResponse);
 
-            _slackApi.Post("/" + SlackApiPostMessagePath).Responds(new {ok = true});
+            _slackApi.Post("/" + SlackApiPostMessagePath).Responds(new { ok = true });
             
             var harvestGetUsersResponse = File.ReadAllText(
                 Path.Combine(
@@ -100,7 +106,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
 
         [Test]
-        public void CanRemindLateDevelopersAtTenThirtyOnFriday()
+        public void CanRemindLateDevelopers()
         {                      
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -110,67 +116,23 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder, clock);
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder);
 
-            remindLateDevelopers.Execute(new RemindLateDevelopersRequest
+            remindLateDevelopers.Execute(
+                new RemindLateDevelopersRequest
                 {
-                    Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
+                    Message = "Please make sure your timesheet is submitted by 13:30 today."
                 }
             );
+            
             _slackApi.ReceivedRequests.Count.Should().Be(4);
             
-            for (var i = 1; i < 4; i++)
-            {
-                _slackApi.ReceivedRequests[i].Url.Should().Be(SlackApiAddress + SlackApiPostMessagePath);
-            }
+            _slackApi.ReceivedRequests.Should()
+                .Contain(request => request.Url.ToString() == SlackApiAddress + SlackApiPostMessagePath);   
         }
         
-        
-        [TestFixture]
-        public class BetweenTenThirtyAndOneThirty
-        {
-            [OneTimeSetUp]
-            public void Init()
-            {
-                HandleSetUp();
-            }
-            
-            [Test]
-            [TestCase(10, 45, 0)]
-            [TestCase(11, 00, 4)]
-            [TestCase(11, 15, 4)]
-            [TestCase(11, 30, 8)]
-            [TestCase(11, 45, 8)]
-            [TestCase(12, 00, 12)]
-            [TestCase(12, 15, 12)]
-            [TestCase(12, 30, 16)]
-            [TestCase(12, 45, 16)]
-            [TestCase(13, 00, 20)]
-            [TestCase(13, 15, 20)]
-            public void CanRemindLateDevelopersEveryHalfHourUntilOneThirty(int hour, int minute, int expectedCount)
-            {                      
-                var clock = new ClockStub(
-                    new DateTimeOffset(
-                        new DateTime(2019, 03, 01, hour, minute, 0)
-                    )
-                );
-                
-                var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
-
-                var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder, clock);
-
-                remindLateDevelopers.Execute(new RemindLateDevelopersRequest
-                    {
-                        Message = "Please make sure your timesheet is submitted by 13:30 on Friday."
-                    }
-                );
-               
-                _slackApi.ReceivedRequests.Count.Should().Be(expectedCount);
-            }  
-        }
-
         [Test]
-        public void CanRemindLearnTechChannelAtOneThirty()
+        public void CanShameLateDevelopers()
         {
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -180,12 +142,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _sendReminder, clock);
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _sendReminder);
 
             const string message = "These are the people yet to submit time sheets:";
             const string channel = "CHBUZLJT1";
             
-            shameLateDevelopers.Execute(new ShameLateDevelopersRequest
+            shameLateDevelopers.Execute(
+                new ShameLateDevelopersRequest
                 {
                     Message = message,
                     Channel = channel
