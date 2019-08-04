@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
@@ -60,6 +61,11 @@ namespace CryptoTechReminderSystem.Main
         
         private void CreateSchedule()
         {
+            if (!IsLastDayOfTheMonthFridayOrWeekend())
+            {
+                JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Months().OnTheLastDay().At(10, 25));
+                JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Months().OnTheLastDay().At(13,45));  
+            }
             JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(10,25));
             JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(13,45));
         }
@@ -91,6 +97,22 @@ namespace CryptoTechReminderSystem.Main
                     Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
+        }
+        
+        private bool IsLastDayOfTheMonthFridayOrWeekend()
+        {
+            var lastDayOfTheMonth = DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month);
+            
+            var lastDayOfTheMonthDayOfWeek = new DateTimeOffset(
+                new DateTime(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, lastDayOfTheMonth)
+            ).DayOfWeek;
+            
+            return new List<DayOfWeek>
+            {   
+                DayOfWeek.Friday, 
+                DayOfWeek.Saturday, 
+                DayOfWeek.Sunday
+            }.Contains(lastDayOfTheMonthDayOfWeek);
         }
     }
 }
