@@ -166,8 +166,8 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             );
             
             _slackApi.ReceivedRequests.Should()
-                .Contain(request => request.RawUrl.ToString() == "/api/users.list");   
-            _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/api/chat.postMessage")
+                .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);   
+            _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
                 .Should().Be(3);
         }
         

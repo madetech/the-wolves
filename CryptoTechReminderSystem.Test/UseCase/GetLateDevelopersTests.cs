@@ -225,8 +225,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getLateDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 var response = getLateDevelopers.Execute();
                 
-                response.Developers.Any(developer => developer.Id == lateUsersSlackUserId).Should().BeTrue();
-                response.Developers.Any(developer => developer.Id == submittingUserSlackUserId).Should().BeFalse();
+                response.Developers.Should().Contain(developer => developer.Id == lateUsersSlackUserId);
+                response.Developers.Should().NotContain(developer => developer.Id == submittingUserSlackUserId);
             }
             
             [Test]
@@ -245,7 +245,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getLateDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 var response = getLateDevelopers.Execute();
 
-                response.Developers.Count.Should().Be(0);
+                response.Developers.Should().HaveCount(0);
             }
         } 
 
