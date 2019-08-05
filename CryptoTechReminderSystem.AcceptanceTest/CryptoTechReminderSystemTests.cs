@@ -82,11 +82,25 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     "../../../ApiEndpointResponse/HarvestTimeEntriesResponse.json"
                 )
             );
+            
+            var harvestGetTimeEntriesResponseEndOfTheMonth = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../ApiEndpointResponse/HarvestTimeEntriesEndOfTheMonthResponse.json"
+                )
+            );
+            
             _harvestApi.Get("/api/v2/time_entries")
                 .WithParameter("from", "2019-02-25")
                 .WithParameter("to", "2019-03-01")
                 .WithParameter("page", "1")
                 .Responds(harvestGetTimeEntriesResponse);
+            
+            _harvestApi.Get("/api/v2/time_entries")
+                .WithParameter("from", "2019-07-29")
+                .WithParameter("to", "2019-07-31")
+                .WithParameter("page", "1")
+                .Responds(harvestGetTimeEntriesResponseEndOfTheMonth);
             
             _slackApi.Start();
             _harvestApi.Start();
@@ -106,7 +120,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
 
         [Test]
-        public void CanRemindLateDevelopers()
+        public void CanRemindLateDevelopersOnAFriday()
         {                      
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -129,6 +143,32 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             _slackApi.ReceivedRequests.Should()
                 .Contain(request => request.Url.ToString() == SlackApiAddress + SlackApiPostMessagePath);   
+        }
+        
+        [Test]
+        public void CanRemindLateDevelopersEndOfTheMonth()
+        {                      
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 07, 31, 10, 30, 0)
+                )
+            );
+            
+            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
+            
+            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder);
+
+            remindLateDevelopers.Execute(
+                new RemindLateDevelopersRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 today."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Should()
+                .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);   
+            _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
+                .Should().Be(3);
         }
         
         [Test]

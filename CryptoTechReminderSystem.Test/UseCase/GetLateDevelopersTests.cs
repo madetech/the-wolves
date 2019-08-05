@@ -203,6 +203,50 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 response.Developers.Any(developer => developer.Id == lateUsersSlackUserId).Should().BeTrue();
                 response.Developers.Any(developer => developer.Id == submittingUserSlackUserId).Should().BeFalse();
             }
+            
+            [Test]
+            [TestCase(1337, 0, "U8723", "U9999")]
+            [TestCase(123, 1, "U9999", "U8723")]
+            public void CanGetLateADeveloperMidweek(int harvestUserId, int nonWorkedWeekDayForPartTime, string submittingUserSlackUserId, string lateUsersSlackUserId)
+            {
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 04, 30, 10, 30, 0)
+                    )
+                );
+                
+                var workingDaysOnTheWeekByEndOfTheMonth = clock.Now().DayOfWeek - DayOfWeek.Monday + 1;
+                var expectedDays = workingDaysOnTheWeekByEndOfTheMonth - nonWorkedWeekDayForPartTime;
+                
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 7, UserId = harvestUserId }, expectedDays
+                ).ToArray();
+                
+                var getLateDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
+                var response = getLateDevelopers.Execute();
+                
+                response.Developers.Should().Contain(developer => developer.Id == lateUsersSlackUserId);
+                response.Developers.Should().NotContain(developer => developer.Id == submittingUserSlackUserId);
+            }
+            
+            [Test]
+            public void CanNotGetLateDevelopersOnWeekend()
+            {
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 7, UserId = 000 }, 2
+                ).ToArray();
+                
+                var clock = new ClockStub(
+                    new DateTimeOffset(
+                        new DateTime(2019, 08, 31, 10, 30, 0)
+                    )
+                );
+                
+                var getLateDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
+                var response = getLateDevelopers.Execute();
+
+                response.Developers.Should().HaveCount(0);
+            }
         } 
 
         [TestFixture]

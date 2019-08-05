@@ -23,6 +23,13 @@ namespace CryptoTechReminderSystem.UseCase
         
         public GetLateDevelopersResponse Execute()
         {
+            var getLateDevelopersResponse = new GetLateDevelopersResponse
+            {
+                Developers = new List<GetLateDevelopersResponse.LateDeveloper>()
+            };
+            
+            if (IsWeekend(_clock.Now())) return getLateDevelopersResponse;
+            
             var harvestGetDevelopersResponse = _harvestDeveloperRetriever.RetrieveDevelopers();
             var slackGetDevelopersResponse = _slackDeveloperRetriever.RetrieveDevelopers();
 
@@ -31,17 +38,12 @@ namespace CryptoTechReminderSystem.UseCase
             
             var harvestGetTimeSheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             
-            var getLateDevelopersResponse = new GetLateDevelopersResponse
-            {
-                Developers = new List<GetLateDevelopersResponse.LateDeveloper>()
-            };
-            
             foreach (var harvestDeveloper in harvestGetDevelopersResponse)
             {
                 var timeSheetForDeveloper = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 
-                if (sumOfHours < harvestDeveloper.WeeklyHours)
+                if (sumOfHours < ExpectedHoursByDate(harvestDeveloper.WeeklyHours, _clock.Now()))
                 {
                     var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => RemoveTopLevelDomain(developer.Email) == RemoveTopLevelDomain(harvestDeveloper.Email));
                     
@@ -55,10 +57,8 @@ namespace CryptoTechReminderSystem.UseCase
                     }
                 }
             }
-            
             return getLateDevelopersResponse;
         }
-        
         private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
         {
             var daysFromMonday = (7 + (currentDateTime.DayOfWeek - DayOfWeek.Monday)) % 7;
@@ -68,6 +68,8 @@ namespace CryptoTechReminderSystem.UseCase
 
         private static DateTimeOffset GetEndingDate(DateTimeOffset currentDateTime)
         {
+            if (IsEndOfTheMonth(currentDateTime)) return currentDateTime;
+            
             var daysToFriday = (7 + (DayOfWeek.Friday - currentDateTime.DayOfWeek)) % 7;
             
             return currentDateTime.AddDays(daysToFriday);
@@ -76,6 +78,25 @@ namespace CryptoTechReminderSystem.UseCase
         private static string RemoveTopLevelDomain(string email)
         {
             return email.Replace(".co.uk", "").Replace(".com","");
+        }
+
+        private static bool IsEndOfTheMonth(DateTimeOffset currentDateTime)
+        {
+            return DateTime.DaysInMonth(currentDateTime.Year, currentDateTime.Month) == currentDateTime.Day;
+        }
+        
+        private static bool IsWeekend(DateTimeOffset currentDateTime)
+        {
+            var weekendDays = new List<DayOfWeek> { DayOfWeek.Saturday, DayOfWeek.Sunday };
+            return weekendDays.Contains(currentDateTime.DayOfWeek);
+        }
+        
+        private static int ExpectedHoursByDate(int weeklyHours, DateTimeOffset currentDateTime)
+        {
+            var nonWorkingWeekDaysForPartTimeContract = 5 - weeklyHours / 7;
+            var workingDaysByToday = currentDateTime.DayOfWeek - DayOfWeek.Monday + 1;
+
+            return (workingDaysByToday - nonWorkingWeekDaysForPartTimeContract) * 7;
         }
     }
 }
