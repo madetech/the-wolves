@@ -417,6 +417,53 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 response.Developers.Count.Should().Be(1);
                 response.Developers.First().Id.Should().Be("U8723");
             }
+            
+            
+            [Test]
+            public void CanHandleWhenEmailsAreNotInTheSameCase()
+            {
+                _harvestGatewayStub = new HarvestGatewayStub
+                {
+                    Developers = new[]
+                    {
+                        new HarvestDeveloper
+                        {
+                            Id = 101,
+                            FirstName = "Fred",
+                            LastName = "Flintstone",
+                            Email = "freddy@aol.com",
+                            WeeklyHours = 35
+                        }
+                    }
+                };
+                
+                _slackGatewayStub = new SlackGatewayStub
+                {
+                    Developers = new[]
+                    {
+                        new SlackDeveloper
+                        {
+                            Email = "Freddy@Aol.com",
+                            Id = "U8723"
+                        }, 
+                        new SlackDeveloper
+                        {
+                            Email = "Joe@Bloggs.com",
+                            Id = "U9999"
+                        }
+                    }
+                };
+                
+                _harvestGatewayStub.TimeSheets = Enumerable.Repeat(
+                    new TimeSheet { Hours = 0, UserId = 444 }, 5
+                ).ToArray();
+                
+                var getDevelopers = new GetLateDevelopers(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
+                var response = getDevelopers.Execute();
+                
+                response.Developers.Count.Should().Be(1);
+                response.Developers.First().Id.Should().Be("U8723");
+            }
         }
     }
 }
