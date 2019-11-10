@@ -45,7 +45,7 @@ namespace CryptoTechReminderSystem.UseCase
                 
                 if (sumOfHours < ExpectedHoursByDate(harvestDeveloper.WeeklyHours, _clock.Now()))
                 {
-                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => RemoveTopLevelDomain(developer.Email) == RemoveTopLevelDomain(harvestDeveloper.Email));
+                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => String.Equals(RemoveTopLevelDomain(developer.Email), RemoveTopLevelDomain(harvestDeveloper.Email), StringComparison.OrdinalIgnoreCase));
                     
                     if (slackLateDeveloper != null)
                     {
