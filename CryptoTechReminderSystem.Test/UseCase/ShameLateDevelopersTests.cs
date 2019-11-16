@@ -44,7 +44,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
-                    Message = "TIMESHEETS ARE GOOD YO!"
+                    ShameMessage = "TIMESHEETS ARE GOOD YO!"
                 }
             );
 
@@ -54,26 +54,26 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [Test]
         [TestCase( "W0123CHAN", "W123AMON", "W789ROSS")]
         [TestCase( "W0123CHAN", "W123AMON")]
-        public void CanCheckMessageHasAllUsers(params string[] userId)
+        public void CanCheckShameMessageHasAllUsers(params string[] userId)
         {
             
             var getLateDevelopersStub = new GetLateDevelopersStub(userId.ToList());
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub, _sendReminderSpy);
-            var expectedMessage = "TIMESHEETS ARE GOOD YO!";
+            var expectedShameMessage = "TIMESHEETS ARE GOOD YO!";
 
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
-                    Message = expectedMessage
+                    ShameMessage = expectedShameMessage
                 }
             );
 
             foreach (var user in userId)
             {
-                expectedMessage += $"\n• <@{user}>";
+                expectedShameMessage += $"\n• <@{user}>";
             }
             
-            _sendReminderSpy.Text.Should().Be(expectedMessage);
+            _sendReminderSpy.Text.Should().Be(expectedShameMessage);
         }
 
         [Test]

@@ -93,7 +93,7 @@ namespace CryptoTechReminderSystem.Main
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
-                    Message = Environment.GetEnvironmentVariable("SLACK_SHAME_MESSAGE").Replace(@"\n", "\n"),
+                    ShameMessage = Environment.GetEnvironmentVariable("SLACK_SHAME_MESSAGE").Replace(@"\n", "\n"),
                     Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
