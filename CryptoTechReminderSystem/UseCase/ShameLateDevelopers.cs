@@ -17,11 +17,18 @@ namespace CryptoTechReminderSystem.UseCase
         public void Execute(ShameLateDevelopersRequest shameLateDevelopersRequest)
         {
             var lateDevelopers = _getLateDevelopers.Execute();
-        
-            var text = lateDevelopers.Developers.Aggregate(
-                shameLateDevelopersRequest.ShameMessage, 
-                (current, developer) => current + $"\n• <@{developer.Id}>"
-            );
+            string text;
+
+            if (!lateDevelopers.Developers.Any())
+            {
+                text = shameLateDevelopersRequest.NoShameMessage;
+            } else
+            {
+                text = lateDevelopers.Developers.Aggregate(
+                    shameLateDevelopersRequest.ShameMessage, 
+                    (current, developer) => current + $"\n• <@{developer.Id}>"
+                );
+            }
 
             _sendReminder.Execute(new SendReminderRequest
             {

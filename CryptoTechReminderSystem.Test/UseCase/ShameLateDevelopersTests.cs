@@ -56,7 +56,6 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [TestCase( "W0123CHAN", "W123AMON")]
         public void CanCheckShameMessageHasAllUsers(params string[] userId)
         {
-            
             var getLateDevelopersStub = new GetLateDevelopersStub(userId.ToList());
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersStub, _sendReminderSpy);
             var expectedShameMessage = "TIMESHEETS ARE GOOD YO!";
@@ -68,11 +67,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 }
             );
 
-            foreach (var user in userId)
-            {
-                expectedShameMessage += $"\n• <@{user}>";
-            }
-            
+            expectedShameMessage = userId.Aggregate(expectedShameMessage, (current, user) => current + $"\n• <@{user}>");
+
             _sendReminderSpy.Text.Should().Be(expectedShameMessage);
         }
 
@@ -91,6 +87,23 @@ namespace CryptoTechReminderSystem.Test.UseCase
             );
             
             _sendReminderSpy.Channels.First().Should().Be(expectedChannel);
+        }
+
+        [Test]
+        public void CanSendNoShameMessageWhenNoLateDevelopers()
+        {
+            var getLateDevelopersEmptyStub = new GetLateDevelopersEmptyStub();
+            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopersEmptyStub, _sendReminderSpy);
+            const string expectedNoShameMessage = "Everyone has submitted their timesheets!";
+
+            shameLateDevelopers.Execute(
+                new ShameLateDevelopersRequest
+                {
+                    NoShameMessage = expectedNoShameMessage
+                }
+            );
+
+            _sendReminderSpy.Text.Should().Be(expectedNoShameMessage);
         }
     }
 }
