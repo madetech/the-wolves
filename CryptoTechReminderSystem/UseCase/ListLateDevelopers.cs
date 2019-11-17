@@ -3,29 +3,29 @@ using CryptoTechReminderSystem.Boundary;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class ShameLateDevelopers
+    public class ListLateDevelopers
     {
         private readonly IGetLateDevelopers _getLateDevelopers;
         private readonly ISendReminder _sendReminder;
 
-        public ShameLateDevelopers(IGetLateDevelopers getLateDevelopers, ISendReminder sendReminder)
+        public ListLateDevelopers(IGetLateDevelopers getLateDevelopers, ISendReminder sendReminder)
         {
             _getLateDevelopers = getLateDevelopers;
             _sendReminder = sendReminder;
         }
 
-        public void Execute(ShameLateDevelopersRequest shameLateDevelopersRequest)
+        public void Execute(ListLateDevelopersRequest listLateDevelopersRequest)
         {
             var lateDevelopers = _getLateDevelopers.Execute();
             string text;
 
             if (!lateDevelopers.Developers.Any())
             {
-                text = shameLateDevelopersRequest.NoShameMessage;
+                text = listLateDevelopersRequest.NoLateDevelopersMessage;
             } else
             {
                 text = lateDevelopers.Developers.Aggregate(
-                    shameLateDevelopersRequest.ShameMessage, 
+                    listLateDevelopersRequest.LateDevelopersMessage, 
                     (current, developer) => current + $"\n• <@{developer.Id}>"
                 );
             }
@@ -33,7 +33,7 @@ namespace CryptoTechReminderSystem.UseCase
             _sendReminder.Execute(new SendReminderRequest
             {
                 Text = text,
-                Channel = shameLateDevelopersRequest.Channel
+                Channel = listLateDevelopersRequest.Channel
             });
         }
     }

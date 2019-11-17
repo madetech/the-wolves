@@ -172,7 +172,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
         
         [Test]
-        public void CanShameLateDevelopers()
+        public void CanListLateDevelopers()
         {
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -182,15 +182,15 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
-            var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _sendReminder);
+            var listLateDevelopers = new ListLateDevelopers(getLateDevelopers, _sendReminder);
 
-            const string shameMessage = "These are the people yet to submit time sheets:";
+            const string lateDevelopersMessage = "These are the people yet to submit time sheets:";
             const string channel = "CHBUZLJT1";
             
-            shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest
+            listLateDevelopers.Execute(
+                new ListLateDevelopersRequest
                 {
-                    ShameMessage = shameMessage,
+                    LateDevelopersMessage = lateDevelopersMessage,
                     Channel = channel
                 }
             );
@@ -199,7 +199,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             lastSlackApiRequest["channel"].ToString().Should().Be(channel);
 
-            var expectedMessage = $"{shameMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
+            var expectedMessage = $"{lateDevelopersMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
     }

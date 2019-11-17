@@ -20,7 +20,7 @@ namespace CryptoTechReminderSystem.Main
     public class Program : Registry
     {
         private static void Main()
-        {    
+        {
             DotEnv.Config(false);
             JobManager.Initialize(new ReminderRegistry());
             SpinWait.SpinUntil(() => false);
@@ -73,7 +73,7 @@ namespace CryptoTechReminderSystem.Main
         private void ScheduleJobs()
         {
             JobManager.AddJob(RemindLateDevelopersJob, s => s.ToRunOnceAt(10, 30).AndEvery(30).Minutes());
-            JobManager.AddJob(ShameLateDevelopersJob, s => s.ToRunOnceAt(13, 30));
+            JobManager.AddJob(ListLateDevelopersJob, s => s.ToRunOnceAt(13, 30));
         }
         
         private void RemindLateDevelopersJob()
@@ -87,14 +87,14 @@ namespace CryptoTechReminderSystem.Main
             );
         }
         
-        private void ShameLateDevelopersJob()
+        private void ListLateDevelopersJob()
         {
-            var shameLateDevelopers = new ShameLateDevelopers(_getLateDevelopers, _sendReminder);
-            shameLateDevelopers.Execute(
-                new ShameLateDevelopersRequest
+            var listLateDevelopers = new ListLateDevelopers(_getLateDevelopers, _sendReminder);
+            listLateDevelopers.Execute(
+                new ListLateDevelopersRequest
                 {
-                    ShameMessage = Environment.GetEnvironmentVariable("SLACK_SHAME_MESSAGE").Replace(@"\n", "\n"),
-                    NoShameMessage = Environment.GetEnvironmentVariable("SLACK_NO_SHAME_MESSAGE"),
+                    LateDevelopersMessage = Environment.GetEnvironmentVariable("SLACK_LATE_DEVELOPERS_MESSAGE").Replace(@"\n", "\n"),
+                    NoLateDevelopersMessage = Environment.GetEnvironmentVariable("SLACK_NO_LATE_DEVELOPERS_MESSAGE"),
                     Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
@@ -109,7 +109,7 @@ namespace CryptoTechReminderSystem.Main
             ).DayOfWeek;
             
             return new List<DayOfWeek>
-            {   
+            {
                 DayOfWeek.Friday, 
                 DayOfWeek.Saturday, 
                 DayOfWeek.Sunday
