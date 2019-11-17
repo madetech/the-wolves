@@ -184,13 +184,13 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             var shameLateDevelopers = new ShameLateDevelopers(getLateDevelopers, _sendReminder);
 
-            const string message = "These are the people yet to submit time sheets:";
+            const string shameMessage = "These are the people yet to submit time sheets:";
             const string channel = "CHBUZLJT1";
             
             shameLateDevelopers.Execute(
                 new ShameLateDevelopersRequest
                 {
-                    Message = message,
+                    ShameMessage = shameMessage,
                     Channel = channel
                 }
             );
@@ -199,7 +199,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             lastSlackApiRequest["channel"].ToString().Should().Be(channel);
 
-            var expectedMessage = $"{message}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
+            var expectedMessage = $"{shameMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
     }
