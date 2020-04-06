@@ -43,7 +43,7 @@ namespace CryptoTechReminderSystem.Main
                 Environment.GetEnvironmentVariable("HARVEST_TOKEN"),
                 Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID"),
                 Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
-                Environment.GetEnvironmentVariable("HARVEST_DEVELOPER_ROLES")
+                Environment.GetEnvironmentVariable("HARVEST_BILLABLE_ROLES")
             );
             
             var clock = new Clock();
@@ -93,8 +93,8 @@ namespace CryptoTechReminderSystem.Main
             listLateBillablePeople.Execute(
                 new ListLateBillablePeopleRequest
                 {
-                    LateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_LATE_DEVELOPERS_MESSAGE").Replace(@"\n", "\n"),
-                    NoLateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_NO_LATE_DEVELOPERS_MESSAGE"),
+                    LateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_LATE_BILLABLE_PEOPLE_MESSAGE").Replace(@"\n", "\n"),
+                    NoLateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_NO_LATE_BILLABLE_PEOPLE_MESSAGE"),
                     Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
