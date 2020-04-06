@@ -3,27 +3,27 @@ using CryptoTechReminderSystem.Boundary;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class RemindLateDevelopers
+    public class RemindLateBillablePeople
     {
-        private readonly IGetLateDevelopers _getLateDevelopers;
+        private readonly IGetLateBillablePeople _getLateBillablePeople;
         private readonly ISendReminder _sendReminder;
 
-        public RemindLateDevelopers(IGetLateDevelopers getLateDevelopers, ISendReminder sendReminder)
+        public RemindLateBillablePeople(IGetLateBillablePeople getLateBillablePeople, ISendReminder sendReminder)
         {
-            _getLateDevelopers = getLateDevelopers;
+            _getLateBillablePeople = getLateBillablePeople;
             _sendReminder = sendReminder;
         }
         
-        public void Execute(RemindLateDevelopersRequest remindLateDevelopersRequest)
+        public void Execute(RemindLateBillablePeopleRequest remindLateBillablePeopleRequest)
         {
-            var lateDevelopers = _getLateDevelopers.Execute();
+            var lateBillablePeople = _getLateBillablePeople.Execute();
             
-            foreach (var lateDeveloper in lateDevelopers.Developers)
+            foreach (var lateDeveloper in lateBillablePeople.Developers)
             {
                 _sendReminder.Execute(new SendReminderRequest
                 {
                     Channel = lateDeveloper.Id,
-                    Text = remindLateDevelopersRequest.Message,
+                    Text = remindLateBillablePeopleRequest.Message,
                     Email = lateDeveloper.Email
                 });
             }

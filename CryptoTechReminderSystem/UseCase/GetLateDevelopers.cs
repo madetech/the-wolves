@@ -6,14 +6,14 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class GetLateDevelopers : IGetLateDevelopers
+    public class GetLateBillablePeople : IGetLateBillablePeople
     {
         private readonly IHarvestDeveloperRetriever _harvestDeveloperRetriever;
         private readonly ITimeSheetRetriever _harvestTimeSheetRetriever;
         private readonly ISlackDeveloperRetriever _slackDeveloperRetriever;
         private readonly IClock _clock;
 
-        public GetLateDevelopers(ISlackDeveloperRetriever slackDeveloperRetriever, IHarvestDeveloperRetriever harvestDeveloperRetriever, ITimeSheetRetriever harvestTimeSheetRetriever, IClock clock)
+        public GetLateBillablePeople(ISlackDeveloperRetriever slackDeveloperRetriever, IHarvestDeveloperRetriever harvestDeveloperRetriever, ITimeSheetRetriever harvestTimeSheetRetriever, IClock clock)
         {
             _harvestDeveloperRetriever = harvestDeveloperRetriever;
             _harvestTimeSheetRetriever = harvestTimeSheetRetriever;
@@ -21,14 +21,14 @@ namespace CryptoTechReminderSystem.UseCase
             _clock = clock;
         }
         
-        public GetLateDevelopersResponse Execute()
+        public GetLateBillablePeopleResponse Execute()
         {
-            var getLateDevelopersResponse = new GetLateDevelopersResponse
+            var getLateBillablePeopleResponse = new GetLateBillablePeopleResponse
             {
-                Developers = new List<GetLateDevelopersResponse.LateDeveloper>()
+                Developers = new List<GetLateBillablePeopleResponse.LateDeveloper>()
             };
             
-            if (IsWeekend(_clock.Now())) return getLateDevelopersResponse;
+            if (IsWeekend(_clock.Now())) return getLateBillablePeopleResponse;
             
             var harvestGetDevelopersResponse = _harvestDeveloperRetriever.RetrieveDevelopers();
             var slackGetDevelopersResponse = _slackDeveloperRetriever.RetrieveDevelopers();
@@ -49,7 +49,7 @@ namespace CryptoTechReminderSystem.UseCase
                     
                     if (slackLateDeveloper != null)
                     {
-                        getLateDevelopersResponse.Developers.Add(new GetLateDevelopersResponse.LateDeveloper
+                        getLateBillablePeopleResponse.Developers.Add(new GetLateBillablePeopleResponse.LateDeveloper
                         {
                             Id = slackLateDeveloper.Id,
                             Email = slackLateDeveloper.Email
@@ -57,7 +57,7 @@ namespace CryptoTechReminderSystem.UseCase
                     }
                 }
             }
-            return getLateDevelopersResponse;
+            return getLateBillablePeopleResponse;
         }
         private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
         {

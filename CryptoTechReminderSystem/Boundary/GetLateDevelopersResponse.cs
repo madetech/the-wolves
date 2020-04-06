@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace CryptoTechReminderSystem.Boundary
 {
-    public class GetLateDevelopersResponse
+    public class GetLateBillablePeopleResponse
     {
         public List<LateDeveloper> Developers;
 

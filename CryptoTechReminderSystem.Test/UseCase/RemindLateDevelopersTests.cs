@@ -7,26 +7,26 @@ using NUnit.Framework;
 
 namespace CryptoTechReminderSystem.Test.UseCase
 {
-    public class RemindLateDevelopersTests
+    public class RemindLateBillablePeopleTests
     {
         private SendReminderSpy _sendReminderSpy;
-        private GetLateDevelopersSpy _getLateDevelopersSpy;
-        private GetLateDevelopersStub _getLateDevelopersStub;
+        private GetLateBillablePeopleSpy _getLateBillablePeopleSpy;
+        private GetLateBillablePeopleStub _getLateBillablePeopleStub;
 
         [SetUp]
         public void SetUp()
         {
             _sendReminderSpy = new SendReminderSpy();
-            _getLateDevelopersSpy = new GetLateDevelopersSpy();
-            _getLateDevelopersStub = new GetLateDevelopersStub();  
+            _getLateBillablePeopleSpy = new GetLateBillablePeopleSpy();
+            _getLateBillablePeopleStub = new GetLateBillablePeopleStub();  
         }
         
-        private void HandleSetUp(IGetLateDevelopers getLateDevelopers)
+        private void HandleSetUp(IGetLateBillablePeople GetLateBillablePeople)
         {
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminderSpy);
+            var remindLateBillablePeople = new RemindLateBillablePeople(GetLateBillablePeople, _sendReminderSpy);
             
-            remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest
+            remindLateBillablePeople.Execute(
+                new RemindLateBillablePeopleRequest
                 {
                     Message = "TIMESHEETS ARE GOOD YO!"
                 }
@@ -34,25 +34,25 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
         
         [Test]
-        public void CanGetLateDevelopers()
+        public void CanGetLateBillablePeople()
         {
-            HandleSetUp(_getLateDevelopersSpy);
+            HandleSetUp(_getLateBillablePeopleSpy);
                
-            _getLateDevelopersSpy.Called.Should().BeTrue(); 
+            _getLateBillablePeopleSpy.Called.Should().BeTrue(); 
         }
         
         [Test]
         public void CanRemindDevelopers()
         {
-            HandleSetUp(_getLateDevelopersStub);
+            HandleSetUp(_getLateBillablePeopleStub);
 
             _sendReminderSpy.Called.Should().BeTrue(); 
         }
         
         [Test]
-        public void CanRemindAllLateDevelopers()
+        public void CanRemindAllLateBillablePeople()
         {
-           HandleSetUp(_getLateDevelopersStub);
+           HandleSetUp(_getLateBillablePeopleStub);
 
             _sendReminderSpy.CountCalled.Should().Be(3);
         }
@@ -60,7 +60,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [Test]
         public void CanRemindDevelopersDirectly()
         {
-            HandleSetUp(_getLateDevelopersStub);
+            HandleSetUp(_getLateBillablePeopleStub);
             
             _sendReminderSpy.Channels.Should().BeEquivalentTo(
                 new List<string> {
@@ -74,7 +74,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         [Test]
         public void CanRemindDevelopersDirectlyWithAMessage()
         {
-            HandleSetUp(_getLateDevelopersStub);
+            HandleSetUp(_getLateBillablePeopleStub);
 
             _sendReminderSpy.Text.Should().Be("TIMESHEETS ARE GOOD YO!");
         }   

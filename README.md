@@ -52,21 +52,21 @@ The Wolves is a C# application that follows the principles of [Clean Architectur
 
 Following CA, we have two sea-level use cases:
 
-- [Remind Late Developers](CryptoTechReminderSystem/UseCase/RemindLateDevelopers.cs)
-- [List Late Developers](CryptoTechReminderSystem/UseCase/ListLateDevelopers.cs)
+- [Remind Late Developers](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
+- [List Late Developers](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
 
 Each of which have use case dependencies on:
 
-- [GetLateDevelopers](CryptoTechReminderSystem/UseCase/GetLateDevelopers.cs) which calls the [Harvest API](https://help.getharvest.com/api-v2/) to figure out who is yet to submit their timesheet
+- [GetLateBillablePeople](CryptoTechReminderSystem/UseCase/GetLateBillablePeople.cs) which calls the [Harvest API](https://help.getharvest.com/api-v2/) to figure out who is yet to submit their timesheet
 - [SendReminder](CryptoTechReminderSystem/UseCase/SendReminder.cs) which calls the [Slack API](https://api.slack.com/) to send out reminders
 
 We then have `CryptoTechReminderSystem.Main/Program.cs`, which schedules when the
 above use cases should be called. The Wolves have two jobs:
 
-- `RemindLateDevelopersJob` which sends a Slack direct message to developers who are
+- `RemindLateBillablePeopleJob` which sends a Slack direct message to developers who are
   yet to fill in their timesheets at 10.30 on a Friday morning and then every 30 mins
   until 13:30
-- `ListLateDevelopersJob` which sends a Slack message to a public channel that
+- `ListLateBillablePeopleJob` which sends a Slack message to a public channel that
   lists all the developers still yet to submit their timesheets at 13:30 on a Friday
   afternoon
 
