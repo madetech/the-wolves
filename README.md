@@ -30,9 +30,9 @@
 
 ## About The Project
 
-The Wolves is a project developed by the Made Tech Academy of Winter/Spring 2019. It set out to solve the problem of developers not filling in their timesheets on time and the need for the Operations team to manually send reminders.
+The Wolves is a project developed by the Made Tech Academy of Winter/Spring 2019. It set out to solve the problem of billablePeople not filling in their timesheets on time and the need for the Operations team to manually send reminders.
 
-This application solves this problem by automatically reminding developers that have not submitted their timesheets through a Slack direct message and publicly listing all those yet to do so by the deadline.
+This application solves this problem by automatically reminding billable people that have not submitted their timesheets through a Slack direct message and publicly listing all those yet to do so by the deadline.
 
 <p align="center">
   <img src="images/the-wolves-reminder.png" alt="Logo" width="500">
@@ -52,8 +52,8 @@ The Wolves is a C# application that follows the principles of [Clean Architectur
 
 Following CA, we have two sea-level use cases:
 
-- [Remind Late Developers](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
-- [List Late Developers](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
+- [Remind Late Billable people](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
+- [List Late Billable people](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
 
 Each of which have use case dependencies on:
 
@@ -63,11 +63,11 @@ Each of which have use case dependencies on:
 We then have `CryptoTechReminderSystem.Main/Program.cs`, which schedules when the
 above use cases should be called. The Wolves have two jobs:
 
-- `RemindLateBillablePeopleJob` which sends a Slack direct message to developers who are
+- `RemindLateBillablePeopleJob` which sends a Slack direct message to billable people who are
   yet to fill in their timesheets at 10.30 on a Friday morning and then every 30 mins
   until 13:30
 - `ListLateBillablePeopleJob` which sends a Slack message to a public channel that
-  lists all the developers still yet to submit their timesheets at 13:30 on a Friday
+  lists all the billable people still yet to submit their timesheets at 13:30 on a Friday
   afternoon
 
 ## Getting Started

@@ -5,6 +5,6 @@ namespace CryptoTechReminderSystem.Gateway
 {
     public interface IHarvestDeveloperRetriever
     {
-        IList<HarvestDeveloper> RetrieveDevelopers();
+        IList<HarvestDeveloper> RetrieveBillablePeople();
     }
 }

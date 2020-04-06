@@ -21,10 +21,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
         
         [TestFixture]
-        public class CanGetDevelopers
+        public class CanGetBillablePeople
         {
             private ClockStub _clock;
-            private GetLateBillablePeople _getDevelopers;
+            private GetLateBillablePeople _getBillablePeople;
             
             [SetUp]
             public void SetUp()
@@ -37,23 +37,23 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     )
                 );
 
-                _getDevelopers = new GetLateBillablePeople(_slackGatewaySpy, _harvestGatewaySpy, _harvestGatewaySpy, _clock);
+                _getBillablePeople = new GetLateBillablePeople(_slackGatewaySpy, _harvestGatewaySpy, _harvestGatewaySpy, _clock);
             }
             
             [Test]
-            public void CanGetHarvestDevelopers()
+            public void CanGetHarvestBillablePeople()
             {
-                _getDevelopers.Execute();
+                _getBillablePeople.Execute();
 
-                _harvestGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
+                _harvestGatewaySpy.IsRetrieveBillablePeopleCalled.Should().BeTrue();
             }
 
             [Test]
-            public void CanGetSlackDevelopers()
+            public void CanGetSlackBillablePeople()
             {
-                _getDevelopers.Execute();
+                _getBillablePeople.Execute();
 
-                _slackGatewaySpy.IsRetrieveDevelopersCalled.Should().BeTrue();
+                _slackGatewaySpy.IsRetrieveBillablePeopleCalled.Should().BeTrue();
             }
         }
 
@@ -77,9 +77,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 03, 01, 10, 30, 0)
                     )
                 );
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
             
-                getDevelopers.Execute();
+                getBillablePeople.Execute();
 
                 _harvestGatewaySpy.IsRetrieveTimeSheetsCalled.Should().BeTrue();
             }
@@ -97,9 +97,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 04, day)
                     )
                 );
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
             
-                getDevelopers.Execute();
+                getBillablePeople.Execute();
 
                 _harvestGatewaySpy.RetrieveTimeSheetsArguments[0].Should().Be(
                     new DateTimeOffset(
@@ -121,9 +121,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
                         new DateTime(2019, 04, day)
                     )
                 );
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewaySpy, _harvestGatewaySpy, clock);
             
-                getDevelopers.Execute();
+                getBillablePeople.Execute();
 
                 _harvestGatewaySpy.RetrieveTimeSheetsArguments[1].Should().Be(
                     new DateTimeOffset(
@@ -144,7 +144,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             {
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new HarvestDeveloper
                         {   
@@ -167,7 +167,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 _slackGatewayStub = new SlackGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new SlackDeveloper
                         {
@@ -200,8 +200,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getLateBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 var response = getLateBillablePeople.Execute();
                 
-                response.Developers.Any(developer => developer.Id == lateUsersSlackUserId).Should().BeTrue();
-                response.Developers.Any(developer => developer.Id == submittingUserSlackUserId).Should().BeFalse();
+                response.BillablePeople.Any(developer => developer.Id == lateUsersSlackUserId).Should().BeTrue();
+                response.BillablePeople.Any(developer => developer.Id == submittingUserSlackUserId).Should().BeFalse();
             }
             
             [Test]
@@ -225,8 +225,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getLateBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 var response = getLateBillablePeople.Execute();
                 
-                response.Developers.Should().Contain(developer => developer.Id == lateUsersSlackUserId);
-                response.Developers.Should().NotContain(developer => developer.Id == submittingUserSlackUserId);
+                response.BillablePeople.Should().Contain(developer => developer.Id == lateUsersSlackUserId);
+                response.BillablePeople.Should().NotContain(developer => developer.Id == submittingUserSlackUserId);
             }
             
             [Test]
@@ -245,7 +245,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 var getLateBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, clock);
                 var response = getLateBillablePeople.Execute();
 
-                response.Developers.Should().HaveCount(0);
+                response.BillablePeople.Should().HaveCount(0);
             }
         } 
 
@@ -267,7 +267,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new HarvestDeveloper
                         {   
@@ -298,7 +298,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 _slackGatewayStub = new SlackGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new SlackDeveloper
                         {
@@ -321,10 +321,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new TimeSheet { Hours = 7, UserId = 123 }, 5
                 ).ToArray();
                 
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
-                var response = getDevelopers.Execute();
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
+                var response = getBillablePeople.Execute();
 
-                response.Developers.First().Id.Should().Be("U8723");
+                response.BillablePeople.First().Id.Should().Be("U8723");
             }
             
             [Test]
@@ -332,7 +332,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             {
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new HarvestDeveloper
                         {
@@ -347,7 +347,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 _slackGatewayStub = new SlackGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new SlackDeveloper
                         {
@@ -366,10 +366,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new TimeSheet { Hours = 0, UserId = 444 }, 5
                 ).ToArray();
                 
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
-                var response = getDevelopers.Execute();
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
+                var response = getBillablePeople.Execute();
                 
-                response.Developers.Count.Should().Be(0);
+                response.BillablePeople.Count.Should().Be(0);
             }
             
             [Test]
@@ -377,7 +377,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             {
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new HarvestDeveloper
                         {
@@ -392,7 +392,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 _slackGatewayStub = new SlackGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new SlackDeveloper
                         {
@@ -411,11 +411,11 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new TimeSheet { Hours = 0, UserId = 444 }, 5
                 ).ToArray();
                 
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
-                var response = getDevelopers.Execute();
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
+                var response = getBillablePeople.Execute();
                 
-                response.Developers.Count.Should().Be(1);
-                response.Developers.First().Id.Should().Be("U8723");
+                response.BillablePeople.Count.Should().Be(1);
+                response.BillablePeople.First().Id.Should().Be("U8723");
             }
             
             
@@ -424,7 +424,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
             {
                 _harvestGatewayStub = new HarvestGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new HarvestDeveloper
                         {
@@ -439,7 +439,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 
                 _slackGatewayStub = new SlackGatewayStub
                 {
-                    Developers = new[]
+                    BillablePeople = new[]
                     {
                         new SlackDeveloper
                         {
@@ -458,11 +458,11 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     new TimeSheet { Hours = 0, UserId = 444 }, 5
                 ).ToArray();
                 
-                var getDevelopers = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
-                var response = getDevelopers.Execute();
+                var getBillablePeople = new GetLateBillablePeople(_slackGatewayStub, _harvestGatewayStub, _harvestGatewayStub, _clock);
+                var response = getBillablePeople.Execute();
                 
-                response.Developers.Count.Should().Be(1);
-                response.Developers.First().Id.Should().Be("U8723");
+                response.BillablePeople.Count.Should().Be(1);
+                response.BillablePeople.First().Id.Should().Be("U8723");
             }
         }
     }

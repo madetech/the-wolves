@@ -4,7 +4,7 @@ namespace CryptoTechReminderSystem.Boundary
 {
     public class GetLateBillablePeopleResponse
     {
-        public List<LateDeveloper> Developers;
+        public List<LateDeveloper> BillablePeople;
 
         public class LateDeveloper
         {

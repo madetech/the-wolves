@@ -6,11 +6,11 @@ namespace CryptoTechReminderSystem.Test.TestDouble
 {
     public class SlackGatewayStub : ISlackDeveloperRetriever
     {
-        public SlackDeveloper[] Developers;
+        public SlackDeveloper[] BillablePeople;
 
-        public IList<SlackDeveloper> RetrieveDevelopers()
+        public IList<SlackDeveloper> RetrieveBillablePeople()
         {
-            return Developers;
+            return BillablePeople;
         }
     }
 }

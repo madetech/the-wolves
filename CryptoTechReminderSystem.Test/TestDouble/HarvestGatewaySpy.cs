@@ -7,13 +7,13 @@ namespace CryptoTechReminderSystem.Test.TestDouble
 {
     public class HarvestGatewaySpy : IHarvestDeveloperRetriever, ITimeSheetRetriever
     {
-        public bool IsRetrieveDevelopersCalled;
+        public bool IsRetrieveBillablePeopleCalled;
         public bool IsRetrieveTimeSheetsCalled;
         public DateTimeOffset[] RetrieveTimeSheetsArguments;
             
-        public IList<HarvestDeveloper> RetrieveDevelopers()
+        public IList<HarvestDeveloper> RetrieveBillablePeople()
         {
-            IsRetrieveDevelopersCalled = true;
+            IsRetrieveBillablePeopleCalled = true;
               
             return new List<HarvestDeveloper>();
         }

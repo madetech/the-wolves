@@ -19,12 +19,12 @@ namespace CryptoTechReminderSystem.UseCase
             var lateBillablePeople = _getLateBillablePeople.Execute();
             string text;
 
-            if (!lateBillablePeople.Developers.Any())
+            if (!lateBillablePeople.BillablePeople.Any())
             {
                 text = listLateBillablePeopleRequest.NoLateBillablePeopleMessage;
             } else
             {
-                text = lateBillablePeople.Developers.Aggregate(
+                text = lateBillablePeople.BillablePeople.Aggregate(
                     listLateBillablePeopleRequest.LateBillablePeopleMessage, 
                     (current, developer) => current + $"\n• <@{developer.Id}>"
                 );

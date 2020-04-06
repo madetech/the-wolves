@@ -48,7 +48,7 @@ namespace CryptoTechReminderSystem.Gateway
                 .OfError(new Exception(response.Result["error"].ToString() ?? "Default error message"));
         }
         
-        public IList<SlackDeveloper> RetrieveDevelopers()
+        public IList<SlackDeveloper> RetrieveBillablePeople()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 

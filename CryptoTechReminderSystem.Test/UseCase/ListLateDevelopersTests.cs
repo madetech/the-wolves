@@ -37,7 +37,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
 
         [Test]
-        public void CanRemindDevelopers()
+        public void CanRemindBillablePeople()
         {
             var listLateBillablePeople = new ListLateBillablePeople(_getLateBillablePeopleSpy, _sendReminderSpy);
 

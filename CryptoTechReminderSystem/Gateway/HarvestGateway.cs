@@ -25,7 +25,7 @@ namespace CryptoTechReminderSystem.Gateway
             _client.DefaultRequestHeaders.Add("User-Agent",userAgent);
         }
         
-        public IList<HarvestDeveloper> RetrieveDevelopers()
+        public IList<HarvestDeveloper> RetrieveBillablePeople()
         {
             var response = GetApiResponse(UsersApiAddress);
             
@@ -33,9 +33,9 @@ namespace CryptoTechReminderSystem.Gateway
             
             var apiResponse = response.Result;
             var users = apiResponse["users"];
-            var activeDevelopers = users.Where(user => (bool)user["is_active"] && IsDeveloper(user));
+            var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsDeveloper(user));
             
-            return activeDevelopers.Select(developer => new HarvestDeveloper
+            return activeBillablePeople.Select(developer => new HarvestDeveloper
                 {
                     Id = (int) developer["id"],
                     FirstName = developer["first_name"].ToString(),

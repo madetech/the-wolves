@@ -44,7 +44,7 @@ namespace CryptoTechReminderSystem.Test.TestDouble
         {
             return new GetLateBillablePeopleResponse
             {
-                Developers = _lateBillablePeople
+                BillablePeople = _lateBillablePeople
             };
         }
     }

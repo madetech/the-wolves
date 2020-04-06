@@ -25,31 +25,31 @@ namespace CryptoTechReminderSystem.UseCase
         {
             var getLateBillablePeopleResponse = new GetLateBillablePeopleResponse
             {
-                Developers = new List<GetLateBillablePeopleResponse.LateDeveloper>()
+                BillablePeople = new List<GetLateBillablePeopleResponse.LateDeveloper>()
             };
             
             if (IsWeekend(_clock.Now())) return getLateBillablePeopleResponse;
             
-            var harvestGetDevelopersResponse = _harvestDeveloperRetriever.RetrieveDevelopers();
-            var slackGetDevelopersResponse = _slackDeveloperRetriever.RetrieveDevelopers();
+            var harvestGetBillablePeopleResponse = _harvestDeveloperRetriever.RetrieveBillablePeople();
+            var slackGetBillablePeopleResponse = _slackDeveloperRetriever.RetrieveBillablePeople();
 
             var dateFrom = GetStartingDate(_clock.Now());
             var dateTo = GetEndingDate(_clock.Now());
             
             var harvestGetTimeSheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             
-            foreach (var harvestDeveloper in harvestGetDevelopersResponse)
+            foreach (var harvestDeveloper in harvestGetBillablePeopleResponse)
             {
                 var timeSheetForDeveloper = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
                 var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
                 
                 if (sumOfHours < ExpectedHoursByDate(harvestDeveloper.WeeklyHours, _clock.Now()))
                 {
-                    var slackLateDeveloper = slackGetDevelopersResponse.SingleOrDefault(developer => String.Equals(RemoveTopLevelDomain(developer.Email), RemoveTopLevelDomain(harvestDeveloper.Email), StringComparison.OrdinalIgnoreCase));
+                    var slackLateDeveloper = slackGetBillablePeopleResponse.SingleOrDefault(developer => String.Equals(RemoveTopLevelDomain(developer.Email), RemoveTopLevelDomain(harvestDeveloper.Email), StringComparison.OrdinalIgnoreCase));
                     
                     if (slackLateDeveloper != null)
                     {
-                        getLateBillablePeopleResponse.Developers.Add(new GetLateBillablePeopleResponse.LateDeveloper
+                        getLateBillablePeopleResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateDeveloper
                         {
                             Id = slackLateDeveloper.Id,
                             Email = slackLateDeveloper.Email

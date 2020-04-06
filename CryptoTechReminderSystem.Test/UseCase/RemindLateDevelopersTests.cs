@@ -42,7 +42,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
         
         [Test]
-        public void CanRemindDevelopers()
+        public void CanRemindBillablePeople()
         {
             HandleSetUp(_getLateBillablePeopleStub);
 
@@ -58,7 +58,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
         
         [Test]
-        public void CanRemindDevelopersDirectly()
+        public void CanRemindBillablePeopleDirectly()
         {
             HandleSetUp(_getLateBillablePeopleStub);
             
@@ -72,7 +72,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
         
         [Test]
-        public void CanRemindDevelopersDirectlyWithAMessage()
+        public void CanRemindBillablePeopleDirectlyWithAMessage()
         {
             HandleSetUp(_getLateBillablePeopleStub);
 

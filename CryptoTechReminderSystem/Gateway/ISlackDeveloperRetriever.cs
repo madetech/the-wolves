@@ -5,6 +5,6 @@ namespace CryptoTechReminderSystem.Gateway
 {
     public interface ISlackDeveloperRetriever
     {
-        IList<SlackDeveloper> RetrieveDevelopers();
+        IList<SlackDeveloper> RetrieveBillablePeople();
     }
 }

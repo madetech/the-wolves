@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private static HarvestGateway _harvestGateway;
         
         [TestFixture]
-        public class CanRequestDevelopers
+        public class CanRequestBillablePeople
         {
             [SetUp]
             public void Setup()
@@ -51,7 +51,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanSendOneRequestAtATime()
             {
-                _harvestGateway.RetrieveDevelopers();
+                _harvestGateway.RetrieveBillablePeople();
                
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
@@ -60,17 +60,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase("Authorization", "Bearer " + Token)]
             [TestCase("Harvest-Account-Id", HarvestAccountId)]
             [TestCase("User-Agent", UserAgent)]
-            public void CanGetDevelopersWithHeaders(string header, string expected)
+            public void CanGetBillablePeopleWithHeaders(string header, string expected)
             {
-                _harvestGateway.RetrieveDevelopers();
+                _harvestGateway.RetrieveBillablePeople();
                 
                 _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
             }
             
             [Test]
-            public void CanOnlyGetActiveDevelopers()
+            public void CanOnlyGetActiveBillablePeople()
             {
-                var response = _harvestGateway.RetrieveDevelopers();
+                var response = _harvestGateway.RetrieveBillablePeople();
                 
                 response.First().FirstName.Should().Be("Dick");
                 response.Count.Should().Be(7);
@@ -79,9 +79,9 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             [TestCase("Alfred", 35)]
             [TestCase("Harvey", 28)]
-            public void CanGetWeeklyHoursForDevelopers(string name, int hours)
+            public void CanGetWeeklyHoursForBillablePeople(string name, int hours)
             {
-                var response = _harvestGateway.RetrieveDevelopers();   
+                var response = _harvestGateway.RetrieveBillablePeople();   
                 response.First(developer => developer.FirstName == name).WeeklyHours.Should().Be(hours);
             }
         }

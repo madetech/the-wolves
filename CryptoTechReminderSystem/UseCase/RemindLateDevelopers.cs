@@ -18,7 +18,7 @@ namespace CryptoTechReminderSystem.UseCase
         {
             var lateBillablePeople = _getLateBillablePeople.Execute();
             
-            foreach (var lateDeveloper in lateBillablePeople.Developers)
+            foreach (var lateDeveloper in lateBillablePeople.BillablePeople)
             {
                 _sendReminder.Execute(new SendReminderRequest
                 {
