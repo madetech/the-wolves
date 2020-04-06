@@ -1,6 +1,6 @@
 ## Context
 
-<!-- Why are you making this change? What might surprise someone about it?) -->
+<!-- Why are you making this change? What might surprise someone about it? -->
 
 ## Changes proposed in this pull request
 
