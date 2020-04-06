@@ -133,13 +133,13 @@ dotnet test
 
 ## Deployment
 
-We use [Heroku](https://www.heroku.com) to host our application as a [Heroku Dyno](https://www.heroku.com/dynos). In order to deploy the latest version of the application, we must manually do so using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and Git.
+We use [Heroku](https://www.heroku.com) to host our application as a [Heroku Dyno](https://www.heroku.com/dynos) and automatic deployment is configured. This means whenever `master` is updated, a deployment will be triggered.
 
-### Prerequisites
-
-- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+It is still possible to manually deploy using [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and Git.
 
 ### Deploying to Heroku with Git
+
+You must have [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed.
 
 1. Login into Heroku
 
