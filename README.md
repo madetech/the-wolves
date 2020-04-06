@@ -52,8 +52,8 @@ The Wolves is a C# application that follows the principles of [Clean Architectur
 
 Following CA, we have two sea-level use cases:
 
-- [Remind Late Billable people](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
-- [List Late Billable people](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
+- [RemindLateBillablePeople](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
+- [ListLateBillablePeople](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
 
 Each of which have use case dependencies on:
 
@@ -106,10 +106,10 @@ HARVEST_TOKEN=
 HARVEST_ACCOUNT_ID=
 HARVEST_USER_AGENT=
 SLACK_CHANNEL_ID=
-HARVEST_DEVELOPER_ROLES=
+HARVEST_BILLABLE_ROLES=
 SLACK_REMINDER_MESSAGE=
-SLACK_LATE_DEVELOPERS_MESSAGE=
-SLACK_NO_LATE_DEVELOPERS_MESSAGE=
+SLACK_LATE_BILLABLE_PEOPLE_MESSAGE=
+SLACK_NO_LATE_BILLABLE_PEOPLE_MESSAGE=
 ```
 
 2. Run the application using:
