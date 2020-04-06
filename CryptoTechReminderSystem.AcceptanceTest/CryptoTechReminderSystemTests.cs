@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         private static HarvestGateway _harvestGateway;
         private static SlackGateway _slackGateway;
         private static SendReminder _sendReminder;
-        private const string DeveloperRoles = 
+        private const string BillablePersonRoles = 
             "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, " +
             "Delivery Manager, SRE, Consultant, Delivery Principal";
 
@@ -52,7 +52,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "xxxx-xxxxxxxxx-xxxx",
                 "234567",
                 "The Wolves",
-                DeveloperRoles
+                BillablePersonRoles
             );
             _sendReminder = new SendReminder(_slackGateway);
             
@@ -120,7 +120,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
 
         [Test]
-        public void CanRemindLateDevelopersOnAFriday()
+        public void CanRemindLateBillablePeopleOnAFriday()
         {                      
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -128,12 +128,12 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
+            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder);
+            var remindLateBillablePeople = new RemindLateBillablePeople(getLateBillablePeople, _sendReminder);
 
-            remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest
+            remindLateBillablePeople.Execute(
+                new RemindLateBillablePeopleRequest
                 {
                     Message = "Please make sure your timesheet is submitted by 13:30 today."
                 }
@@ -146,7 +146,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
         
         [Test]
-        public void CanRemindLateDevelopersEndOfTheMonth()
+        public void CanRemindLateBillablePeopleEndOfTheMonth()
         {                      
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -154,12 +154,12 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
+            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, _harvestGateway, _harvestGateway, clock);
             
-            var remindLateDevelopers = new RemindLateDevelopers(getLateDevelopers, _sendReminder);
+            var remindLateBillablePeople = new RemindLateBillablePeople(getLateBillablePeople, _sendReminder);
 
-            remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest
+            remindLateBillablePeople.Execute(
+                new RemindLateBillablePeopleRequest
                 {
                     Message = "Please make sure your timesheet is submitted by 13:30 today."
                 }
@@ -172,7 +172,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
         
         [Test]
-        public void CanListLateDevelopers()
+        public void CanListLateBillablePeople()
         {
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -180,17 +180,17 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getLateDevelopers = new GetLateDevelopers(_slackGateway, _harvestGateway, _harvestGateway, clock);
+            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, _harvestGateway, _harvestGateway, clock);
 
-            var listLateDevelopers = new ListLateDevelopers(getLateDevelopers, _sendReminder);
+            var listLateBillablePeople = new ListLateBillablePeople(getLateBillablePeople, _sendReminder);
 
-            const string lateDevelopersMessage = "These are the people yet to submit time sheets:";
+            const string lateBillablePeopleMessage = "These are the people yet to submit time sheets:";
             const string channel = "CHBUZLJT1";
             
-            listLateDevelopers.Execute(
-                new ListLateDevelopersRequest
+            listLateBillablePeople.Execute(
+                new ListLateBillablePeopleRequest
                 {
-                    LateDevelopersMessage = lateDevelopersMessage,
+                    LateBillablePeopleMessage = lateBillablePeopleMessage,
                     Channel = channel
                 }
             );
@@ -199,7 +199,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             lastSlackApiRequest["channel"].ToString().Should().Be(channel);
 
-            var expectedMessage = $"{lateDevelopersMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
+            var expectedMessage = $"{lateBillablePeopleMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
     }

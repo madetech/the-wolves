@@ -3,37 +3,37 @@ using CryptoTechReminderSystem.Boundary;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class ListLateDevelopers
+    public class ListLateBillablePeople
     {
-        private readonly IGetLateDevelopers _getLateDevelopers;
+        private readonly IGetLateBillablePeople _getLateBillablePeople;
         private readonly ISendReminder _sendReminder;
 
-        public ListLateDevelopers(IGetLateDevelopers getLateDevelopers, ISendReminder sendReminder)
+        public ListLateBillablePeople(IGetLateBillablePeople getLateBillablePeople, ISendReminder sendReminder)
         {
-            _getLateDevelopers = getLateDevelopers;
+            _getLateBillablePeople = getLateBillablePeople;
             _sendReminder = sendReminder;
         }
 
-        public void Execute(ListLateDevelopersRequest listLateDevelopersRequest)
+        public void Execute(ListLateBillablePeopleRequest listLateBillablePeopleRequest)
         {
-            var lateDevelopers = _getLateDevelopers.Execute();
+            var lateBillablePeople = _getLateBillablePeople.Execute();
             string text;
 
-            if (!lateDevelopers.Developers.Any())
+            if (!lateBillablePeople.BillablePeople.Any())
             {
-                text = listLateDevelopersRequest.NoLateDevelopersMessage;
+                text = listLateBillablePeopleRequest.NoLateBillablePeopleMessage;
             } else
             {
-                text = lateDevelopers.Developers.Aggregate(
-                    listLateDevelopersRequest.LateDevelopersMessage, 
-                    (current, developer) => current + $"\n• <@{developer.Id}>"
+                text = lateBillablePeople.BillablePeople.Aggregate(
+                    listLateBillablePeopleRequest.LateBillablePeopleMessage, 
+                    (current, billablePerson) => current + $"\n• <@{billablePerson.Id}>"
                 );
             }
 
             _sendReminder.Execute(new SendReminderRequest
             {
                 Text = text,
-                Channel = listLateDevelopersRequest.Channel
+                Channel = listLateBillablePeopleRequest.Channel
             });
         }
     }

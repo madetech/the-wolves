@@ -1,6 +1,6 @@
 namespace CryptoTechReminderSystem.DomainObject
 {
-    public class HarvestDeveloper : Developer
+    public class HarvestBillablePerson : BillablePerson
     {
         public int Id { get; set; }
     }

@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.DomainObject
 {
-    public class Developer
+    public class BillablePerson
     {
         [JsonProperty("first_name")] 
         public string FirstName { get; set; }

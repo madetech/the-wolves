@@ -15,7 +15,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private const string HarvestAccountId = "123456";
         private const string UserAgent = "The Wolves";
-        private const string DeveloperRoles = 
+        private const string BillablePersonRoles = 
             @"Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, 
             Delivery Manager, SRE, Consultant, Delivery Principal";
         
@@ -23,13 +23,13 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private static HarvestGateway _harvestGateway;
         
         [TestFixture]
-        public class CanRequestDevelopers
+        public class CanRequestBillablePeople
         {
             [SetUp]
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, BillablePersonRoles);
                 
                 var json = File.ReadAllText(
                     Path.Combine(
@@ -51,7 +51,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanSendOneRequestAtATime()
             {
-                _harvestGateway.RetrieveDevelopers();
+                _harvestGateway.RetrieveBillablePeople();
                
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
@@ -60,17 +60,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase("Authorization", "Bearer " + Token)]
             [TestCase("Harvest-Account-Id", HarvestAccountId)]
             [TestCase("User-Agent", UserAgent)]
-            public void CanGetDevelopersWithHeaders(string header, string expected)
+            public void CanGetBillablePeopleWithHeaders(string header, string expected)
             {
-                _harvestGateway.RetrieveDevelopers();
+                _harvestGateway.RetrieveBillablePeople();
                 
                 _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
             }
             
             [Test]
-            public void CanOnlyGetActiveDevelopers()
+            public void CanOnlyGetActiveBillablePeople()
             {
-                var response = _harvestGateway.RetrieveDevelopers();
+                var response = _harvestGateway.RetrieveBillablePeople();
                 
                 response.First().FirstName.Should().Be("Dick");
                 response.Count.Should().Be(7);
@@ -79,10 +79,10 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             [TestCase("Alfred", 35)]
             [TestCase("Harvey", 28)]
-            public void CanGetWeeklyHoursForDevelopers(string name, int hours)
+            public void CanGetWeeklyHoursForBillablePeople(string name, int hours)
             {
-                var response = _harvestGateway.RetrieveDevelopers();   
-                response.First(developer => developer.FirstName == name).WeeklyHours.Should().Be(hours);
+                var response = _harvestGateway.RetrieveBillablePeople();   
+                response.First(billablePerson => billablePerson.FirstName == name).WeeklyHours.Should().Be(hours);
             }
         }
 
@@ -97,7 +97,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, BillablePersonRoles);
                 _defaultDateFrom = new DateTimeOffset(
                     new DateTime(2019, 04, 08)
                 );

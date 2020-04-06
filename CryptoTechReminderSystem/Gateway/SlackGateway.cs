@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class SlackGateway : IMessageSender, ISlackDeveloperRetriever
+    public class SlackGateway : IMessageSender, ISlackBillablePersonRetriever
     {
         private readonly HttpClient _client;
         private readonly string _token;
@@ -48,7 +48,7 @@ namespace CryptoTechReminderSystem.Gateway
                 .OfError(new Exception(response.Result["error"].ToString() ?? "Default error message"));
         }
         
-        public IList<SlackDeveloper> RetrieveDevelopers()
+        public IList<SlackBillablePerson> RetrieveBillablePeople()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
@@ -62,10 +62,10 @@ namespace CryptoTechReminderSystem.Gateway
             return users.Where(user => user["profile"]["email"] != null && 
                                        (bool) user["deleted"] != true &&
                                        (bool) user["is_ultra_restricted"] != true)
-            .Select(developer => new SlackDeveloper
+            .Select(billablePerson => new SlackBillablePerson
                 {
-                    Id = developer["id"].ToString(),
-                    Email = developer["profile"]["email"].ToString()
+                    Id = billablePerson["id"].ToString(),
+                    Email = billablePerson["profile"]["email"].ToString()
                 }
             ).ToList();
         }

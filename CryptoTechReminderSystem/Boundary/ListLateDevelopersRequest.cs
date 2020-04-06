@@ -1,9 +1,9 @@
 namespace CryptoTechReminderSystem.Boundary
 {
-    public class ListLateDevelopersRequest
+    public class ListLateBillablePeopleRequest
     {
-        public string LateDevelopersMessage { get; set; }
-        public string NoLateDevelopersMessage { get; set; }
+        public string LateBillablePeopleMessage { get; set; }
+        public string NoLateBillablePeopleMessage { get; set; }
         public string Channel { get; set; }
     }
 }

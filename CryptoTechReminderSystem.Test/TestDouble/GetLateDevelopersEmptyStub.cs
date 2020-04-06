@@ -4,13 +4,13 @@ using CryptoTechReminderSystem.UseCase;
 
 namespace CryptoTechReminderSystem.Test.TestDouble
 {
-    public class GetLateDevelopersEmptyStub : IGetLateDevelopers
+    public class GetLateBillablePeopleEmptyStub : IGetLateBillablePeople
     {
-        public GetLateDevelopersResponse Execute()
+        public GetLateBillablePeopleResponse Execute()
         {
-            return new GetLateDevelopersResponse
+            return new GetLateBillablePeopleResponse
             {
-                Developers = new List<GetLateDevelopersResponse.LateDeveloper>()
+                BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>()
             };
         }
     }

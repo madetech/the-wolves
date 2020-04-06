@@ -29,7 +29,7 @@ namespace CryptoTechReminderSystem.Main
 
     public class ReminderRegistry : Registry
     {
-        private readonly GetLateDevelopers _getLateDevelopers;
+        private readonly GetLateBillablePeople _getLateBillablePeople;
         private readonly SendReminder _sendReminder;
 
         public ReminderRegistry()
@@ -47,7 +47,7 @@ namespace CryptoTechReminderSystem.Main
             );
             
             var clock = new Clock();
-            _getLateDevelopers = new GetLateDevelopers(slackGateway, harvestGateway, harvestGateway, clock);
+            _getLateBillablePeople = new GetLateBillablePeople(slackGateway, harvestGateway, harvestGateway, clock);
             _sendReminder = new SendReminder(slackGateway);
 
             CreateSchedule();
@@ -72,29 +72,29 @@ namespace CryptoTechReminderSystem.Main
 
         private void ScheduleJobs()
         {
-            JobManager.AddJob(RemindLateDevelopersJob, s => s.ToRunOnceAt(10, 30).AndEvery(30).Minutes());
-            JobManager.AddJob(ListLateDevelopersJob, s => s.ToRunOnceAt(13, 30));
+            JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 30).AndEvery(30).Minutes());
+            JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(13, 30));
         }
         
-        private void RemindLateDevelopersJob()
+        private void RemindLateBillablePeopleJob()
         {
-            var remindLateDevelopers = new RemindLateDevelopers(_getLateDevelopers, _sendReminder);
-            remindLateDevelopers.Execute(
-                new RemindLateDevelopersRequest
+            var remindLateBillablePeople = new RemindLateBillablePeople(_getLateBillablePeople, _sendReminder);
+            remindLateBillablePeople.Execute(
+                new RemindLateBillablePeopleRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
                 }
             );
         }
         
-        private void ListLateDevelopersJob()
+        private void ListLateBillablePeopleJob()
         {
-            var listLateDevelopers = new ListLateDevelopers(_getLateDevelopers, _sendReminder);
-            listLateDevelopers.Execute(
-                new ListLateDevelopersRequest
+            var listLateBillablePeople = new ListLateBillablePeople(_getLateBillablePeople, _sendReminder);
+            listLateBillablePeople.Execute(
+                new ListLateBillablePeopleRequest
                 {
-                    LateDevelopersMessage = Environment.GetEnvironmentVariable("SLACK_LATE_DEVELOPERS_MESSAGE").Replace(@"\n", "\n"),
-                    NoLateDevelopersMessage = Environment.GetEnvironmentVariable("SLACK_NO_LATE_DEVELOPERS_MESSAGE"),
+                    LateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_LATE_DEVELOPERS_MESSAGE").Replace(@"\n", "\n"),
+                    NoLateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_NO_LATE_DEVELOPERS_MESSAGE"),
                     Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );

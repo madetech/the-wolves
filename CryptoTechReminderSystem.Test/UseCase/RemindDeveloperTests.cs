@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace CryptoTechReminderSystem.Test.UseCase
 {
-    public class RemindDeveloperTests
+    public class RemindBillablePersonTests
     {
         private const string Text = "Please make sure your timesheet is submitted today by 13:30.";
 
@@ -24,12 +24,12 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
        
         [Test]
-        public void CanRemindDeveloper()
+        public void CanRemindBillablePerson()
         {
             var spy = new SlackGatewaySpy();
-            var remindDeveloper = new SendReminder(spy);
+            var remindBillablePerson = new SendReminder(spy);
             
-            remindDeveloper.Execute(new SendReminderRequest
+            remindBillablePerson.Execute(new SendReminderRequest
             {
                 Channel = "U120123D",
                 Text = Text
@@ -39,12 +39,12 @@ namespace CryptoTechReminderSystem.Test.UseCase
         }
         
         [Test]
-        public void CanRemindDeveloper2()
+        public void CanRemindBillablePerson2()
         {
             var spy = new SlackGatewaySpy();
-            var remindDeveloper = new SendReminder(spy);
+            var remindBillablePerson = new SendReminder(spy);
 
-            remindDeveloper.Execute(new SendReminderRequest
+            remindBillablePerson.Execute(new SendReminderRequest
             {
                 Channel = "U87219AW",
                 Text = Text

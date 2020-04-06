@@ -1,6 +1,6 @@
 namespace CryptoTechReminderSystem.DomainObject
 {
-    public class SlackDeveloper : Developer
+    public class SlackBillablePerson : BillablePerson
     {
         public string Id { get; set; }
     }

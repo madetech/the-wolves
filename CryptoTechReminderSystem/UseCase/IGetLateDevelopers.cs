@@ -2,8 +2,8 @@ using CryptoTechReminderSystem.Boundary;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public interface IGetLateDevelopers
+    public interface IGetLateBillablePeople
     {
-        GetLateDevelopersResponse Execute();
+        GetLateBillablePeopleResponse Execute();
     }
 }
