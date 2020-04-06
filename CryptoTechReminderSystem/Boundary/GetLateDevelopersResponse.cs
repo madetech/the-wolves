@@ -4,9 +4,9 @@ namespace CryptoTechReminderSystem.Boundary
 {
     public class GetLateBillablePeopleResponse
     {
-        public List<LateDeveloper> BillablePeople;
+        public List<LateBillablePerson> BillablePeople;
 
-        public class LateDeveloper
+        public class LateBillablePerson
         {
             public string Id { get; set; }
             public string Email { get; set; }

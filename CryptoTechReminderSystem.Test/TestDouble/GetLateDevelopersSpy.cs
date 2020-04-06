@@ -14,9 +14,9 @@ namespace CryptoTechReminderSystem.Test.TestDouble
             
             return new GetLateBillablePeopleResponse
             {
-                BillablePeople = new List<GetLateBillablePeopleResponse.LateDeveloper>
+                BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>
                 {
-                    new GetLateBillablePeopleResponse.LateDeveloper()
+                    new GetLateBillablePeopleResponse.LateBillablePerson()
                     {
                         Id = "U9034950",
                         Email = "UncleCraig@aol.com"

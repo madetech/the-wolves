@@ -8,16 +8,16 @@ namespace CryptoTechReminderSystem.UseCase
 {
     public class GetLateBillablePeople : IGetLateBillablePeople
     {
-        private readonly IHarvestDeveloperRetriever _harvestDeveloperRetriever;
+        private readonly IHarvestBillablePersonRetriever _harvestBillablePersonRetriever;
         private readonly ITimeSheetRetriever _harvestTimeSheetRetriever;
-        private readonly ISlackDeveloperRetriever _slackDeveloperRetriever;
+        private readonly ISlackBillablePersonRetriever _slackBillablePersonRetriever;
         private readonly IClock _clock;
 
-        public GetLateBillablePeople(ISlackDeveloperRetriever slackDeveloperRetriever, IHarvestDeveloperRetriever harvestDeveloperRetriever, ITimeSheetRetriever harvestTimeSheetRetriever, IClock clock)
+        public GetLateBillablePeople(ISlackBillablePersonRetriever slackBillablePersonRetriever, IHarvestBillablePersonRetriever harvestBillablePersonRetriever, ITimeSheetRetriever harvestTimeSheetRetriever, IClock clock)
         {
-            _harvestDeveloperRetriever = harvestDeveloperRetriever;
+            _harvestBillablePersonRetriever = harvestBillablePersonRetriever;
             _harvestTimeSheetRetriever = harvestTimeSheetRetriever;
-            _slackDeveloperRetriever = slackDeveloperRetriever;
+            _slackBillablePersonRetriever = slackBillablePersonRetriever;
             _clock = clock;
         }
         
@@ -25,34 +25,34 @@ namespace CryptoTechReminderSystem.UseCase
         {
             var getLateBillablePeopleResponse = new GetLateBillablePeopleResponse
             {
-                BillablePeople = new List<GetLateBillablePeopleResponse.LateDeveloper>()
+                BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>()
             };
             
             if (IsWeekend(_clock.Now())) return getLateBillablePeopleResponse;
             
-            var harvestGetBillablePeopleResponse = _harvestDeveloperRetriever.RetrieveBillablePeople();
-            var slackGetBillablePeopleResponse = _slackDeveloperRetriever.RetrieveBillablePeople();
+            var harvestGetBillablePeopleResponse = _harvestBillablePersonRetriever.RetrieveBillablePeople();
+            var slackGetBillablePeopleResponse = _slackBillablePersonRetriever.RetrieveBillablePeople();
 
             var dateFrom = GetStartingDate(_clock.Now());
             var dateTo = GetEndingDate(_clock.Now());
             
             var harvestGetTimeSheetsResponse = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             
-            foreach (var harvestDeveloper in harvestGetBillablePeopleResponse)
+            foreach (var harvestBillablePerson in harvestGetBillablePeopleResponse)
             {
-                var timeSheetForDeveloper = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestDeveloper.Id);
-                var sumOfHours = timeSheetForDeveloper.Sum(timeSheet => timeSheet.Hours);
+                var timeSheetForBillablePerson = harvestGetTimeSheetsResponse.Where(sheet => sheet.UserId == harvestBillablePerson.Id);
+                var sumOfHours = timeSheetForBillablePerson.Sum(timeSheet => timeSheet.Hours);
                 
-                if (sumOfHours < ExpectedHoursByDate(harvestDeveloper.WeeklyHours, _clock.Now()))
+                if (sumOfHours < ExpectedHoursByDate(harvestBillablePerson.WeeklyHours, _clock.Now()))
                 {
-                    var slackLateDeveloper = slackGetBillablePeopleResponse.SingleOrDefault(developer => String.Equals(RemoveTopLevelDomain(developer.Email), RemoveTopLevelDomain(harvestDeveloper.Email), StringComparison.OrdinalIgnoreCase));
+                    var slackLateBillablePerson = slackGetBillablePeopleResponse.SingleOrDefault(billablePerson => String.Equals(RemoveTopLevelDomain(billablePerson.Email), RemoveTopLevelDomain(harvestBillablePerson.Email), StringComparison.OrdinalIgnoreCase));
                     
-                    if (slackLateDeveloper != null)
+                    if (slackLateBillablePerson != null)
                     {
-                        getLateBillablePeopleResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateDeveloper
+                        getLateBillablePeopleResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
                         {
-                            Id = slackLateDeveloper.Id,
-                            Email = slackLateDeveloper.Email
+                            Id = slackLateBillablePerson.Id,
+                            Email = slackLateBillablePerson.Email
                         });
                     }
                 }

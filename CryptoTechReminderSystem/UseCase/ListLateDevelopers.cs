@@ -26,7 +26,7 @@ namespace CryptoTechReminderSystem.UseCase
             {
                 text = lateBillablePeople.BillablePeople.Aggregate(
                     listLateBillablePeopleRequest.LateBillablePeopleMessage, 
-                    (current, developer) => current + $"\n• <@{developer.Id}>"
+                    (current, billablePerson) => current + $"\n• <@{billablePerson.Id}>"
                 );
             }
 

@@ -4,15 +4,15 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.Test.TestDouble
 {
-    public class SlackGatewaySpy : ISlackDeveloperRetriever
+    public class SlackGatewaySpy : ISlackBillablePersonRetriever
     {
         public bool IsRetrieveBillablePeopleCalled;
 
-        public IList<SlackDeveloper> RetrieveBillablePeople()
+        public IList<SlackBillablePerson> RetrieveBillablePeople()
         {
             IsRetrieveBillablePeopleCalled = true;
                 
-            return new List<SlackDeveloper>();
+            return new List<SlackBillablePerson>();
         }
     }
 }

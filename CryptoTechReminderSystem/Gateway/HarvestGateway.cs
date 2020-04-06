@@ -9,23 +9,23 @@ using Newtonsoft.Json.Linq;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public class HarvestGateway : IHarvestDeveloperRetriever, ITimeSheetRetriever
+    public class HarvestGateway : IHarvestBillablePersonRetriever, ITimeSheetRetriever
     {
         private const string UsersApiAddress = "/api/v2/users";
         private const string TimeEntriesApiAddress = "/api/v2/time_entries";
         private readonly HttpClient _client;
-        private readonly string[] _developerRoles;
+        private readonly string[] _billablePersonRoles;
        
         public HarvestGateway(string address, string token, string accountId, string userAgent, string roles)
         {
-            _developerRoles = CreateRoleArray(roles);
+            _billablePersonRoles = CreateRoleArray(roles);
             _client = new HttpClient { BaseAddress = new Uri(address) };
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _client.DefaultRequestHeaders.Add("Harvest-Account-Id",accountId);
             _client.DefaultRequestHeaders.Add("User-Agent",userAgent);
         }
         
-        public IList<HarvestDeveloper> RetrieveBillablePeople()
+        public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
             var response = GetApiResponse(UsersApiAddress);
             
@@ -33,15 +33,15 @@ namespace CryptoTechReminderSystem.Gateway
             
             var apiResponse = response.Result;
             var users = apiResponse["users"];
-            var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsDeveloper(user));
+            var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsBillablePerson(user));
             
-            return activeBillablePeople.Select(developer => new HarvestDeveloper
+            return activeBillablePeople.Select(billablePerson => new HarvestBillablePerson
                 {
-                    Id = (int) developer["id"],
-                    FirstName = developer["first_name"].ToString(),
-                    LastName = developer["last_name"].ToString(),
-                    Email = developer["email"].ToString(),
-                    WeeklyHours = SecondsToHours((int)developer["weekly_capacity"])
+                    Id = (int) billablePerson["id"],
+                    FirstName = billablePerson["first_name"].ToString(),
+                    LastName = billablePerson["last_name"].ToString(),
+                    Email = billablePerson["email"].ToString(),
+                    WeeklyHours = SecondsToHours((int)billablePerson["weekly_capacity"])
                 }
             ).ToList();
         }
@@ -85,9 +85,9 @@ namespace CryptoTechReminderSystem.Gateway
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
 
-        private bool IsDeveloper(JToken user)
+        private bool IsBillablePerson(JToken user)
         {
-            return user["roles"].ToArray().Any(role => _developerRoles.Contains(role.ToString()));
+            return user["roles"].ToArray().Any(role => _billablePersonRoles.Contains(role.ToString()));
         }
         
         private JObject RetrieveATimeSheetWithPagination(DateTimeOffset dateFrom, DateTimeOffset dateTo, int page)

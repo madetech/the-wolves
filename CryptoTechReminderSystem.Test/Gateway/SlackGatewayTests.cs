@@ -198,7 +198,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         {
             private FluentSimulator _slackApi;
             private SlackGateway _slackGateway;
-            private IList<SlackDeveloper> _response;
+            private IList<SlackBillablePerson> _response;
 
             [SetUp]
             public void SetUp()
@@ -245,18 +245,18 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetAListOfSlackBillablePeople()
             {
-                _response.Should().BeOfType<List<SlackDeveloper>>();
+                _response.Should().BeOfType<List<SlackBillablePerson>>();
                 _response.Should().HaveCount(6);
             }
         
             [Test]
-            public void CanGetIdOfSlackDeveloper()
+            public void CanGetIdOfSlackBillablePerson()
             {
                 _response.First().Id.Should().Be("W0123CHAN");
             }
             
             [Test]
-            public void CanGetEmailOfSlackDeveloper()
+            public void CanGetEmailOfSlackBillablePerson()
             {
                 _response.First().Email.Should().Be("chandler@friends.com");
             }
@@ -267,7 +267,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         {
             private FluentSimulator _slackApi;
             private SlackGateway _slackGateway;
-            private IList<SlackDeveloper> _response;
+            private IList<SlackBillablePerson> _response;
 
             [SetUp]
             public void SetUp()
@@ -314,18 +314,18 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanGetAListOfSlackBillablePeople()
             {
-                _response.Should().BeOfType<List<SlackDeveloper>>();
+                _response.Should().BeOfType<List<SlackBillablePerson>>();
                 _response.Should().HaveCount(2);
             }
         
             [Test]
-            public void CanGetIdOfSlackDeveloper()
+            public void CanGetIdOfSlackBillablePerson()
             {
                 _response.First().Id.Should().Be("W345JOEY");
             }
             
             [Test]
-            public void CanGetEmailOfSlackDeveloper()
+            public void CanGetEmailOfSlackBillablePerson()
             {
                 _response.First().Email.Should().Be("joey@friends.com");
             }

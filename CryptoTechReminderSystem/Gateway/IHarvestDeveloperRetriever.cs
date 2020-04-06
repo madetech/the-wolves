@@ -3,8 +3,8 @@ using CryptoTechReminderSystem.DomainObject;
 
 namespace CryptoTechReminderSystem.Gateway
 {
-    public interface IHarvestDeveloperRetriever
+    public interface IHarvestBillablePersonRetriever
     {
-        IList<HarvestDeveloper> RetrieveBillablePeople();
+        IList<HarvestBillablePerson> RetrieveBillablePeople();
     }
 }

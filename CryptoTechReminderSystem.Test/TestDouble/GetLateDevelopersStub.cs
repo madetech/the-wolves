@@ -6,19 +6,19 @@ namespace CryptoTechReminderSystem.Test.TestDouble
 {
     public class GetLateBillablePeopleStub : IGetLateBillablePeople
     {
-        private readonly List<GetLateBillablePeopleResponse.LateDeveloper> _lateBillablePeople;
+        private readonly List<GetLateBillablePeopleResponse.LateBillablePerson> _lateBillablePeople;
 
-        private static List<GetLateBillablePeopleResponse.LateDeveloper> DefaultList => new List<GetLateBillablePeopleResponse.LateDeveloper>
+        private static List<GetLateBillablePeopleResponse.LateBillablePerson> DefaultList => new List<GetLateBillablePeopleResponse.LateBillablePerson>
         {
-            new GetLateBillablePeopleResponse.LateDeveloper
+            new GetLateBillablePeopleResponse.LateBillablePerson
                 {
                     Id = "W0123CHAN"
                 },
-            new GetLateBillablePeopleResponse.LateDeveloper
+            new GetLateBillablePeopleResponse.LateBillablePerson
                 {
                     Id = "W123AMON"
                 },
-            new GetLateBillablePeopleResponse.LateDeveloper
+            new GetLateBillablePeopleResponse.LateBillablePerson
                 {
                     Id = "W789ROSS"
                 }
@@ -26,18 +26,18 @@ namespace CryptoTechReminderSystem.Test.TestDouble
         
         public GetLateBillablePeopleStub(List<string> lateBillablePeople = null)
         {
-            var templateDeveloper = new List<GetLateBillablePeopleResponse.LateDeveloper>();
+            var templateBillablePerson = new List<GetLateBillablePeopleResponse.LateBillablePerson>();
 
             if (lateBillablePeople != null)
-                foreach (var developer in lateBillablePeople)
+                foreach (var billablePerson in lateBillablePeople)
                 {
-                    templateDeveloper.Add(new GetLateBillablePeopleResponse.LateDeveloper
+                    templateBillablePerson.Add(new GetLateBillablePeopleResponse.LateBillablePerson
                     {
-                        Id = developer
+                        Id = billablePerson
                     });
                 }
 
-            _lateBillablePeople = templateDeveloper.Count == 0 ? DefaultList : templateDeveloper;
+            _lateBillablePeople = templateBillablePerson.Count == 0 ? DefaultList : templateBillablePerson;
         }
         
         public GetLateBillablePeopleResponse Execute()

@@ -5,13 +5,13 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.Test.TestDouble
 {
-    public class HarvestGatewayStub : IHarvestDeveloperRetriever, ITimeSheetRetriever
+    public class HarvestGatewayStub : IHarvestBillablePersonRetriever, ITimeSheetRetriever
     {
-        public HarvestDeveloper[] BillablePeople { private get; set; }
+        public HarvestBillablePerson[] BillablePeople { private get; set; }
             
         public TimeSheet[] TimeSheets { private get; set; }
             
-        public IList<HarvestDeveloper> RetrieveBillablePeople()
+        public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
             return BillablePeople;
         }

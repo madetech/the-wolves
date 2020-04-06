@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         private static HarvestGateway _harvestGateway;
         private static SlackGateway _slackGateway;
         private static SendReminder _sendReminder;
-        private const string DeveloperRoles = 
+        private const string BillablePersonRoles = 
             "Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, " +
             "Delivery Manager, SRE, Consultant, Delivery Principal";
 
@@ -52,7 +52,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 "xxxx-xxxxxxxxx-xxxx",
                 "234567",
                 "The Wolves",
-                DeveloperRoles
+                BillablePersonRoles
             );
             _sendReminder = new SendReminder(_slackGateway);
             

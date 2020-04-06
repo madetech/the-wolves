@@ -4,11 +4,11 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.Test.TestDouble
 {
-    public class SlackGatewayStub : ISlackDeveloperRetriever
+    public class SlackGatewayStub : ISlackBillablePersonRetriever
     {
-        public SlackDeveloper[] BillablePeople;
+        public SlackBillablePerson[] BillablePeople;
 
-        public IList<SlackDeveloper> RetrieveBillablePeople()
+        public IList<SlackBillablePerson> RetrieveBillablePeople()
         {
             return BillablePeople;
         }

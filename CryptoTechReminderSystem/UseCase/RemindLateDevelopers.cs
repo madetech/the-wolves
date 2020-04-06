@@ -18,13 +18,13 @@ namespace CryptoTechReminderSystem.UseCase
         {
             var lateBillablePeople = _getLateBillablePeople.Execute();
             
-            foreach (var lateDeveloper in lateBillablePeople.BillablePeople)
+            foreach (var lateBillablePerson in lateBillablePeople.BillablePeople)
             {
                 _sendReminder.Execute(new SendReminderRequest
                 {
-                    Channel = lateDeveloper.Id,
+                    Channel = lateBillablePerson.Id,
                     Text = remindLateBillablePeopleRequest.Message,
-                    Email = lateDeveloper.Email
+                    Email = lateBillablePerson.Email
                 });
             }
         }

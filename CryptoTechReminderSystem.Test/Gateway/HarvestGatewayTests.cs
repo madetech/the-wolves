@@ -15,7 +15,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private const string HarvestAccountId = "123456";
         private const string UserAgent = "The Wolves";
-        private const string DeveloperRoles = 
+        private const string BillablePersonRoles = 
             @"Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, 
             Delivery Manager, SRE, Consultant, Delivery Principal";
         
@@ -29,7 +29,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, BillablePersonRoles);
                 
                 var json = File.ReadAllText(
                     Path.Combine(
@@ -82,7 +82,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanGetWeeklyHoursForBillablePeople(string name, int hours)
             {
                 var response = _harvestGateway.RetrieveBillablePeople();   
-                response.First(developer => developer.FirstName == name).WeeklyHours.Should().Be(hours);
+                response.First(billablePerson => billablePerson.FirstName == name).WeeklyHours.Should().Be(hours);
             }
         }
 
@@ -97,7 +97,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
-                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, DeveloperRoles);
+                _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, BillablePersonRoles);
                 _defaultDateFrom = new DateTimeOffset(
                     new DateTime(2019, 04, 08)
                 );
