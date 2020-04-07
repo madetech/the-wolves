@@ -7,6 +7,10 @@ WORKDIR /app
 # Copies the current directory to the image
 COPY . ./
 
+ADD ./.profile.d /app/.profile.d
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 RUN dotnet restore
 
 RUN dotnet publish -o out
