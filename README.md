@@ -30,7 +30,7 @@
 
 ## About The Project
 
-The Wolves is a project developed by the Made Tech Academy of Winter/Spring 2019. It set out to solve the problem of billablePeople not filling in their timesheets on time and the need for the Operations team to manually send reminders.
+The Wolves is a project developed by the Made Tech Academy of Winter/Spring 2019. It set out to solve the problem of billable people not filling in their timesheets on time and the need for the Operations team to manually send reminders.
 
 This application solves this problem by automatically reminding billable people that have not submitted their timesheets through a Slack direct message and publicly listing all those yet to do so by the deadline.
 
