@@ -1,5 +1,5 @@
 # Gets the official Docker image for .NET from MS
-FROM microsoft/dotnet:2.2-sdk
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 as build
 
 # Sets the working directory
 WORKDIR /app
