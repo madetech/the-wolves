@@ -18,6 +18,15 @@ namespace CryptoTechReminderSystem.Gateway
        
         public HarvestGateway(string address, string token, string accountId, string userAgent, string roles)
         {
+            if (string.IsNullOrEmpty(address))
+                throw new ArgumentNullException(nameof(address), $"'{nameof(address)}' cannot be null or empty");
+
+            if (string.IsNullOrEmpty(token))
+                throw new ArgumentNullException(nameof(token), $"'{nameof(token)}' cannot be null or empty");
+
+            if (string.IsNullOrEmpty(accountId))
+                throw new ArgumentNullException(nameof(accountId), $"'{nameof(accountId)}' cannot be null or empty");
+
             _billablePersonRoles = CreateRoleArray(roles);
             _client = new HttpClient { BaseAddress = new Uri(address) };
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -75,6 +84,11 @@ namespace CryptoTechReminderSystem.Gateway
         
         private static string[] CreateRoleArray(string roles)
         {
+            if(roles == null)
+            {
+                return new string[] { };
+            }
+
             return roles.Split(',').Select(role => role.Trim()).ToArray();
         }
         

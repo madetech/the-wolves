@@ -15,13 +15,48 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private const string Token = "xxxx-xxxxxxxxx-xxxx";
         private const string HarvestAccountId = "123456";
         private const string UserAgent = "The Wolves";
-        private const string BillablePersonRoles = 
+        private const string BillablePersonRoles =
             @"Software Engineer, Senior Software Engineer, Senior Engineer, Lead Engineer, 
             Delivery Manager, SRE, Consultant, Delivery Principal";
-        
+
         private static FluentSimulator _harvestApi;
         private static HarvestGateway _harvestGateway;
-        
+
+        [TestFixture]
+        public class CanContrsuctInstance
+        {
+            [Test]
+            public void CanUseNullRoles()
+            {
+                string roles = null;
+
+                HarvestGateway gateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, roles);
+
+                Assert.IsNotNull(gateway);
+            }
+
+            [Test]
+            public void ThrowsExceptionWhenAddressNull()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(()=> new HarvestGateway(null, Token, HarvestAccountId, UserAgent, BillablePersonRoles));
+                Assert.AreEqual("address", exception.ParamName);
+            }
+
+            [Test]
+            public void ThrowsExceptionWhenTokenNull()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(()=> new HarvestGateway(Address, null, HarvestAccountId, UserAgent, BillablePersonRoles));
+                Assert.AreEqual("token", exception.ParamName);
+            }
+
+            [Test]
+            public void ThrowsExceptionWhenAccountIdNull()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(() => new HarvestGateway(Address, Token, null, UserAgent, BillablePersonRoles));
+                Assert.AreEqual("accountId", exception.ParamName);
+            }
+        }
+
         [TestFixture]
         public class CanRequestBillablePeople
         {
@@ -30,14 +65,14 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 _harvestApi = new FluentSimulator(Address);
                 _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, BillablePersonRoles);
-                
+
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/ApiEndpointResponse/HarvestUsersResponse.json"
+                        "Gateway/ApiEndpointResponse/HarvestUsersResponse.json"
                     )
                 );
-                
+
                 _harvestApi.Get("/api/v2/users").Responds(json);
                 _harvestApi.Start();
             }
@@ -52,10 +87,10 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanSendOneRequestAtATime()
             {
                 _harvestGateway.RetrieveBillablePeople();
-               
+
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
-            
+
             [Test]
             [TestCase("Authorization", "Bearer " + Token)]
             [TestCase("Harvest-Account-Id", HarvestAccountId)]
@@ -63,25 +98,25 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanGetBillablePeopleWithHeaders(string header, string expected)
             {
                 _harvestGateway.RetrieveBillablePeople();
-                
+
                 _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
             }
-            
+
             [Test]
             public void CanOnlyGetActiveBillablePeople()
             {
                 var response = _harvestGateway.RetrieveBillablePeople();
-                
+
                 response.First().FirstName.Should().Be("Dick");
                 response.Count.Should().Be(7);
             }
-            
+
             [Test]
             [TestCase("Alfred", 35)]
             [TestCase("Harvey", 28)]
             public void CanGetWeeklyHoursForBillablePeople(string name, int hours)
             {
-                var response = _harvestGateway.RetrieveBillablePeople();   
+                var response = _harvestGateway.RetrieveBillablePeople();
                 response.First(billablePerson => billablePerson.FirstName == name).WeeklyHours.Should().Be(hours);
             }
         }
@@ -111,7 +146,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var json = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpoint.json"
+                        "Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpoint.json"
                     )
                 );
 
@@ -123,13 +158,13 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 _harvestApi.Start();
             }
-            
+
             private void SetUpTimeSheetApiEndpointWithTwoPages(string dateFrom, string dateTo)
             {
                 var jsonPageOne = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpointPageOne.json"
+                        "Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpointPageOne.json"
                     )
                 );
 
@@ -138,11 +173,11 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     .WithParameter("to", dateTo)
                     .WithParameter("page", "1")
                     .Responds(jsonPageOne);
-                
+
                 var jsonPageTwo = File.ReadAllText(
                     Path.Combine(
                         AppDomain.CurrentDomain.BaseDirectory,
-                        "../../../Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpointPageTwo.json"
+                        "Gateway/ApiEndpointResponse/HarvestTimeEntriesApiEndpointPageTwo.json"
                     )
                 );
 
@@ -151,7 +186,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     .WithParameter("to", dateTo)
                     .WithParameter("page", "2")
                     .Responds(jsonPageTwo);
-                
+
                 _harvestApi.Start();
             }
 
@@ -160,17 +195,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
             {
                 _harvestApi.Stop();
             }
-            
+
             [Test]
             public void CanSendOneRequestAtATime()
             {
                 SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
 
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
-               
+
                 _harvestApi.ReceivedRequests.Count.Should().Be(2);
             }
-            
+
             [Test]
             [TestCase("Authorization", "Bearer " + Token)]
             [TestCase("Harvest-Account-Id", HarvestAccountId)]
@@ -178,12 +213,12 @@ namespace CryptoTechReminderSystem.Test.Gateway
             public void CanGetTimeSheetsWithHeaders(string header, string expected)
             {
                 SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
-                
+
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
                 _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
             }
-            
+
             [Test]
             [TestCase("08", "12")]
             [TestCase("14", "19")]
@@ -195,11 +230,11 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var dateFrom = new DateTimeOffset(
                     new DateTime(2019, 04, int.Parse(dayFrom))
                 );
-               
+
                 var dateTo = new DateTimeOffset(
                     new DateTime(2019, 04, int.Parse(dayTo))
                 );
-                
+
                 _harvestGateway.RetrieveTimeSheets(dateFrom, dateTo);
 
                 _harvestApi.ReceivedRequests.First().Url.Should().Be(
@@ -218,7 +253,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 response.Any(entry => entry.UserId == expectedUserId).Should().BeTrue();
             }
-            
+
             [Test]
             public void CanGetAllTimeSheetsWithOnePage()
             {
@@ -228,7 +263,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 response.Count.Should().Be(4);
             }
-            
+
             [Test]
             public void CanGetAllTimeSheetsWithTwoPages()
             {
@@ -238,14 +273,14 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 response.Count.Should().Be(6);
             }
-            
+
             [Test]
             public void CanGetAllTimeSheetProperties()
             {
                 SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
 
                 var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
-                
+
                 response.First().Id.Should().Be(456709345);
                 response.First().UserId.Should().Be(1782975);
                 response.First().Hours.Should().Be(7.0);
