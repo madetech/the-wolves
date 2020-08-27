@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         private static HarvestGateway _harvestGateway;
 
         [TestFixture]
-        public class CanContrsuctInstance
+        public class CanConstructInstance
         {
             [Test]
             public void CanUseNullRoles()
