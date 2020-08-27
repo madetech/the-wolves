@@ -21,9 +21,16 @@ namespace CryptoTechReminderSystem.Main
     {
         private static void Main()
         {
-            DotEnv.Config(false);
-            JobManager.Initialize(new ReminderRegistry());
-            SpinWait.SpinUntil(() => false);
+            try
+            {
+                DotEnv.Config(false);
+                JobManager.Initialize(new ReminderRegistry());
+                SpinWait.SpinUntil(() => false);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}.");
+            }
         }
     }
 
@@ -45,7 +52,7 @@ namespace CryptoTechReminderSystem.Main
                 Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
                 Environment.GetEnvironmentVariable("HARVEST_BILLABLE_ROLES")
             );
-            
+
             var clock = new Clock();
             _getLateBillablePeople = new GetLateBillablePeople(slackGateway, harvestGateway, harvestGateway, clock);
             _sendReminder = new SendReminder(slackGateway);
@@ -58,16 +65,16 @@ namespace CryptoTechReminderSystem.Main
             JobManager.RemoveAllJobs();
             CreateSchedule();
         }
-        
+
         private void CreateSchedule()
         {
             if (!IsLastDayOfTheMonthFridayOrWeekend())
             {
                 JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Months().OnTheLastDay().At(10, 25));
-                JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Months().OnTheLastDay().At(13,45));  
+                JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Months().OnTheLastDay().At(13, 45));
             }
-            JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(10,25));
-            JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(13,45));
+            JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(10, 25));
+            JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(13, 45));
         }
 
         private void ScheduleJobs()
@@ -75,7 +82,7 @@ namespace CryptoTechReminderSystem.Main
             JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 30).AndEvery(30).Minutes());
             JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(13, 30));
         }
-        
+
         private void RemindLateBillablePeopleJob()
         {
             var remindLateBillablePeople = new RemindLateBillablePeople(_getLateBillablePeople, _sendReminder);
@@ -86,7 +93,7 @@ namespace CryptoTechReminderSystem.Main
                 }
             );
         }
-        
+
         private void ListLateBillablePeopleJob()
         {
             var listLateBillablePeople = new ListLateBillablePeople(_getLateBillablePeople, _sendReminder);
@@ -99,19 +106,19 @@ namespace CryptoTechReminderSystem.Main
                 }
             );
         }
-        
+
         private bool IsLastDayOfTheMonthFridayOrWeekend()
         {
             var lastDayOfTheMonth = DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month);
-            
+
             var lastDayOfTheMonthDayOfWeek = new DateTimeOffset(
                 new DateTime(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, lastDayOfTheMonth)
             ).DayOfWeek;
-            
+
             return new List<DayOfWeek>
             {
-                DayOfWeek.Friday, 
-                DayOfWeek.Saturday, 
+                DayOfWeek.Friday,
+                DayOfWeek.Saturday,
                 DayOfWeek.Sunday
             }.Contains(lastDayOfTheMonthDayOfWeek);
         }
