@@ -31,29 +31,28 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 string roles = null;
 
                 HarvestGateway gateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, roles);
-
-                Assert.IsNotNull(gateway);
+                gateway.Should().NotBeNull();
             }
 
             [Test]
             public void ThrowsExceptionWhenAddressNull()
             {
                 var exception = Assert.Throws<ArgumentNullException>(()=> new HarvestGateway(null, Token, HarvestAccountId, UserAgent, BillablePersonRoles));
-                Assert.AreEqual("address", exception.ParamName);
+                exception.ParamName.Should().Be("address");
             }
 
             [Test]
             public void ThrowsExceptionWhenTokenNull()
             {
                 var exception = Assert.Throws<ArgumentNullException>(()=> new HarvestGateway(Address, null, HarvestAccountId, UserAgent, BillablePersonRoles));
-                Assert.AreEqual("token", exception.ParamName);
+                exception.ParamName.Should().Be("token");
             }
 
             [Test]
             public void ThrowsExceptionWhenAccountIdNull()
             {
                 var exception = Assert.Throws<ArgumentNullException>(() => new HarvestGateway(Address, Token, null, UserAgent, BillablePersonRoles));
-                Assert.AreEqual("accountId", exception.ParamName);
+                exception.ParamName.Should().Be("accountId");
             }
         }
 
