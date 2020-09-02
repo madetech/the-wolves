@@ -70,17 +70,17 @@ namespace CryptoTechReminderSystem.Main
         {
             if (!IsLastDayOfTheMonthFridayOrWeekend())
             {
-                JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Months().OnTheLastDay().At(10, 25));
-                JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Months().OnTheLastDay().At(13, 45));
+                JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Months().OnTheLastDay().At(9, 55));
+                JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Months().OnTheLastDay().At(12, 45));
             }
-            JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(10, 25));
-            JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(13, 45));
+            JobManager.AddJob(ScheduleJobs, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(9, 55));
+            JobManager.AddJob(ResetSchedule, s => s.ToRunEvery(0).Weeks().On(DayOfWeek.Friday).At(12, 45));
         }
 
         private void ScheduleJobs()
         {
-            JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 30).AndEvery(30).Minutes());
-            JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(13, 30));
+            JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0).AndEvery(30).Minutes());
+            JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(12, 30));
         }
 
         private void RemindLateBillablePeopleJob()
