@@ -202,14 +202,14 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             var expectedMessage = $"{lateBillablePeopleMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
-
+        
         public void CanRemindProjectManagers()
         {
             var clock = new ClockStub(
                 new DateTimeOffset(
-                    new DateTime(new DateTime(2019, 03, 01, 13, 30, 0))
+                    new DateTime(2019, 03, 01, 13, 00, 0)
                     )
-                );
+            );
 
             var getProjectManagersWithOpenTimeEntries =
                 new GetProjectManagersWithOpenTimeEntries(_slackGateway, _harvestGateway, _harvestGateway, clock);
@@ -224,9 +224,14 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             );
             
             _slackApi.ReceivedRequests.Should()
-                .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);   
+                .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);
+            /*
+             Bruce Wayne has two time entries where `is_closed` == false across two projects.
+             The Wolves should therefore send a reminder to the project manager of each project.
+             2 x reminders in total. 
+             */
             _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
-                .Should().Be(3);
+                .Should().Be(2);
         }
     }
 }
