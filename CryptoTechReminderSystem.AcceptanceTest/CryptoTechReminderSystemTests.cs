@@ -202,5 +202,31 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             var expectedMessage = $"{lateBillablePeopleMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
+
+        public void CanRemindProjectManagers()
+        {
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(new DateTime(2019, 03, 01, 13, 30, 0))
+                    )
+                );
+
+            var getProjectManagersWithOpenTimeEntries =
+                new GetProjectManagersWithOpenTimeEntries(_slackGateway, _harvestGateway, _harvestGateway, clock);
+
+            var remindProjectManagers = new RemindProjectManagers(getProjectManagersWithOpenTimeEntries, _sendReminder);
+
+            remindProjectManagers.Execute(
+                new RemindLateBillablePeopleRequest
+                {
+                    Message = "You have some approving to do on Harvest."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Should()
+                .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);   
+            _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
+                .Should().Be(3);
+        }
     }
 }
