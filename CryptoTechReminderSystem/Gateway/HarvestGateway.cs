@@ -36,11 +36,7 @@ namespace CryptoTechReminderSystem.Gateway
         
         public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
-            var response = GetApiResponse(UsersApiAddress);
-            
-            response.Wait();
-            
-            var apiResponse = response.Result;
+            var apiResponse = RetrieveWithPagination($"{UsersApiAddress}?per_page=100");
             var users = apiResponse["users"];
             var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsBillablePerson(user));
             
@@ -57,14 +53,8 @@ namespace CryptoTechReminderSystem.Gateway
         
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
-            var apiResponse = RetrieveATimeSheetWithPagination(dateFrom, dateTo, 1);
-            var totalPages = (int) apiResponse["total_pages"];
-
-            for (var page = 2; page <= totalPages ; page++)
-            {
-                apiResponse.Merge(RetrieveATimeSheetWithPagination(dateFrom, dateTo, page));
-            }
-            
+            var address = $"{TimeEntriesApiAddress}?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
+            var apiResponse = RetrieveWithPagination(address);     
             var timeSheets = apiResponse["time_entries"];
             
             return timeSheets.Select(timeSheet => new TimeSheet
@@ -104,14 +94,25 @@ namespace CryptoTechReminderSystem.Gateway
             return user["roles"].ToArray().Any(role => _billablePersonRoles.Contains(role.ToString()));
         }
         
-        private JObject RetrieveATimeSheetWithPagination(DateTimeOffset dateFrom, DateTimeOffset dateTo, int page)
+        private JObject RetrieveFromEndPoint(string address)
         {
-            var address = $"{TimeEntriesApiAddress}?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}&page={page}";
             var response = GetApiResponse(address);
-            
             response.Wait();
-            
+
             return response.Result;
+        }
+
+        private JObject RetrieveWithPagination(string address)
+        {
+            var apiResponse = RetrieveFromEndPoint($"{address}&page=1");
+            var totalPages = (int) apiResponse["total_pages"];
+
+            for (var page = 2; page <= totalPages ; page++)
+            {
+                apiResponse.Merge(RetrieveFromEndPoint($"{address}&page={page}"));
+            }
+
+            return apiResponse;
         }
         
         private static int SecondsToHours(int weeklyCapacity)
