@@ -59,7 +59,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
         [TestFixture]
         public class CanRequestBillablePeople
         {
-            private const string apiUsersPath = "/api/v2/users";
+            private const string ApiUsersPath = "/api/v2/users";
 
             [SetUp]
             public void Setup()
@@ -126,10 +126,10 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 var response = _harvestGateway.RetrieveBillablePeople();
 
-                response.Count.Should().Be(3);
+                response.Should().HaveCount(3);
             }
 
-            private void SetUpUsersEndpointWithSinglePage()
+            private static void SetUpUsersEndpointWithSinglePage()
             {
                 var json = File.ReadAllText(
                     Path.Combine(
@@ -138,13 +138,13 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     )
                 );
 
-                _harvestApi.Get(apiUsersPath)
+                _harvestApi.Get(ApiUsersPath)
                     .WithParameter("page", "1")
                     .WithParameter("per_page", "100")
                     .Responds(json);
                 _harvestApi.Start();
             }
-            private void SetUpUsersEndpointWithTwoPages()
+            private static void SetUpUsersEndpointWithTwoPages()
             {
                 var jsonPageOne = File.ReadAllText(
                     Path.Combine(
@@ -153,7 +153,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     )
                 );
 
-                _harvestApi.Get(apiUsersPath)
+                _harvestApi.Get(ApiUsersPath)
                     .WithParameter("page", "1")
                     .WithParameter("per_page", "100")
                     .Responds(jsonPageOne);
@@ -165,7 +165,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     )
                 );
 
-                _harvestApi.Get(apiUsersPath)
+                _harvestApi.Get(ApiUsersPath)
                     .WithParameter("page", "2")
                     .WithParameter("per_page", "100")
                     .Responds(jsonPageTwo);
