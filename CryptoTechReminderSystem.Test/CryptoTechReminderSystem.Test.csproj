@@ -33,6 +33,12 @@
       <None Update="Gateway\ApiEndpointResponse\HarvestUsersResponse.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Gateway\ApiEndpointResponse\HarvestUsersResponsePageOne.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Gateway\ApiEndpointResponse\HarvestUsersResponsePageTwo.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Gateway\ApiEndpointResponse\HarvestTimeEntriesApiEndpointPageOne.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
