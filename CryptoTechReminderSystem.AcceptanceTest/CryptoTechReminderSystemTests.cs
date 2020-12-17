@@ -228,6 +228,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
         }
         
+        [Test]
         public void CanRemindProjectManagers()
         {
             var clock = new ClockStub(
