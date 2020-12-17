@@ -360,6 +360,15 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.First().UserId.Should().Be(1782975);
                 response.First().Hours.Should().Be(7.0);
             }
+
+            [Test]
+            public void CanAssociateProjectManagersWithTimeSheets()
+            {
+                SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
+
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+                response.First().ProjectManagerId.Should().Be(262374833);
+            }
         }
     }
 }

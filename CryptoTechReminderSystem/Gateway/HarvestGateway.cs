@@ -13,6 +13,7 @@ namespace CryptoTechReminderSystem.Gateway
     {
         private const string UsersApiAddress = "/api/v2/users";
         private const string TimeEntriesApiAddress = "/api/v2/time_entries";
+        private const string ProjectsApiAddress = "/api/v2/projects";
         private readonly HttpClient _client;
         private readonly string[] _billablePersonRoles;
        
@@ -62,9 +63,24 @@ namespace CryptoTechReminderSystem.Gateway
                     Id = (int)timeSheet["id"],
                     TimeSheetDate = timeSheet["spent_date"].ToString(),
                     UserId = (int)timeSheet["user"]["id"],
-                    Hours = (float)timeSheet["hours"]
+                    Hours = (float)timeSheet["hours"],
+                    IsClosed = (bool)timeSheet["is_closed"],
+                    ProjectManagerId = (int)GetProjectManagerId((int)timeSheet["project"]["id"])
                 }
             ).ToList(); 
+        }
+        private int GetProjectManagerId(int projectId) {
+            var address = $"{ProjectsApiAddress}/{projectId}/user_assignments";
+            var apiResponse = RetrieveWithPagination(address);
+            var userAssignments = apiResponse["user_assignments"];
+
+            int projectManager = 0;
+            foreach (var user in userAssignments) {
+                if ((bool) user["is_project_manager"] == true) {
+                    projectManager = (int) user["id"];
+                }
+            }
+            return projectManager;
         }
         
         private static string ToHarvestApiString(DateTimeOffset date)
@@ -104,12 +120,20 @@ namespace CryptoTechReminderSystem.Gateway
 
         private JObject RetrieveWithPagination(string address)
         {
-            var apiResponse = RetrieveFromEndPoint($"{address}&page=1");
+            var queryDelimiter = address.Contains("?") ? "&" : "?";
+            var page = 1;
+            
+            var apiResponse = RetrieveFromEndPoint(address + queryDelimiter + "page=" + page);
+            
+            if (apiResponse["total_pages"] == null) {
+                Console.WriteLine(apiResponse);
+            }
+
             var totalPages = (int) apiResponse["total_pages"];
 
-            for (var page = 2; page <= totalPages ; page++)
+            for (page = 2; page <= totalPages; page++)
             {
-                apiResponse.Merge(RetrieveFromEndPoint($"{address}&page={page}"));
+                apiResponse.Merge(RetrieveFromEndPoint(address + queryDelimiter + "page=" + page));
             }
 
             return apiResponse;
