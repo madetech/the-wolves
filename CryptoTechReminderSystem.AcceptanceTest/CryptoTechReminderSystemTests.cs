@@ -74,7 +74,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            _harvestApi.Get(HarvestApiUsersPath).Responds(harvestGetUsersResponse);
+            _harvestApi.Get(HarvestApiUsersPath)
+                .WithParameter("page", "1")
+                .WithParameter("per_page", "100")
+                .Responds(harvestGetUsersResponse);
             
             var harvestGetTimeEntriesResponse = File.ReadAllText(
                 Path.Combine(

@@ -59,21 +59,13 @@ namespace CryptoTechReminderSystem.Test.Gateway
         [TestFixture]
         public class CanRequestBillablePeople
         {
+            private const string ApiUsersPath = "/api/v2/users";
+
             [SetUp]
             public void Setup()
             {
                 _harvestApi = new FluentSimulator(Address);
                 _harvestGateway = new HarvestGateway(Address, Token, HarvestAccountId, UserAgent, BillablePersonRoles);
-
-                var json = File.ReadAllText(
-                    Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        "Gateway/ApiEndpointResponse/HarvestUsersResponse.json"
-                    )
-                );
-
-                _harvestApi.Get("/api/v2/users").Responds(json);
-                _harvestApi.Start();
             }
 
             [TearDown]
@@ -85,6 +77,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanSendOneRequestAtATime()
             {
+                SetUpUsersEndpointWithSinglePage();
+
                 _harvestGateway.RetrieveBillablePeople();
 
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
@@ -96,6 +90,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase("User-Agent", UserAgent)]
             public void CanGetBillablePeopleWithHeaders(string header, string expected)
             {
+                SetUpUsersEndpointWithSinglePage();
+
                 _harvestGateway.RetrieveBillablePeople();
 
                 _harvestApi.ReceivedRequests.First().Headers[header].Should().Be(expected);
@@ -104,6 +100,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [Test]
             public void CanOnlyGetActiveBillablePeople()
             {
+                SetUpUsersEndpointWithSinglePage();
+
                 var response = _harvestGateway.RetrieveBillablePeople();
 
                 response.First().FirstName.Should().Be("Dick");
@@ -115,8 +113,64 @@ namespace CryptoTechReminderSystem.Test.Gateway
             [TestCase("Harvey", 28)]
             public void CanGetWeeklyHoursForBillablePeople(string name, int hours)
             {
+                SetUpUsersEndpointWithSinglePage();
+
                 var response = _harvestGateway.RetrieveBillablePeople();
                 response.First(billablePerson => billablePerson.FirstName == name).WeeklyHours.Should().Be(hours);
+            }
+
+            [Test]
+            public void CanGetBillablePeopleWithPagination()
+            {
+                SetUpUsersEndpointWithTwoPages();
+
+                var response = _harvestGateway.RetrieveBillablePeople();
+
+                response.Should().HaveCount(3);
+            }
+
+            private static void SetUpUsersEndpointWithSinglePage()
+            {
+                var json = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "Gateway/ApiEndpointResponse/HarvestUsersResponse.json"
+                    )
+                );
+
+                _harvestApi.Get(ApiUsersPath)
+                    .WithParameter("page", "1")
+                    .WithParameter("per_page", "100")
+                    .Responds(json);
+                _harvestApi.Start();
+            }
+            private static void SetUpUsersEndpointWithTwoPages()
+            {
+                var jsonPageOne = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "Gateway/ApiEndpointResponse/HarvestUsersResponsePageOne.json"
+                    )
+                );
+
+                _harvestApi.Get(ApiUsersPath)
+                    .WithParameter("page", "1")
+                    .WithParameter("per_page", "100")
+                    .Responds(jsonPageOne);
+
+                var jsonPageTwo = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "Gateway/ApiEndpointResponse/HarvestUsersResponsePageTwo.json"
+                    )
+                );
+
+                _harvestApi.Get(ApiUsersPath)
+                    .WithParameter("page", "2")
+                    .WithParameter("per_page", "100")
+                    .Responds(jsonPageTwo);
+                
+                _harvestApi.Start();
             }
         }
 
