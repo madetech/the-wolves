@@ -1,0 +1,44 @@
+{
+  "user_assignments": [
+    {
+      "id": 262374832,
+      "is_project_manager": true,
+      "is_active": true,
+      "project": {
+        "id": 26670540,
+        "name": "Project 2",
+        "code": "SAMPLE"
+      },
+      "user": {
+        "id": 1782884,
+        "name": "Barbara Gordon"
+      }
+    },
+    {
+      "id": 262374831,
+      "is_project_manager": false,
+      "is_active": true,
+      "project": {
+        "id": 26670540,
+        "name": "Project 2"
+      },
+      "user": {
+        "id": 1710101,
+        "name": "Alfred Pennyworth"
+      }
+    },
+    {
+      "id": 262374829,
+      "is_project_manager": false,
+      "is_active": true,
+      "project": {
+        "id": 26670540,
+        "name": "Project 2"
+      },
+      "user": {
+        "id": 1902070,
+        "name": "Harvey Dent"
+      }
+    }
+  ]
+}
