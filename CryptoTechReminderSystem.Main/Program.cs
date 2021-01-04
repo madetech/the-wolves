@@ -37,6 +37,7 @@ namespace CryptoTechReminderSystem.Main
     public class ReminderRegistry : Registry
     {
         private readonly GetLateBillablePeople _getLateBillablePeople;
+        private readonly GetProjectManagersWithOpenTimeEntries _getProjectManagersWithOpenTimeEntries;
         private readonly SendReminder _sendReminder;
 
         public ReminderRegistry()
@@ -55,6 +56,7 @@ namespace CryptoTechReminderSystem.Main
 
             var clock = new Clock();
             _getLateBillablePeople = new GetLateBillablePeople(slackGateway, harvestGateway, harvestGateway, clock);
+            _getProjectManagersWithOpenTimeEntries = new GetProjectManagersWithOpenTimeEntries(slackGateway, harvestGateway, harvestGateway, clock);
             _sendReminder = new SendReminder(slackGateway);
 
             CreateSchedule();
@@ -81,6 +83,7 @@ namespace CryptoTechReminderSystem.Main
         {
             JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0).AndEvery(30).Minutes());
             JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(12, 30));
+            JobManager.AddJob(RemindProjectManagersJob, s => s.ToRunOnceAt(13, 00));
         }
 
         private void RemindLateBillablePeopleJob()
@@ -90,6 +93,17 @@ namespace CryptoTechReminderSystem.Main
                 new RemindLateBillablePeopleRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
+                }
+            );
+        }
+
+        private void RemindProjectManagersJob()
+        {
+            var remindProjectManagers = new RemindProjectManagers(_getProjectManagersWithOpenTimeEntries, _sendReminder);
+            remindProjectManagers.Execute(
+                new RemindLateBillablePeopleRequest
+                {
+                    Message = Environment.GetEnvironmentVariable("SLACK_PM_REMINDER_MESSAGE")
                 }
             );
         }
