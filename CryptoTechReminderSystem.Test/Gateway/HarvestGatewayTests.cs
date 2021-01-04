@@ -367,7 +367,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
 
                 var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
-                response.First().ProjectManagerId.Should().Be(262374833);
+                response.First().ProjectManagerId.Should().Be(1782959);
             }
         }
     }

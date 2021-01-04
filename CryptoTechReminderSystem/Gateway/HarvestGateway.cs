@@ -75,9 +75,9 @@ namespace CryptoTechReminderSystem.Gateway
             var userAssignments = apiResponse["user_assignments"];
 
             int projectManager = 0;
-            foreach (var user in userAssignments) {
-                if ((bool) user["is_project_manager"] == true) {
-                    projectManager = (int) user["id"];
+            foreach (var user_assignment in userAssignments) {
+                if ((bool) user_assignment["is_project_manager"] == true) {
+                    projectManager = (int) user_assignment["user"]["id"];
                 }
             }
             return projectManager;
