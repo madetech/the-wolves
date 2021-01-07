@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
 using CryptoTechReminderSystem.Gateway;
-using CryptoTechReminderSystem.DomainObject;
+
 
 namespace CryptoTechReminderSystem.UseCase
 {
@@ -40,16 +40,19 @@ namespace CryptoTechReminderSystem.UseCase
             foreach (var timeSheet in timeSheets) {
                 if (!timeSheet.IsClosed)
                 {
-                    var projectManager = billablePeople.Where(person => person.Id == timeSheet.ProjectManagerId).First();
-                    var slackProjectManager = slackGetBillablePeopleResponse.SingleOrDefault(billablePerson => String.Equals(RemoveTopLevelDomain(billablePerson.Email), RemoveTopLevelDomain(projectManager.Email), StringComparison.OrdinalIgnoreCase));
+                    var projectManagers = billablePeople.Where(person => timeSheet.ProjectManagerIds.Contains(person.Id));
+
+                    foreach (var projectManager in projectManagers) {
+                        var slackProjectManager = slackGetBillablePeopleResponse.SingleOrDefault(billablePerson => String.Equals(RemoveTopLevelDomain(billablePerson.Email), RemoveTopLevelDomain(projectManager.Email), StringComparison.OrdinalIgnoreCase));
                     
-                    if (slackProjectManager != null)
-                    {
-                        getProjectManagersWithOpenTimeEntriesResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
+                        if (slackProjectManager != null)
                         {
-                            Id = slackProjectManager.Id,
-                            Email = slackProjectManager.Email
-                        });
+                            getProjectManagersWithOpenTimeEntriesResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
+                            {
+                                Id = slackProjectManager.Id,
+                                Email = slackProjectManager.Email
+                            });
+                        }
                     }
                 }
             }

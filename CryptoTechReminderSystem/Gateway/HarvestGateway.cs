@@ -65,22 +65,19 @@ namespace CryptoTechReminderSystem.Gateway
                     UserId = (int)timeSheet["user"]["id"],
                     Hours = (float)timeSheet["hours"],
                     IsClosed = (bool)timeSheet["is_closed"],
-                    ProjectManagerId = (int)GetProjectManagerId((int)timeSheet["project"]["id"])
+                    ProjectManagerIds = GetProjectManagerIds((int)timeSheet["project"]["id"])
                 }
             ).ToList(); 
         }
-        private int GetProjectManagerId(int projectId) {
+        private List<int> GetProjectManagerIds(int projectId) {
             var address = $"{ProjectsApiAddress}/{projectId}/user_assignments";
             var apiResponse = RetrieveWithPagination(address);
             var userAssignments = apiResponse["user_assignments"];
 
-            int projectManager = 0;
-            foreach (var user_assignment in userAssignments) {
-                if ((bool) user_assignment["is_project_manager"] == true) {
-                    projectManager = (int) user_assignment["user"]["id"];
-                }
-            }
-            return projectManager;
+            var projectManagerIds = userAssignments
+                .Where(userAssignment => (bool) userAssignment["is_project_manager"] == true)
+                .Select(userAssignment => (int) userAssignment["user"]["id"]).ToList();
+            return projectManagerIds;
         }
         
         private static string ToHarvestApiString(DateTimeOffset date)

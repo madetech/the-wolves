@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace CryptoTechReminderSystem.DomainObject
@@ -18,8 +19,8 @@ namespace CryptoTechReminderSystem.DomainObject
         [JsonProperty("is_closed")]
         public bool IsClosed { get; set; }
 
-        [JsonProperty("project_manager_id")]
-        public int ProjectManagerId { get; set; }
+        [JsonProperty("project_manager_ids")]
+        public List<int> ProjectManagerIds { get; set; }
 
     }
 }
