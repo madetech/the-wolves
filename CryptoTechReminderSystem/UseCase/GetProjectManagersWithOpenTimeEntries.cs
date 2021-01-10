@@ -28,10 +28,12 @@ namespace CryptoTechReminderSystem.UseCase
             
             var timeSheets = _harvestTimeSheetRetriever.RetrieveTimeSheets(dateFrom, dateTo);
             var billablePeople = _harvestBillablePersonRetriever.RetrieveBillablePeople();
-            
-            var harvestGetBillablePeopleResponse = _harvestBillablePersonRetriever.RetrieveBillablePeople();
             var slackGetBillablePeopleResponse = _slackBillablePersonRetriever.RetrieveBillablePeople();
 
+            return GenerateResponse(timeSheets, billablePeople, slackGetBillablePeopleResponse);
+        }
+
+        private GetLateBillablePeopleResponse GenerateResponse(IList<DomainObject.TimeSheet> timeSheets, IList<DomainObject.HarvestBillablePerson> billablePeople, IList<DomainObject.SlackBillablePerson> slackGetBillablePeopleResponse) {
             var getProjectManagersWithOpenTimeEntriesResponse = new GetLateBillablePeopleResponse
             {
                 BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>()
