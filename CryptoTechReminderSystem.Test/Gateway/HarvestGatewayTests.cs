@@ -129,6 +129,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.Should().HaveCount(3);
             }
 
+            [Test]
+            public void CanCacheBillablePeople()
+            {
+                SetUpUsersEndpointWithSinglePage();
+
+                _harvestGateway.RetrieveBillablePeople();
+                _harvestGateway.RetrieveBillablePeople();
+
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+            }
+
             private static void SetUpUsersEndpointWithSinglePage()
             {
                 var json = File.ReadAllText(
@@ -349,6 +360,10 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
+
+            
+
+            
         }
     }
 }

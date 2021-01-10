@@ -43,7 +43,16 @@ namespace CryptoTechReminderSystem.Gateway
         
         public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
-            var apiResponse = RetrieveWithPagination($"{UsersApiAddress}?per_page=100");
+            var endPoint = $"{UsersApiAddress}?per_page=100";
+            var cachePeriodDays = 1;
+            
+            var apiResponse = _cache.GetOrCreate(endPoint, cacheEntry => 
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cachePeriodDays);
+                cacheEntry.SetSize(1);
+
+                return RetrieveWithPagination($"{UsersApiAddress}?per_page=100");
+            });
 
             var users = apiResponse["users"];
             var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsBillablePerson(user));
