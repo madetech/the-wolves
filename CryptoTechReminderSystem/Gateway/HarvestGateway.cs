@@ -117,10 +117,7 @@ namespace CryptoTechReminderSystem.Gateway
 
         private JObject RetrieveWithPagination(string address)
         {
-            var queryDelimiter = address.Contains("?") ? "&" : "?";
-            var page = 1;
-            
-            var apiResponse = RetrieveFromEndPoint(address + queryDelimiter + "page=" + page);
+            var apiResponse = RetrieveFromEndPoint(AppendURLWithPageNumber(address, 1));
             
             if (apiResponse["total_pages"] == null) {
                 Console.WriteLine(apiResponse);
@@ -128,12 +125,21 @@ namespace CryptoTechReminderSystem.Gateway
 
             var totalPages = (int) apiResponse["total_pages"];
 
-            for (page = 2; page <= totalPages; page++)
+            for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++)
             {
-                apiResponse.Merge(RetrieveFromEndPoint(address + queryDelimiter + "page=" + page));
+                apiResponse.Merge(RetrieveFromEndPoint(AppendURLWithPageNumber(address, pageNumber)));
             }
 
             return apiResponse;
+        }
+
+        private string AppendURLWithPageNumber(string address, int pageNumber)
+        {
+            return address + (HasOtherParamaters(address) ? "&" : "?") + "page=" + pageNumber;
+        }
+        private bool HasOtherParamaters(string address)
+        {
+            return address.Contains("?");
         }
         
         private static int SecondsToHours(int weeklyCapacity)
