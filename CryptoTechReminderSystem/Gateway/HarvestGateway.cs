@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CryptoTechReminderSystem.Gateway
 {
@@ -15,6 +16,7 @@ namespace CryptoTechReminderSystem.Gateway
         private const string TimeEntriesApiAddress = "/api/v2/time_entries";
         private readonly HttpClient _client;
         private readonly string[] _billablePersonRoles;
+        private IMemoryCache _cache;
        
         public HarvestGateway(string address, string token, string accountId, string userAgent, string roles)
         {
@@ -32,11 +34,17 @@ namespace CryptoTechReminderSystem.Gateway
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _client.DefaultRequestHeaders.Add("Harvest-Account-Id",accountId);
             _client.DefaultRequestHeaders.Add("User-Agent",userAgent);
+
+            _cache = new MemoryCache(new MemoryCacheOptions
+            {
+                SizeLimit = 1024
+            });
         }
         
         public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
             var apiResponse = RetrieveWithPagination($"{UsersApiAddress}?per_page=100");
+
             var users = apiResponse["users"];
             var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsBillablePerson(user));
             
@@ -54,7 +62,16 @@ namespace CryptoTechReminderSystem.Gateway
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
             var address = $"{TimeEntriesApiAddress}?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
-            var apiResponse = RetrieveWithPagination(address);     
+            
+            var cachePeriodMinutes = 1;
+            
+            var apiResponse = _cache.GetOrCreate(address, cacheEntry => 
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cachePeriodMinutes);
+                cacheEntry.SetSize(1);
+                return RetrieveWithPagination(address);
+            });
+
             var timeSheets = apiResponse["time_entries"];
             
             return timeSheets.Select(timeSheet => new TimeSheet

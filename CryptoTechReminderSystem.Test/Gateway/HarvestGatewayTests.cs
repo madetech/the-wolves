@@ -338,6 +338,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.First().UserId.Should().Be(1782975);
                 response.First().Hours.Should().Be(7.0);
             }
+
+            [Test]
+            public void CanCacheTimeSheetResponses()
+            {
+                SetUpTimeSheetApiEndpointWithOnePage("2019-04-08", "2019-04-12");
+
+                var response1 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+                var response2 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+
+                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+            }
         }
     }
 }
