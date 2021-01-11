@@ -88,6 +88,42 @@ namespace CryptoTechReminderSystem.Gateway
                 return RetrieveWithPagination(apiAddress);
             });
         }
+
+        private JObject RetrieveWithPagination(string address)
+        {
+            var apiResponse = RetrieveFromEndPoint($"{address}&page=1");
+            var totalPages = (int) apiResponse["total_pages"];
+
+            for (var page = 2; page <= totalPages ; page++)
+            {
+                apiResponse.Merge(RetrieveFromEndPoint($"{address}&page={page}"));
+            }
+
+            return apiResponse;
+        }
+
+        private JObject RetrieveFromEndPoint(string address)
+        {
+            var response = GetApiResponse(address);
+            response.Wait();
+
+            return response.Result;
+        }
+
+        private async Task<JObject> GetApiResponse(string address)
+        {   
+            int THROTTLE_TIME_IN_MS = 150;
+            int MAX_ATTEMPTS = 5;
+            
+            var harvestRetryPolicy = Policy
+                .HandleResult<HttpResponseMessage>(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .WaitAndRetryAsync(
+                    MAX_ATTEMPTS, attempt => TimeSpan.FromMilliseconds(THROTTLE_TIME_IN_MS * Math.Pow(2, attempt)));
+            
+            var response = await harvestRetryPolicy.ExecuteAsync(() => (_client.GetAsync(address)));
+                
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
+        }
         
         private static string ToHarvestApiString(DateTimeOffset date)
         {
@@ -103,46 +139,10 @@ namespace CryptoTechReminderSystem.Gateway
 
             return roles.Split(',').Select(role => role.Trim()).ToArray();
         }
-        
-        private async Task<JObject> GetApiResponse(string address)
-        {   
-            int THROTTLE_TIME_IN_MS = 150;
-            int MAX_ATTEMPTS = 5;
-            
-            var harvestRetryPolicy = Policy
-                .HandleResult<HttpResponseMessage>(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                .WaitAndRetryAsync(
-                    MAX_ATTEMPTS, attempt => TimeSpan.FromMilliseconds(THROTTLE_TIME_IN_MS * Math.Pow(2, attempt)));
-            
-            var response = await harvestRetryPolicy.ExecuteAsync(() => (_client.GetAsync(address)));
-                
-            return JObject.Parse(await response.Content.ReadAsStringAsync());
-        }
 
         private bool IsBillablePerson(JToken user)
         {
             return user["roles"].ToArray().Any(role => _billablePersonRoles.Contains(role.ToString()));
-        }
-        
-        private JObject RetrieveFromEndPoint(string address)
-        {
-            var response = GetApiResponse(address);
-            response.Wait();
-
-            return response.Result;
-        }
-
-        private JObject RetrieveWithPagination(string address)
-        {
-            var apiResponse = RetrieveFromEndPoint($"{address}&page=1");
-            var totalPages = (int) apiResponse["total_pages"];
-
-            for (var page = 2; page <= totalPages ; page++)
-            {
-                apiResponse.Merge(RetrieveFromEndPoint($"{address}&page={page}"));
-            }
-
-            return apiResponse;
         }
         
         private static int SecondsToHours(int weeklyCapacity)
