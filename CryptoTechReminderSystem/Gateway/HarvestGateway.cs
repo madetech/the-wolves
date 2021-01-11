@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Caching.Memory;
+using Polly;
 
 namespace CryptoTechReminderSystem.Gateway
 {
@@ -109,9 +110,17 @@ namespace CryptoTechReminderSystem.Gateway
         }
         
         private async Task<JObject> GetApiResponse(string address)
-        {
-            var response = await _client.GetAsync(address);
+        {   
+            int THROTTLE_TIME_IN_MS = 150;
+            int MAX_ATTEMPTS = 5;
             
+            var harvestRetryPolicy = Policy
+                .HandleResult<HttpResponseMessage>(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .WaitAndRetryAsync(
+                    MAX_ATTEMPTS, attempt => TimeSpan.FromMilliseconds(THROTTLE_TIME_IN_MS * Math.Pow(2, attempt)));
+            
+            var response = await harvestRetryPolicy.ExecuteAsync(() => (_client.GetAsync(address)));
+                
             return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
 

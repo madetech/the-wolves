@@ -360,10 +360,6 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 _harvestApi.ReceivedRequests.Count.Should().Be(1);
             }
-
-            
-
-            
         }
     }
 }
