@@ -42,18 +42,11 @@ namespace CryptoTechReminderSystem.Gateway
             });
         }
         
-        public IList<HarvestBillablePerson> RetrieveBillablePeople()
+                public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
-            var endPoint = $"{UsersApiAddress}?per_page=100";
-            var cachePeriodDays = 1;
+            var address = $"{UsersApiAddress}?per_page=100";
             
-            var apiResponse = _cache.GetOrCreate(endPoint, cacheEntry => 
-            {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(cachePeriodDays);
-                cacheEntry.SetSize(1);
-
-                return RetrieveWithPagination($"{UsersApiAddress}?per_page=100");
-            });
+            var apiResponse = GetFromCacheOrAPI(address, cachePeriodInMinutes: 180, cacheEntrySize: 1);
 
             var users = apiResponse["users"];
             var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsBillablePerson(user));
@@ -73,14 +66,7 @@ namespace CryptoTechReminderSystem.Gateway
         {
             var address = $"{TimeEntriesApiAddress}?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
             
-            var cachePeriodMinutes = 1;
-            
-            var apiResponse = _cache.GetOrCreate(address, cacheEntry => 
-            {
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cachePeriodMinutes);
-                cacheEntry.SetSize(1);
-                return RetrieveWithPagination(address);
-            });
+            var apiResponse = GetFromCacheOrAPI(address, cachePeriodInMinutes: 1, cacheEntrySize: 1);
 
             var timeSheets = apiResponse["time_entries"];
             
@@ -91,7 +77,16 @@ namespace CryptoTechReminderSystem.Gateway
                     UserId = (int)timeSheet["user"]["id"],
                     Hours = (float)timeSheet["hours"]
                 }
-            ).ToList(); 
+            ).ToList();
+        }
+
+        private JObject GetFromCacheOrAPI(string apiAddress, int cachePeriodInMinutes, int cacheEntrySize) {
+            return _cache.GetOrCreate(apiAddress, cacheEntry => 
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cachePeriodInMinutes);
+                cacheEntry.SetSize(cacheEntrySize);
+                return RetrieveWithPagination(apiAddress);
+            });
         }
         
         private static string ToHarvestApiString(DateTimeOffset date)
