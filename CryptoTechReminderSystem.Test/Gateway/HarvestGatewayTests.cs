@@ -137,7 +137,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 _harvestGateway.RetrieveBillablePeople();
                 _harvestGateway.RetrieveBillablePeople();
 
-                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+                _harvestApi.ReceivedRequests.Should().HaveCount(1);
             }
 
             private static void SetUpUsersEndpointWithSinglePage()
@@ -358,7 +358,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 var response1 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                 var response2 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
-                _harvestApi.ReceivedRequests.Count.Should().Be(1);
+                _harvestApi.ReceivedRequests.Should().HaveCount(1);
             }
         }
     }
