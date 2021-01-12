@@ -42,7 +42,7 @@ namespace CryptoTechReminderSystem.Gateway
             });
         }
         
-                public IList<HarvestBillablePerson> RetrieveBillablePeople()
+        public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
             var address = $"{UsersApiAddress}?per_page=100";
             
@@ -112,13 +112,12 @@ namespace CryptoTechReminderSystem.Gateway
 
         private async Task<JObject> GetApiResponse(string address)
         {   
-            int THROTTLE_TIME_IN_MS = 150;
-            int MAX_ATTEMPTS = 5;
-            
             var harvestRetryPolicy = Policy
                 .HandleResult<HttpResponseMessage>(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                .WaitAndRetryAsync(
-                    MAX_ATTEMPTS, attempt => TimeSpan.FromMilliseconds(THROTTLE_TIME_IN_MS * Math.Pow(2, attempt)));
+                .WaitAndRetryAsync(new[]
+                {
+                    TimeSpan.FromSeconds(15),
+                });
             
             var response = await harvestRetryPolicy.ExecuteAsync(() => (_client.GetAsync(address)));
                 
