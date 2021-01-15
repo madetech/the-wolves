@@ -129,6 +129,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.Should().HaveCount(3);
             }
 
+            [Test]
+            public void CanCacheBillablePeople()
+            {
+                SetUpUsersEndpointWithSinglePage();
+
+                _harvestGateway.RetrieveBillablePeople();
+                _harvestGateway.RetrieveBillablePeople();
+
+                _harvestApi.ReceivedRequests.Should().HaveCount(1);
+            }
+
             private static void SetUpUsersEndpointWithSinglePage()
             {
                 var json = File.ReadAllText(
@@ -337,6 +348,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.First().Id.Should().Be(456709345);
                 response.First().UserId.Should().Be(1782975);
                 response.First().Hours.Should().Be(7.0);
+            }
+
+            [Test]
+            public void CanCacheTimeSheetResponses()
+            {
+                SetUpTimeSheetApiEndpointWithOnePage("2019-04-08", "2019-04-12");
+
+                var response1 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+                var response2 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+
+                _harvestApi.ReceivedRequests.Should().HaveCount(1);
             }
         }
     }
