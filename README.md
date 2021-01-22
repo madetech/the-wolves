@@ -46,8 +46,6 @@ This application solves this problem by automatically reminding billable people 
 
 The Wolves is a C# application that follows the principles of [Clean Architecture (CA)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html). It is deployed to [Heroku](https://www.heroku.com/) and utilises [Docker](https://www.docker.com/).
 
-**! Architecture diagram awaiting update !**
-
 <p align="center">
   <img src="images/technical-architecture.png" alt="Logo" width="500">
 </p>
