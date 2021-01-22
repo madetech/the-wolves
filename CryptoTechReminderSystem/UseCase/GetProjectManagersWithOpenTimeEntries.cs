@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CryptoTechReminderSystem.Boundary;
+using CryptoTechReminderSystem.DomainObject;
 using CryptoTechReminderSystem.Gateway;
 
 
@@ -30,10 +31,10 @@ namespace CryptoTechReminderSystem.UseCase
             var billablePeople = _harvestBillablePersonRetriever.RetrieveBillablePeople();
             var slackGetBillablePeopleResponse = _slackBillablePersonRetriever.RetrieveBillablePeople();
 
-            return GenerateResponse(timeSheets, billablePeople, slackGetBillablePeopleResponse);
+            return ProjectManagersWithOpenTimeEntries(timeSheets, billablePeople, slackGetBillablePeopleResponse);
         }
 
-        private GetLateBillablePeopleResponse GenerateResponse(IList<DomainObject.TimeSheet> timeSheets, IList<DomainObject.HarvestBillablePerson> billablePeople, IList<DomainObject.SlackBillablePerson> slackGetBillablePeopleResponse) {
+        private GetLateBillablePeopleResponse ProjectManagersWithOpenTimeEntries(IList<DomainObject.TimeSheet> timeSheets, IList<DomainObject.HarvestBillablePerson> billablePeople, IList<DomainObject.SlackBillablePerson> slackGetBillablePeopleResponse) {
             var getProjectManagersWithOpenTimeEntriesResponse = new GetLateBillablePeopleResponse
             {
                 BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>()
@@ -42,11 +43,11 @@ namespace CryptoTechReminderSystem.UseCase
             foreach (var timeSheet in timeSheets) {
                 if (!timeSheet.IsClosed)
                 {
-                    var projectManagers = billablePeople.Where(person => timeSheet.ProjectManagerIds.Contains(person.Id));
-
-                    foreach (var projectManager in projectManagers) {
-                        var slackProjectManager = slackGetBillablePeopleResponse.SingleOrDefault(billablePerson => String.Equals(RemoveTopLevelDomain(billablePerson.Email), RemoveTopLevelDomain(projectManager.Email), StringComparison.OrdinalIgnoreCase));
-                    
+                    foreach (var harvestProjectManager in HarvestProjectManagers(billablePeople, timeSheet))
+                    {
+                        var slackProjectManager =
+                            SlackProjectManager(slackGetBillablePeopleResponse, harvestProjectManager);
+                        
                         if (slackProjectManager != null)
                         {
                             getProjectManagersWithOpenTimeEntriesResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
@@ -60,6 +61,16 @@ namespace CryptoTechReminderSystem.UseCase
             }
 
             return getProjectManagersWithOpenTimeEntriesResponse;
+        }
+
+        private IEnumerable<HarvestBillablePerson> HarvestProjectManagers(IEnumerable<HarvestBillablePerson> billablePeople, TimeSheet timeSheet)
+        {
+            return billablePeople.Where(person => timeSheet.ProjectManagerIds.Contains(person.Id));
+        }
+
+        private SlackBillablePerson SlackProjectManager(IList<SlackBillablePerson> slackBillablePeople, HarvestBillablePerson harvestProjectManager)
+        {
+            return slackBillablePeople.SingleOrDefault(billablePerson => String.Equals(RemoveTopLevelDomain(billablePerson.Email), RemoveTopLevelDomain(harvestProjectManager.Email), StringComparison.OrdinalIgnoreCase));
         }
 
         private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
