@@ -52,9 +52,7 @@ The Wolves is a C# application that follows the principles of [Clean Architectur
   <img src="images/technical-architecture.png" alt="Logo" width="500">
 </p>
 
-**! Architecture diagram awaiting update !**
-
-Following CA, we have two sea-level use cases:
+Following CA, we have three sea-level use cases:
 
 - [RemindLateBillablePeople](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
 - [ListLateBillablePeople](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
