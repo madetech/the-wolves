@@ -135,9 +135,9 @@ namespace CryptoTechReminderSystem.Gateway
 
         private string AppendURLWithPageNumber(string address, int pageNumber)
         {
-            return address + (HasOtherParamaters(address) ? "&" : "?") + "page=" + pageNumber;
+            return address + (HasOtherParameters(address) ? "&" : "?") + "page=" + pageNumber;
         }
-        private bool HasOtherParamaters(string address)
+        private bool HasOtherParameters(string address)
         {
             return address.Contains("?");
         }
