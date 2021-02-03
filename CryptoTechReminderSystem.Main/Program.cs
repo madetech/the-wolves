@@ -81,6 +81,7 @@ namespace CryptoTechReminderSystem.Main
 
         private void ScheduleJobs()
         {
+            // TODO: Comments to explain reasoning behind times chosen, e.g. what are the Ops Team's deadlines for approval?
             JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0).AndEvery(30).Minutes());
             JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(12, 30));
             JobManager.AddJob(RemindProjectManagersJob, s => s.ToRunOnceAt(13, 00));
