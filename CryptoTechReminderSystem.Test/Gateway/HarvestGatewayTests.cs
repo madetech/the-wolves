@@ -129,6 +129,17 @@ namespace CryptoTechReminderSystem.Test.Gateway
                 response.Should().HaveCount(3);
             }
 
+            [Test]
+            public void CanCacheBillablePeople()
+            {
+                SetUpUsersEndpointWithSinglePage();
+
+                _harvestGateway.RetrieveBillablePeople();
+                _harvestGateway.RetrieveBillablePeople();
+
+                _harvestApi.ReceivedRequests.Should().HaveCount(1);
+            }
+
             private static void SetUpUsersEndpointWithSinglePage()
             {
                 var json = File.ReadAllText(
@@ -278,7 +289,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
-                _harvestApi.ReceivedRequests.Count.Should().Be(8);
+                _harvestApi.ReceivedRequests.Count.Should().Be(3);
             }
 
             [Test]
@@ -368,6 +379,18 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                 response.First().ProjectManagerIds.First().Should().Be(1782959);
+            }
+
+            [Test]
+            public void CanCacheTimeSheetResponses()
+            {
+                SetUpTimeSheetApiEndpointWithOnePage("2019-04-08", "2019-04-12");
+
+                var response1 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+                var response2 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+                
+                // 2 x requests to (1 x page of time sheets with 1 x project of user_assignments) == 4 without caching
+                _harvestApi.ReceivedRequests.Should().HaveCount(2);
             }
         }
     }

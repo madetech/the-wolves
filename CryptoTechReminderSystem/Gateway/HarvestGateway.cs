@@ -6,6 +6,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CryptoTechReminderSystem.DomainObject;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using Polly;
 
 namespace CryptoTechReminderSystem.Gateway
 {
@@ -16,6 +18,7 @@ namespace CryptoTechReminderSystem.Gateway
         private const string ProjectsApiAddress = "/api/v2/projects";
         private readonly HttpClient _client;
         private readonly string[] _billablePersonRoles;
+        private IMemoryCache _cache;
        
         public HarvestGateway(string address, string token, string accountId, string userAgent, string roles)
         {
@@ -33,11 +36,19 @@ namespace CryptoTechReminderSystem.Gateway
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             _client.DefaultRequestHeaders.Add("Harvest-Account-Id",accountId);
             _client.DefaultRequestHeaders.Add("User-Agent",userAgent);
+
+            _cache = new MemoryCache(new MemoryCacheOptions
+            {
+                SizeLimit = 1024
+            });
         }
         
         public IList<HarvestBillablePerson> RetrieveBillablePeople()
         {
-            var apiResponse = RetrieveWithPagination($"{UsersApiAddress}?per_page=100");
+            var address = $"{UsersApiAddress}?per_page=100";
+            
+            var apiResponse = GetFromCacheOrAPI(address, cachePeriodInMinutes: 180, cacheEntrySize: 1);
+
             var users = apiResponse["users"];
             var activeBillablePeople = users.Where(user => (bool)user["is_active"] && IsBillablePerson(user));
             
@@ -55,7 +66,9 @@ namespace CryptoTechReminderSystem.Gateway
         public IList<TimeSheet> RetrieveTimeSheets(DateTimeOffset dateFrom, DateTimeOffset dateTo)
         {
             var address = $"{TimeEntriesApiAddress}?from={ToHarvestApiString(dateFrom)}&to={ToHarvestApiString(dateTo)}";
-            var apiResponse = RetrieveWithPagination(address);     
+            
+            var apiResponse = GetFromCacheOrAPI(address, cachePeriodInMinutes: 1, cacheEntrySize: 1);
+
             var timeSheets = apiResponse["time_entries"];
             
             return timeSheets.Select(timeSheet => new TimeSheet
@@ -67,17 +80,40 @@ namespace CryptoTechReminderSystem.Gateway
                     IsClosed = (bool)timeSheet["is_closed"],
                     ProjectManagerIds = GetProjectManagerIds((int)timeSheet["project"]["id"])
                 }
-            ).ToList(); 
+            ).ToList();
         }
         private List<int> GetProjectManagerIds(int projectId) {
             var address = $"{ProjectsApiAddress}/{projectId}/user_assignments";
-            var apiResponse = RetrieveWithPagination(address);
+            var apiResponse = GetFromCacheOrAPI(address, 180, 1);
             var userAssignments = apiResponse["user_assignments"];
 
             var projectManagerIds = userAssignments
                 .Where(userAssignment => (bool) userAssignment["is_project_manager"] == true)
                 .Select(userAssignment => (int) userAssignment["user"]["id"]).ToList();
             return projectManagerIds;
+        }
+
+        private JObject GetFromCacheOrAPI(string apiAddress, int cachePeriodInMinutes, int cacheEntrySize) {
+            return _cache.GetOrCreate(apiAddress, cacheEntry => 
+            {
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cachePeriodInMinutes);
+                cacheEntry.SetSize(cacheEntrySize);
+                return RetrieveWithPagination(apiAddress);
+            });
+        }
+
+        private async Task<JObject> GetApiResponse(string address)
+        {   
+            var harvestRetryPolicy = Policy
+                .HandleResult<HttpResponseMessage>(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                .WaitAndRetryAsync(new[]
+                {
+                    TimeSpan.FromSeconds(15),
+                });
+            
+            var response = await harvestRetryPolicy.ExecuteAsync(() => (_client.GetAsync(address)));
+                
+            return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
         
         private static string ToHarvestApiString(DateTimeOffset date)
@@ -93,13 +129,6 @@ namespace CryptoTechReminderSystem.Gateway
             }
 
             return roles.Split(',').Select(role => role.Trim()).ToArray();
-        }
-        
-        private async Task<JObject> GetApiResponse(string address)
-        {
-            var response = await _client.GetAsync(address);
-            
-            return JObject.Parse(await response.Content.ReadAsStringAsync());
         }
 
         private bool IsBillablePerson(JToken user)
