@@ -118,10 +118,6 @@ namespace CryptoTechReminderSystem.Gateway
         private JObject RetrieveWithPagination(string address)
         {
             var apiResponse = RetrieveFromEndPoint(AppendURLWithPageNumber(address, 1));
-            
-            if (apiResponse["total_pages"] == null) {
-                Console.WriteLine(apiResponse);
-            }
 
             var totalPages = (int) apiResponse["total_pages"];
 
