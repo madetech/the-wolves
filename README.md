@@ -50,15 +50,17 @@ The Wolves is a C# application that follows the principles of [Clean Architectur
   <img src="images/technical-architecture.png" alt="Logo" width="500">
 </p>
 
-Following CA, we have two sea-level use cases:
+Following CA, we have three sea-level use cases:
 
 - [RemindLateBillablePeople](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
 - [ListLateBillablePeople](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
+- [RemindProjectManagers](CryptoTechReminderSystem/UseCase/RemindProjectManagers.cs)
 
 Each of which have use case dependencies on:
 
 - [GetLateBillablePeople](CryptoTechReminderSystem/UseCase/GetLateBillablePeople.cs) which calls the [Harvest API](https://help.getharvest.com/api-v2/) to figure out who is yet to submit their timesheet
-- [SendReminder](CryptoTechReminderSystem/UseCase/SendReminder.cs) which calls the [Slack API](https://api.slack.com/) to send out reminders
+- [GetProjectManagersWithOpenTimeEntries](CryptoTechReminderSystem/UseCase/GetProjectManagersWithOpenTimeEntries.cs) which calls the Harvest API to figure out who is yet to approve others' timesheets.
+- [SendReminder](CryptoTechReminderSystem/UseCase/SendReminder.cs) which calls the [Slack API](https://api.slack.com/) to send out reminders.
 
 We then have `CryptoTechReminderSystem.Main/Program.cs`, which schedules when the
 above use cases should be called. The Wolves have two jobs:
@@ -69,6 +71,7 @@ above use cases should be called. The Wolves have two jobs:
 - `ListLateBillablePeopleJob` which sends a Slack message to a public channel that
   lists all the billable people still yet to submit their timesheets at 13:30 on a Friday
   afternoon
+- `RemindProjectManagersJob` which sends a Slack direct message to project managers who are yet to approve time entries for their projects.
 
 ## Getting Started
 
@@ -108,6 +111,7 @@ HARVEST_USER_AGENT=
 SLACK_CHANNEL_ID=
 HARVEST_BILLABLE_ROLES=
 SLACK_REMINDER_MESSAGE=
+SLACK_PM_REMINDER_MESSAGE=
 SLACK_LATE_BILLABLE_PEOPLE_MESSAGE=
 SLACK_NO_LATE_BILLABLE_PEOPLE_MESSAGE=
 ```
@@ -154,10 +158,13 @@ heroku git:remote -a cryptotech-reminders
 ```
 
 > You can then confirm that a remote for `Heroku` has been added by running:
+>
 > ```sh
 > git remote -v
 > ```
+>
 > The output should then be the following:
+>
 > ```sh
 > heroku  https://git.heroku.com/cryptotech-reminders.git (fetch)
 > heroku  https://git.heroku.com/cryptotech-reminders.git (push)
@@ -172,3 +179,7 @@ git push heroku master
 ```
 
 For more information about deploying to Heroku, see Heroku's guide - [Deploying with Git](https://devcenter.heroku.com/articles/git).
+
+---
+
+[0] "Project managers" is used to refer to the people identified as having management responsibility for a project in Harvest. At Made Tech, this is generally the Delivery Manager.

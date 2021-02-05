@@ -15,6 +15,7 @@ namespace CryptoTechReminderSystem.Gateway
     {
         private const string UsersApiAddress = "/api/v2/users";
         private const string TimeEntriesApiAddress = "/api/v2/time_entries";
+        private const string ProjectsApiAddress = "/api/v2/projects";
         private readonly HttpClient _client;
         private readonly string[] _billablePersonRoles;
         private IMemoryCache _cache;
@@ -75,9 +76,21 @@ namespace CryptoTechReminderSystem.Gateway
                     Id = (int)timeSheet["id"],
                     TimeSheetDate = timeSheet["spent_date"].ToString(),
                     UserId = (int)timeSheet["user"]["id"],
-                    Hours = (float)timeSheet["hours"]
+                    Hours = (float)timeSheet["hours"],
+                    IsClosed = (bool)timeSheet["is_closed"],
+                    ProjectManagerIds = GetProjectManagerIds((int)timeSheet["project"]["id"])
                 }
             ).ToList();
+        }
+        private List<int> GetProjectManagerIds(int projectId) {
+            var address = $"{ProjectsApiAddress}/{projectId}/user_assignments";
+            var apiResponse = GetFromCacheOrAPI(address, 180, 1);
+            var userAssignments = apiResponse["user_assignments"];
+
+            var projectManagerIds = userAssignments
+                .Where(userAssignment => (bool) userAssignment["is_project_manager"] == true)
+                .Select(userAssignment => (int) userAssignment["user"]["id"]).ToList();
+            return projectManagerIds;
         }
 
         private JObject GetFromCacheOrAPI(string apiAddress, int cachePeriodInMinutes, int cacheEntrySize) {
@@ -87,27 +100,6 @@ namespace CryptoTechReminderSystem.Gateway
                 cacheEntry.SetSize(cacheEntrySize);
                 return RetrieveWithPagination(apiAddress);
             });
-        }
-
-        private JObject RetrieveWithPagination(string address)
-        {
-            var apiResponse = RetrieveFromEndPoint($"{address}&page=1");
-            var totalPages = (int) apiResponse["total_pages"];
-
-            for (var page = 2; page <= totalPages ; page++)
-            {
-                apiResponse.Merge(RetrieveFromEndPoint($"{address}&page={page}"));
-            }
-
-            return apiResponse;
-        }
-
-        private JObject RetrieveFromEndPoint(string address)
-        {
-            var response = GetApiResponse(address);
-            response.Wait();
-
-            return response.Result;
         }
 
         private async Task<JObject> GetApiResponse(string address)
@@ -142,6 +134,38 @@ namespace CryptoTechReminderSystem.Gateway
         private bool IsBillablePerson(JToken user)
         {
             return user["roles"].ToArray().Any(role => _billablePersonRoles.Contains(role.ToString()));
+        }
+        
+        private JObject RetrieveFromEndPoint(string address)
+        {
+            var response = GetApiResponse(address);
+            response.Wait();
+
+            return response.Result;
+        }
+
+        private JObject RetrieveWithPagination(string address)
+        {
+            var apiResponse = RetrieveFromEndPoint(AppendURLWithPageNumber(address, 1));
+            var totalPages = (int) apiResponse["total_pages"];
+
+            if (totalPages == 1) return apiResponse;
+            
+            for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++)
+            {
+                apiResponse.Merge(RetrieveFromEndPoint(AppendURLWithPageNumber(address, pageNumber)));
+            }
+
+            return apiResponse;
+        }
+
+        private string AppendURLWithPageNumber(string address, int pageNumber)
+        {
+            return address + (HasOtherParameters(address) ? "&" : "?") + "page=" + pageNumber;
+        }
+        private bool HasOtherParameters(string address)
+        {
+            return address.Contains("?");
         }
         
         private static int SecondsToHours(int weeklyCapacity)

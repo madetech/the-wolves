@@ -189,6 +189,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
         public class CanRequestTimeSheets
         {
             private const string ApiTimeSheetPath = "api/v2/time_entries";
+            private const string ApiProjectPath = "api/v2/projects";
+
             private DateTimeOffset _defaultDateFrom;
             private DateTimeOffset _defaultDateTo;
 
@@ -219,6 +221,8 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     .WithParameter("to", dateTo)
                     .WithParameter("page", "1")
                     .Responds(json);
+
+                SetUpUserAssignmentsApiEndpointWithOnePage();
 
                 _harvestApi.Start();
             }
@@ -251,7 +255,25 @@ namespace CryptoTechReminderSystem.Test.Gateway
                     .WithParameter("page", "2")
                     .Responds(jsonPageTwo);
 
+                SetUpUserAssignmentsApiEndpointWithOnePage();
+                
                 _harvestApi.Start();
+            }
+
+            private void SetUpUserAssignmentsApiEndpointWithOnePage()
+            {
+                const int TestProjectId = 26670539;
+    
+                var jsonPageOne = File.ReadAllText(
+                    Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "Gateway/ApiEndpointResponse/HarvestProject1UserAssignmentsResponse.json"
+                    )
+                );
+
+                _harvestApi.Get($"/{ApiProjectPath}/{TestProjectId}/user_assignments")
+                    .WithParameter("page", "1")
+                    .Responds(jsonPageOne);
             }
 
             [TearDown]
@@ -267,7 +289,7 @@ namespace CryptoTechReminderSystem.Test.Gateway
 
                 _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
 
-                _harvestApi.ReceivedRequests.Count.Should().Be(2);
+                _harvestApi.ReceivedRequests.Count.Should().Be(3);
             }
 
             [Test]
@@ -351,14 +373,24 @@ namespace CryptoTechReminderSystem.Test.Gateway
             }
 
             [Test]
+            public void CanAssociateProjectManagersWithTimeSheets()
+            {
+                SetUpTimeSheetApiEndpointWithTwoPages("2019-04-08", "2019-04-12");
+
+                var response = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
+                response.First().ProjectManagerIds.First().Should().Be(1782959);
+            }
+
+            [Test]
             public void CanCacheTimeSheetResponses()
             {
                 SetUpTimeSheetApiEndpointWithOnePage("2019-04-08", "2019-04-12");
 
                 var response1 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
                 var response2 = _harvestGateway.RetrieveTimeSheets(_defaultDateFrom, _defaultDateTo);
-
-                _harvestApi.ReceivedRequests.Should().HaveCount(1);
+                
+                // 2 x requests to (1 x page of time sheets with 1 x project of user_assignments) == 4 without caching
+                _harvestApi.ReceivedRequests.Should().HaveCount(2);
             }
         }
     }

@@ -21,6 +21,9 @@
 
    
     <ItemGroup>
+      <None Update="Gateway\ApiEndpointResponse\HarvestProject1UserAssignmentsResponse.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Gateway\ApiEndpointResponse\HarvestTimeEntriesApiEndpointPageTwo.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

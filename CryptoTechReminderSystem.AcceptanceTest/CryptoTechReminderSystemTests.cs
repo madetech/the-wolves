@@ -92,6 +92,20 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                     "../../../ApiEndpointResponse/HarvestTimeEntriesEndOfTheMonthResponse.json"
                 )
             );
+
+            var harvestGetProject1UserAssignmentsResponse = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../ApiEndpointResponse/HarvestProject1UserAssignmentsResponse.json"
+                )
+            );
+            
+            var harvestGetProject2UserAssignmentsResponse = File.ReadAllText(
+                Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "../../../ApiEndpointResponse/HarvestProject2UserAssignmentsResponse.json"
+                )
+            );
             
             _harvestApi.Get("/api/v2/time_entries")
                 .WithParameter("from", "2019-02-25")
@@ -104,7 +118,15 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 .WithParameter("to", "2019-07-31")
                 .WithParameter("page", "1")
                 .Responds(harvestGetTimeEntriesResponseEndOfTheMonth);
+
+            _harvestApi.Get("/api/v2/projects/26670539/user_assignments")
+                .WithParameter("page", "1")
+                .Responds(harvestGetProject1UserAssignmentsResponse);
             
+            _harvestApi.Get("/api/v2/projects/26670540/user_assignments")
+                .WithParameter("page", "1")
+                .Responds(harvestGetProject2UserAssignmentsResponse);
+
             _slackApi.Start();
             _harvestApi.Start();
         }
@@ -204,6 +226,38 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             var expectedMessage = $"{lateBillablePeopleMessage}\n• <@W123AROB>\n• <@W345ABAT>\n• <@W345ALFR>";
             lastSlackApiRequest["text"].ToString().Should().Be(expectedMessage); 
+        }
+        
+        [Test]
+        public void CanRemindProjectManagers()
+        {
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 13, 00, 0)
+                    )
+            );
+
+            var getProjectManagersWithOpenTimeEntries =
+                new GetProjectManagersWithOpenTimeEntries(_slackGateway, _harvestGateway, _harvestGateway, clock);
+
+            var remindProjectManagers = new RemindProjectManagers(getProjectManagersWithOpenTimeEntries, _sendReminder);
+
+            remindProjectManagers.Execute(
+                new RemindLateBillablePeopleRequest
+                {
+                    Message = "You have some approving to do on Harvest."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Should()
+                .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);
+            /*
+             Bruce Wayne has two time entries where `is_closed` == false across two projects.
+             The Wolves should therefore send a reminder to the project manager of each project.
+             2 x reminders in total. 
+             */
+            _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
+                .Should().Be(2);
         }
     }
 }
