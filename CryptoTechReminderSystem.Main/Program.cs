@@ -37,7 +37,6 @@ namespace CryptoTechReminderSystem.Main
     public class ReminderRegistry : Registry
     {
         private readonly GetLateBillablePeople _getLateBillablePeople;
-        private readonly GetProjectManagersWithOpenTimeEntries _getProjectManagersWithOpenTimeEntries;
         private readonly SendReminder _sendReminder;
 
         public ReminderRegistry()
@@ -46,17 +45,9 @@ namespace CryptoTechReminderSystem.Main
                 "https://slack.com/",
                 Environment.GetEnvironmentVariable("SLACK_TOKEN")
             );
-            var harvestGateway = new HarvestGateway(
-                "https://api.harvestapp.com/",
-                Environment.GetEnvironmentVariable("HARVEST_TOKEN"),
-                Environment.GetEnvironmentVariable("HARVEST_ACCOUNT_ID"),
-                Environment.GetEnvironmentVariable("HARVEST_USER_AGENT"),
-                Environment.GetEnvironmentVariable("HARVEST_BILLABLE_ROLES")
-            );
 
             var clock = new Clock();
-            _getLateBillablePeople = new GetLateBillablePeople(slackGateway, harvestGateway, harvestGateway, clock);
-            _getProjectManagersWithOpenTimeEntries = new GetProjectManagersWithOpenTimeEntries(slackGateway, harvestGateway, harvestGateway, clock);
+            _getLateBillablePeople = new GetLateBillablePeople(slackGateway, clock);
             _sendReminder = new SendReminder(slackGateway);
 
             CreateSchedule();
@@ -84,7 +75,6 @@ namespace CryptoTechReminderSystem.Main
             // TODO: Comments to explain reasoning behind times chosen, e.g. what are the Ops Team's deadlines for approval?
             JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0).AndEvery(30).Minutes());
             JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(12, 30));
-            JobManager.AddJob(RemindProjectManagersJob, s => s.ToRunOnceAt(13, 00));
         }
 
         private void RemindLateBillablePeopleJob()
@@ -94,17 +84,6 @@ namespace CryptoTechReminderSystem.Main
                 new RemindLateBillablePeopleRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
-                }
-            );
-        }
-
-        private void RemindProjectManagersJob()
-        {
-            var remindProjectManagers = new RemindProjectManagers(_getProjectManagersWithOpenTimeEntries, _sendReminder);
-            remindProjectManagers.Execute(
-                new RemindLateBillablePeopleRequest
-                {
-                    Message = Environment.GetEnvironmentVariable("SLACK_PM_REMINDER_MESSAGE")
                 }
             );
         }
