@@ -87,7 +87,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 }
             );
             
-            _slackApi.ReceivedRequests.Count.Should().Be(4);
+            _slackApi.ReceivedRequests.Count.Should().Be(5);
             
             _slackApi.ReceivedRequests.Should()
                 .Contain(request => request.Url.ToString() == SlackApiAddress + SlackApiPostMessagePath);   
@@ -116,7 +116,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi.ReceivedRequests.Should()
                 .Contain(request => request.RawUrl.ToString() == "/" + SlackApiUsersPath);   
             _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
-                .Should().Be(3);
+                .Should().Be(4);
         }
     }
 }
