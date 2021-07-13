@@ -11,6 +11,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
     public class GetLateBillablePeopleTests
     {
         private static SlackGatewaySpy _slackGatewaySpy;
+        private static SlackGatewayStub _slackGatewayStub;
 
         [SetUp]
         public void SetUp()
@@ -23,6 +24,8 @@ namespace CryptoTechReminderSystem.Test.UseCase
         {
             private ClockStub _clock;
             private GetLateBillablePeople _getBillablePeople;
+
+            private GetLateBillablePeople _getBillablePeopleWithExclusions;
             
             [SetUp]
             public void SetUp()
@@ -35,14 +38,50 @@ namespace CryptoTechReminderSystem.Test.UseCase
                 );
 
                 _getBillablePeople = new GetLateBillablePeople(_slackGatewaySpy, _clock);
+
+                _slackGatewayStub = new SlackGatewayStub
+                {
+                    BillablePeople = new[]
+                    {
+                        new SlackBillablePerson
+                        {
+                            Email = "fred@fred.com",
+                            Id = "U8723"
+                        }, 
+                        new SlackBillablePerson
+                        {
+                            Email = "Joe@Bloggs.com",
+                            Id = "U9999"
+                        },
+                        new SlackBillablePerson
+                        {
+                            Email = "Jim@Bloggs.com",
+                            Id = "U9998"
+                        }
+                    }
+                };
+
+                _getBillablePeopleWithExclusions = new GetLateBillablePeople(_slackGatewayStub, _clock);
+
             }
 
             [Test]
             public void CanGetSlackBillablePeople()
             {
+
                 _getBillablePeople.Execute();
 
                 _slackGatewaySpy.IsRetrieveBillablePeopleCalled.Should().BeTrue();
+            }
+
+            [Test]
+            public void CanGetSlackBillablePeopleAndExlcudeNonBillable()
+            {
+                Environment.SetEnvironmentVariable("NON_BILLABLE_PEOPLE","Joe@Bloggs.com,Jim@Bloggs.com");
+                
+                var response = _getBillablePeopleWithExclusions.Execute();
+
+                response.BillablePeople.Should().HaveCount(1);
             }
         } 
     }
