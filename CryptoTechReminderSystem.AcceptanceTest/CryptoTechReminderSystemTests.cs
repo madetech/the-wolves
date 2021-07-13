@@ -118,5 +118,34 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi.ReceivedRequests.Count(request => request.RawUrl.ToString() == "/" + SlackApiPostMessagePath)
                 .Should().Be(4);
         }
+
+        [Test]
+        public void CanOnlyRemindBillablePeople()
+        {
+            var clock = new ClockStub(
+                new DateTimeOffset(
+                    new DateTime(2019, 03, 01, 10, 30, 0)
+                )
+            );
+
+            Environment.SetEnvironmentVariable("NON_BILLABLE_PEOPLE","batman@gotham.com,robin@gotham.com");
+
+            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
+
+            var remindLateBillablePeople = new RemindLateBillablePeople(getLateBillablePeople, _sendReminder);
+
+            remindLateBillablePeople.Execute(
+                new RemindLateBillablePeopleRequest
+                {
+                    Message = "Please make sure your timesheet is submitted by 13:30 today."
+                }
+            );
+            
+            _slackApi.ReceivedRequests.Count.Should().Be(3);
+            
+            _slackApi.ReceivedRequests.Should()
+                .Contain(request => request.Url.ToString() == SlackApiAddress + SlackApiPostMessagePath);
+
+        }
     }
 }
