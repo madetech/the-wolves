@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace CryptoTechReminderSystem.Test.UseCase
 {
-    public class RemindLateBillablePeopleTests
+    public class RemindBillablePeopleTests
     {
         private SendReminderSpy _sendReminderSpy;
         private GetLateBillablePeopleSpy _getLateBillablePeopleSpy;
@@ -23,10 +23,10 @@ namespace CryptoTechReminderSystem.Test.UseCase
         
         private void HandleSetUp(IGetLateBillablePeople GetLateBillablePeople)
         {
-            var remindLateBillablePeople = new RemindLateBillablePeople(GetLateBillablePeople, _sendReminderSpy);
+            var remindLateBillablePeople = new RemindBillablePeople(GetLateBillablePeople, _sendReminderSpy);
             
             remindLateBillablePeople.Execute(
-                new RemindLateBillablePeopleRequest
+                new RemindBillablePeopleRequest
                 {
                     Message = "TIMESHEETS ARE GOOD YO!"
                 }

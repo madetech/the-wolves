@@ -17,7 +17,7 @@ namespace CryptoTechReminderSystem.UseCase
             _testing = true;
         }
         
-        public void Execute(RemindLateBillablePeopleRequest remindProjectManagersRequest)
+        public void Execute(RemindBillablePeopleRequest remindProjectManagersRequest)
         {
             if (_testing) {
                 TestExecute(remindProjectManagersRequest);
@@ -36,7 +36,7 @@ namespace CryptoTechReminderSystem.UseCase
             }
         }
 
-        private void TestExecute(RemindLateBillablePeopleRequest remindProjectManagersRequest) {
+        private void TestExecute(RemindBillablePeopleRequest remindProjectManagersRequest) {
             var ZackSlackUserId = "U019SBSKPSB";
             var projectManagersWithOpenTimeEntries = _getProjectManagersWithOpenTimeEntries.Execute();
 

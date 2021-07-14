@@ -68,7 +68,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
 
         [Test]
-        public void CanRemindLateBillablePeopleOnAFriday()
+        public void CanRemindBillablePeopleOnAFriday()
         {                      
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -78,10 +78,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
 
-            var remindLateBillablePeople = new RemindLateBillablePeople(getLateBillablePeople, _sendReminder);
+            var remindLateBillablePeople = new RemindBillablePeople(getLateBillablePeople, _sendReminder);
 
             remindLateBillablePeople.Execute(
-                new RemindLateBillablePeopleRequest
+                new RemindBillablePeopleRequest
                 {
                     Message = "Please make sure your timesheet is submitted by 13:30 today."
                 }
@@ -94,7 +94,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
         }
         
         [Test]
-        public void CanRemindLateBillablePeopleEndOfTheMonth()
+        public void CanRemindBillablePeopleEndOfTheMonth()
         {                      
             var clock = new ClockStub(
                 new DateTimeOffset(
@@ -104,10 +104,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             
             var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
             
-            var remindLateBillablePeople = new RemindLateBillablePeople(getLateBillablePeople, _sendReminder);
+            var remindLateBillablePeople = new RemindBillablePeople(getLateBillablePeople, _sendReminder);
 
             remindLateBillablePeople.Execute(
-                new RemindLateBillablePeopleRequest
+                new RemindBillablePeopleRequest
                 {
                     Message = "Please make sure your timesheet is submitted by 13:30 today."
                 }
@@ -132,10 +132,10 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
 
-            var remindLateBillablePeople = new RemindLateBillablePeople(getLateBillablePeople, _sendReminder);
+            var remindLateBillablePeople = new RemindBillablePeople(getLateBillablePeople, _sendReminder);
 
             remindLateBillablePeople.Execute(
-                new RemindLateBillablePeopleRequest
+                new RemindBillablePeopleRequest
                 {
                     Message = "Please make sure your timesheet is submitted by 13:30 today."
                 }

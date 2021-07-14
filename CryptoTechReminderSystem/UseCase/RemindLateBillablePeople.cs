@@ -3,18 +3,18 @@ using CryptoTechReminderSystem.Boundary;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class RemindLateBillablePeople
+    public class RemindBillablePeople
     {
         private readonly IGetLateBillablePeople _getLateBillablePeople;
         private readonly ISendReminder _sendReminder;
 
-        public RemindLateBillablePeople(IGetLateBillablePeople getLateBillablePeople, ISendReminder sendReminder)
+        public RemindBillablePeople(IGetLateBillablePeople getLateBillablePeople, ISendReminder sendReminder)
         {
             _getLateBillablePeople = getLateBillablePeople;
             _sendReminder = sendReminder;
         }
         
-        public void Execute(RemindLateBillablePeopleRequest remindLateBillablePeopleRequest)
+        public void Execute(RemindBillablePeopleRequest remindLateBillablePeopleRequest)
         {
             var lateBillablePeople = _getLateBillablePeople.Execute();
             

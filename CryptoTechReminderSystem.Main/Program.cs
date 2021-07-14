@@ -73,14 +73,14 @@ namespace CryptoTechReminderSystem.Main
         private void ScheduleJobs()
         {
             // TODO: Comments to explain reasoning behind times chosen, e.g. what are the Ops Team's deadlines for approval?
-            JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0));
+            JobManager.AddJob(RemindBillablePeopleJob, s => s.ToRunOnceAt(10, 0));
         }
 
-        private void RemindLateBillablePeopleJob()
+        private void RemindBillablePeopleJob()
         {
-            var remindLateBillablePeople = new RemindLateBillablePeople(_getLateBillablePeople, _sendReminder);
+            var remindLateBillablePeople = new RemindBillablePeople(_getLateBillablePeople, _sendReminder);
             remindLateBillablePeople.Execute(
-                new RemindLateBillablePeopleRequest
+                new RemindBillablePeopleRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
                 }

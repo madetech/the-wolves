@@ -52,7 +52,7 @@ The Wolves is a C# application that follows the principles of [Clean Architectur
 
 Following CA, we have three sea-level use cases:
 
-- [RemindLateBillablePeople](CryptoTechReminderSystem/UseCase/RemindLateBillablePeople.cs)
+- [RemindBillablePeople](CryptoTechReminderSystem/UseCase/RemindBillablePeople.cs)
 - [ListLateBillablePeople](CryptoTechReminderSystem/UseCase/ListLateBillablePeople.cs)
 - [RemindProjectManagers](CryptoTechReminderSystem/UseCase/RemindProjectManagers.cs)
 
@@ -65,7 +65,7 @@ Each of which have use case dependencies on:
 We then have `CryptoTechReminderSystem.Main/Program.cs`, which schedules when the
 above use cases should be called. The Wolves have two jobs:
 
-- `RemindLateBillablePeopleJob` which sends a Slack direct message to billable people who are
+- `RemindBillablePeopleJob` which sends a Slack direct message to billable people who are
   yet to fill in their timesheets at 10.30 on a Friday morning and then every 30 mins
   until 13:30
 - `ListLateBillablePeopleJob` which sends a Slack message to a public channel that
