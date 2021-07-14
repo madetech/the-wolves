@@ -76,9 +76,9 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
+            var getBillablePeople = new GetBillablePeople(_slackGateway, clock);
 
-            var remindBillablePeople = new RemindBillablePeople(getLateBillablePeople, _sendReminder);
+            var remindBillablePeople = new RemindBillablePeople(getBillablePeople, _sendReminder);
 
             remindBillablePeople.Execute(
                 new RemindBillablePeopleRequest
@@ -102,9 +102,9 @@ namespace CryptoTechReminderSystem.AcceptanceTest
                 )
             );
             
-            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
+            var getBillablePeople = new GetBillablePeople(_slackGateway, clock);
             
-            var remindBillablePeople = new RemindBillablePeople(getLateBillablePeople, _sendReminder);
+            var remindBillablePeople = new RemindBillablePeople(getBillablePeople, _sendReminder);
 
             remindBillablePeople.Execute(
                 new RemindBillablePeopleRequest
@@ -130,9 +130,9 @@ namespace CryptoTechReminderSystem.AcceptanceTest
 
             Environment.SetEnvironmentVariable("NON_BILLABLE_PEOPLE","batman@gotham.com,robin@gotham.com");
 
-            var getLateBillablePeople = new GetLateBillablePeople(_slackGateway, clock);
+            var getBillablePeople = new GetBillablePeople(_slackGateway, clock);
 
-            var remindBillablePeople = new RemindBillablePeople(getLateBillablePeople, _sendReminder);
+            var remindBillablePeople = new RemindBillablePeople(getBillablePeople, _sendReminder);
 
             remindBillablePeople.Execute(
                 new RemindBillablePeopleRequest

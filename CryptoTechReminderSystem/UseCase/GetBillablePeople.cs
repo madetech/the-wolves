@@ -6,27 +6,27 @@ using CryptoTechReminderSystem.Gateway;
 
 namespace CryptoTechReminderSystem.UseCase
 {
-    public class GetLateBillablePeople : IGetLateBillablePeople
+    public class GetBillablePeople : IGetBillablePeople
     {
         private readonly ISlackBillablePersonRetriever _slackBillablePersonRetriever;
         private readonly IClock _clock;
 
-        public GetLateBillablePeople(ISlackBillablePersonRetriever slackBillablePersonRetriever, IClock clock)
+        public GetBillablePeople(ISlackBillablePersonRetriever slackBillablePersonRetriever, IClock clock)
         {
             _slackBillablePersonRetriever = slackBillablePersonRetriever;
             _clock = clock;
         }
         
-        public GetLateBillablePeopleResponse Execute()
+        public GetBillablePeopleResponse Execute()
         {
-            var getLateBillablePeopleResponse = new GetLateBillablePeopleResponse
+            var getBillablePeopleResponse = new GetBillablePeopleResponse
             {
-                BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>()
+                BillablePeople = new List<GetBillablePeopleResponse.BillablePerson>()
             };
             
             var nonBillablePeople = GetNonBillablePeople();
 
-            if (IsWeekend(_clock.Now())) return getLateBillablePeopleResponse;
+            if (IsWeekend(_clock.Now())) return getBillablePeopleResponse;
             
             var slackGetBillablePeopleResponse = _slackBillablePersonRetriever.RetrieveBillablePeople();
 
@@ -36,14 +36,14 @@ namespace CryptoTechReminderSystem.UseCase
             foreach (var slackBillablePerson in slackGetBillablePeopleResponse)
             {
               if(!(Array.Exists(nonBillablePeople, element => element == slackBillablePerson.Email))){
-                getLateBillablePeopleResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
+                getBillablePeopleResponse.BillablePeople.Add(new GetBillablePeopleResponse.BillablePerson
                 {
                   Id = slackBillablePerson.Id,
                   Email = slackBillablePerson.Email
                 });
               }
             }
-            return getLateBillablePeopleResponse;
+            return getBillablePeopleResponse;
         }
         private static DateTimeOffset GetStartingDate(DateTimeOffset currentDateTime)
         {

@@ -5,26 +5,26 @@ namespace CryptoTechReminderSystem.UseCase
 {
     public class RemindBillablePeople
     {
-        private readonly IGetLateBillablePeople _getLateBillablePeople;
+        private readonly IGetBillablePeople _getBillablePeople;
         private readonly ISendReminder _sendReminder;
 
-        public RemindBillablePeople(IGetLateBillablePeople getLateBillablePeople, ISendReminder sendReminder)
+        public RemindBillablePeople(IGetBillablePeople getBillablePeople, ISendReminder sendReminder)
         {
-            _getLateBillablePeople = getLateBillablePeople;
+            _getBillablePeople = getBillablePeople;
             _sendReminder = sendReminder;
         }
         
         public void Execute(RemindBillablePeopleRequest remindBillablePeopleRequest)
         {
-            var lateBillablePeople = _getLateBillablePeople.Execute();
+            var billablePeople = _getBillablePeople.Execute();
             
-            foreach (var lateBillablePerson in lateBillablePeople.BillablePeople)
+            foreach (var billablePerson in billablePeople.BillablePeople)
             {
                 _sendReminder.Execute(new SendReminderRequest
                 {
-                    Channel = lateBillablePerson.Id,
+                    Channel = billablePerson.Id,
                     Text = remindBillablePeopleRequest.Message,
-                    Email = lateBillablePerson.Email
+                    Email = billablePerson.Email
                 });
             }
         }

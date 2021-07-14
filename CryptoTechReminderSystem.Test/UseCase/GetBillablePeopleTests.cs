@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace CryptoTechReminderSystem.Test.UseCase
 {
-    public class GetLateBillablePeopleTests
+    public class GetBillablePeopleTests
     {
         private static SlackGatewaySpy _slackGatewaySpy;
         private static SlackGatewayStub _slackGatewayStub;
@@ -23,9 +23,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
         public class CanGetBillablePeople
         {
             private ClockStub _clock;
-            private GetLateBillablePeople _getBillablePeople;
+            private GetBillablePeople _getBillablePeople;
 
-            private GetLateBillablePeople _getBillablePeopleWithExclusions;
+            private GetBillablePeople _getBillablePeopleWithExclusions;
             
             [SetUp]
             public void SetUp()
@@ -37,7 +37,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     )
                 );
 
-                _getBillablePeople = new GetLateBillablePeople(_slackGatewaySpy, _clock);
+                _getBillablePeople = new GetBillablePeople(_slackGatewaySpy, _clock);
 
                 _slackGatewayStub = new SlackGatewayStub
                 {
@@ -61,7 +61,7 @@ namespace CryptoTechReminderSystem.Test.UseCase
                     }
                 };
 
-                _getBillablePeopleWithExclusions = new GetLateBillablePeople(_slackGatewayStub, _clock);
+                _getBillablePeopleWithExclusions = new GetBillablePeople(_slackGatewayStub, _clock);
 
             }
 

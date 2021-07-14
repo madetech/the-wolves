@@ -36,7 +36,7 @@ namespace CryptoTechReminderSystem.Main
 
     public class ReminderRegistry : Registry
     {
-        private readonly GetLateBillablePeople _getLateBillablePeople;
+        private readonly GetBillablePeople _getBillablePeople;
         private readonly SendReminder _sendReminder;
 
         public ReminderRegistry()
@@ -47,7 +47,7 @@ namespace CryptoTechReminderSystem.Main
             );
 
             var clock = new Clock();
-            _getLateBillablePeople = new GetLateBillablePeople(slackGateway, clock);
+            _getBillablePeople = new GetBillablePeople(slackGateway, clock);
             _sendReminder = new SendReminder(slackGateway);
 
             CreateSchedule();
@@ -78,7 +78,7 @@ namespace CryptoTechReminderSystem.Main
 
         private void RemindBillablePeopleJob()
         {
-            var remindBillablePeople = new RemindBillablePeople(_getLateBillablePeople, _sendReminder);
+            var remindBillablePeople = new RemindBillablePeople(_getBillablePeople, _sendReminder);
             remindBillablePeople.Execute(
                 new RemindBillablePeopleRequest
                 {
