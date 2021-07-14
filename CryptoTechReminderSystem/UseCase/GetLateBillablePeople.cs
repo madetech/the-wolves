@@ -24,6 +24,8 @@ namespace CryptoTechReminderSystem.UseCase
                 BillablePeople = new List<GetLateBillablePeopleResponse.LateBillablePerson>()
             };
             
+            var nonBillablePeople = GetNonBillablePeople();
+
             if (IsWeekend(_clock.Now())) return getLateBillablePeopleResponse;
             
             var slackGetBillablePeopleResponse = _slackBillablePersonRetriever.RetrieveBillablePeople();
@@ -33,11 +35,13 @@ namespace CryptoTechReminderSystem.UseCase
             
             foreach (var slackBillablePerson in slackGetBillablePeopleResponse)
             {
-              getLateBillablePeopleResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
-              {
-                Id = slackBillablePerson.Id,
-                Email = slackBillablePerson.Email
-              });
+              if(!(Array.Exists(nonBillablePeople, element => element == slackBillablePerson.Email))){
+                getLateBillablePeopleResponse.BillablePeople.Add(new GetLateBillablePeopleResponse.LateBillablePerson
+                {
+                  Id = slackBillablePerson.Id,
+                  Email = slackBillablePerson.Email
+                });
+              }
             }
             return getLateBillablePeopleResponse;
         }
@@ -79,6 +83,15 @@ namespace CryptoTechReminderSystem.UseCase
             var workingDaysByToday = currentDateTime.DayOfWeek - DayOfWeek.Monday + 1;
 
             return (workingDaysByToday - nonWorkingWeekDaysForPartTimeContract) * 7;
+        }
+
+        private static string[] GetNonBillablePeople()
+        {
+          var nonBillablePeople = Environment.GetEnvironmentVariable("NON_BILLABLE_PEOPLE");
+          if(nonBillablePeople != null){
+            return nonBillablePeople.Split(",");
+          }
+          return new string[0];
         }
     }
 }

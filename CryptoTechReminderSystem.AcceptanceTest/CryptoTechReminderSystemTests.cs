@@ -146,6 +146,7 @@ namespace CryptoTechReminderSystem.AcceptanceTest
             _slackApi.ReceivedRequests.Should()
                 .Contain(request => request.Url.ToString() == SlackApiAddress + SlackApiPostMessagePath);
 
+            Environment.SetEnvironmentVariable("NON_BILLABLE_PEOPLE", null);
         }
     }
 }
