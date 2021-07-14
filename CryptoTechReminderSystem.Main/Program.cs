@@ -73,8 +73,7 @@ namespace CryptoTechReminderSystem.Main
         private void ScheduleJobs()
         {
             // TODO: Comments to explain reasoning behind times chosen, e.g. what are the Ops Team's deadlines for approval?
-            JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0).AndEvery(30).Minutes());
-            JobManager.AddJob(ListLateBillablePeopleJob, s => s.ToRunOnceAt(12, 30));
+            JobManager.AddJob(RemindLateBillablePeopleJob, s => s.ToRunOnceAt(10, 0));
         }
 
         private void RemindLateBillablePeopleJob()
@@ -84,19 +83,6 @@ namespace CryptoTechReminderSystem.Main
                 new RemindLateBillablePeopleRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")
-                }
-            );
-        }
-
-        private void ListLateBillablePeopleJob()
-        {
-            var listLateBillablePeople = new ListLateBillablePeople(_getLateBillablePeople, _sendReminder);
-            listLateBillablePeople.Execute(
-                new ListLateBillablePeopleRequest
-                {
-                    LateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_LATE_BILLABLE_PEOPLE_MESSAGE").Replace(@"\n", "\n"),
-                    NoLateBillablePeopleMessage = Environment.GetEnvironmentVariable("SLACK_NO_LATE_BILLABLE_PEOPLE_MESSAGE"),
-                    Channel = Environment.GetEnvironmentVariable("SLACK_CHANNEL_ID")
                 }
             );
         }
