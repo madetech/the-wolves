@@ -14,7 +14,7 @@ namespace CryptoTechReminderSystem.UseCase
             _sendReminder = sendReminder;
         }
         
-        public void Execute(RemindBillablePeopleRequest remindLateBillablePeopleRequest)
+        public void Execute(RemindBillablePeopleRequest remindBillablePeopleRequest)
         {
             var lateBillablePeople = _getLateBillablePeople.Execute();
             
@@ -23,7 +23,7 @@ namespace CryptoTechReminderSystem.UseCase
                 _sendReminder.Execute(new SendReminderRequest
                 {
                     Channel = lateBillablePerson.Id,
-                    Text = remindLateBillablePeopleRequest.Message,
+                    Text = remindBillablePeopleRequest.Message,
                     Email = lateBillablePerson.Email
                 });
             }

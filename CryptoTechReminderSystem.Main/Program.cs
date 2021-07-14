@@ -78,8 +78,8 @@ namespace CryptoTechReminderSystem.Main
 
         private void RemindBillablePeopleJob()
         {
-            var remindLateBillablePeople = new RemindBillablePeople(_getLateBillablePeople, _sendReminder);
-            remindLateBillablePeople.Execute(
+            var remindBillablePeople = new RemindBillablePeople(_getLateBillablePeople, _sendReminder);
+            remindBillablePeople.Execute(
                 new RemindBillablePeopleRequest
                 {
                     Message = Environment.GetEnvironmentVariable("SLACK_REMINDER_MESSAGE")

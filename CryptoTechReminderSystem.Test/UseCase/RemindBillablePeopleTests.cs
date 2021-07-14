@@ -23,9 +23,9 @@ namespace CryptoTechReminderSystem.Test.UseCase
         
         private void HandleSetUp(IGetLateBillablePeople GetLateBillablePeople)
         {
-            var remindLateBillablePeople = new RemindBillablePeople(GetLateBillablePeople, _sendReminderSpy);
+            var remindBillablePeople = new RemindBillablePeople(GetLateBillablePeople, _sendReminderSpy);
             
-            remindLateBillablePeople.Execute(
+            remindBillablePeople.Execute(
                 new RemindBillablePeopleRequest
                 {
                     Message = "TIMESHEETS ARE GOOD YO!"
